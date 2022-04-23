@@ -29,7 +29,7 @@ const AppContainer: NextComponentType<AppContext, AppInitialProps, AppProps> = (
   return (
     <>
       <Head>
-        <title> Space-Map Admin-Page</title>
+        <title> Space-Map Platform</title>
       </Head>
       <GlobalStyle />
       <QueryClientProvider client={queryClient}>
