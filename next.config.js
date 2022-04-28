@@ -1,8 +1,6 @@
 const webpack = require('webpack')
 const CopywebpackPlugin = require('copy-webpack-plugin')
 const path = require('path')
-const cesiumSource = 'node_modules/cesium/Source'
-const cesiumWorkers = '../Build/Cesium/Workers'
 
 const nextConfig = {
   reactStrictMode: true,
@@ -10,13 +8,28 @@ const nextConfig = {
     config.plugins.push(
       new CopywebpackPlugin({
         patterns: [
-          { from: path.join(cesiumSource, cesiumWorkers), to: 'Workers' },
-          { from: path.join(cesiumSource, 'Assets'), to: 'Assets' },
-          { from: path.join(cesiumSource, 'Widgets'), to: 'Widgets' },
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Workers'),
+            to: '../public/cesium/Workers',
+          },
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/ThirdParty'),
+            to: '../public/cesium/ThirdParty',
+          },
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Assets'),
+            to: '../public/cesium/Assets',
+          },
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Widgets'),
+            to: '../public/cesium/Widgets',
+          },
         ],
-      }),
+      })
+    )
+    config.plugins.push(
       new webpack.DefinePlugin({
-        CESIUM_BASE_URL: JSON.stringify('cesium'),
+        CESIUM_BASE_URL: JSON.stringify('/cesium'),
       })
     )
     return config
