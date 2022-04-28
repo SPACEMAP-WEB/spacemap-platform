@@ -10,10 +10,11 @@ const PageMain = () => {
     <>
       <Head>
         <link
-          href="https://cesium.com/downloads/cesiumjs/releases/1.92/Build/Cesium/Widgets/widgets.css"
+          href="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/Cesium/Widgets/widgets.css"
           rel="stylesheet"
         ></link>
       </Head>
+
       <div id="cesiumContainer" />
       <CesiumComponent />
     </>
