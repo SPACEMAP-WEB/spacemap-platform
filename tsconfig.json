@@ -18,13 +18,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "app.components/*": ["app.components/*"],
-      "app.layout/*": ["app.layout/*"],
-      "app.feature/*": ["app.feature/*"],
-      "app.modules/*": ["app.modules/*"],
-      "pages/*": ["pages/*"]
+      "@app.components/*": ["src/app.components/*"],
+      "@app.layout/*": ["src/app.layout/*"],
+      "@app.feature/*": ["src/app.feature/*"],
+      "@app.modules/*": ["src/app.modules/*"],
+      "@pages/*": ["src/pages/*"],
+      "@public/*": ["public/*"]
     }
   },
   "include": [
