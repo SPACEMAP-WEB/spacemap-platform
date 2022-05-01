@@ -14,12 +14,13 @@ const CesiumComponent = () => {
     // skyBox: false,
     baseLayerPicker: true,
     geocoder: false,
-    // scene3DOnly: true,
-    skyBox: false,
+    scene3DOnly: true,
+    // skyBox: false,÷
     skyAtmosphere: false,
     selectionIndicator: false,
     requestRenderMode: true,
     maximumRenderTimeChange: 0.05,
+    homeButton: false
   })
 
   return <></>
