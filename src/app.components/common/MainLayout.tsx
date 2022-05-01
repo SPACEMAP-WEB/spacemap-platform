@@ -1,3 +1,4 @@
+import ConjunctionsTable from '@app.components/conjunctions/ConjunctionsTable'
 import React from 'react'
 import styled from 'styled-components'
 import Button from './Button'
@@ -10,6 +11,7 @@ const MainLayout = () => {
       <Logo />
       <SideMenu />
       <Button />
+      <ConjunctionsTable />
     </MainLayoutWrapper>
   )
 }

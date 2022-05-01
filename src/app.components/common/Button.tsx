@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const Button = () => {
   return (
     <ButtonWrapper>
-      <button className="login-button">Log In</button>
+      <button className="login-button">Sign In</button>
     </ButtonWrapper>
   )
 }
