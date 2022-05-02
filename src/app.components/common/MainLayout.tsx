@@ -1,16 +1,20 @@
 import ConjunctionsTable from '@app.components/conjunctions/ConjunctionsTable'
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import Button from './Button'
 import Logo from './Logo'
 import SideMenu from './SideMenu'
 
 const MainLayout = () => {
+  const { login } = useSelector((state: RootState) => state.login)
+
   return (
     <MainLayoutWrapper>
       <Logo />
       <SideMenu />
-      <Button />
+      <Button login={login} />
       <ConjunctionsTable />
     </MainLayoutWrapper>
   )

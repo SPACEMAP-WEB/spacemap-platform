@@ -1,10 +1,21 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Button = () => {
+type TProps = {
+  login: boolean
+}
+
+const Button = ({ login }: TProps) => {
+  const handleSnsLogin = () => {
+    if (login) console.log('login')
+    else console.log('logout')
+  }
   return (
     <ButtonWrapper>
-      <button className="login-button">Sign In</button>
+      {login && <div className="login-user">{`name님`}</div>}
+      <button className="login-button" onClick={handleSnsLogin}>
+        {login ? 'Sign In' : 'Sign Out'}
+      </button>
     </ButtonWrapper>
   )
 }
@@ -17,28 +28,30 @@ const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(6px);
-  z-index: 4;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 0.3rem;
-  border-bottom-right-radius: 1rem;
-  border-bottom-left-radius: 0.3rem;
-  background-size: 200% 100%;
-  background-position: right bottom;
-  transition: all 0.3s ease-in;
-  &:hover {
-    background-color: #fccb16;
+  .login-user {
+    font-size: 1rem;
+    color: white;
+    margin-right: 10px;
   }
   .login-button {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
+    width: 120px;
+    height: 40px;
+    font-size: 1rem;
     cursor: pointer;
     color: white;
-    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(6px);
+    z-index: 4;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 0.3rem;
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all 0.3s ease-in;
+    &:hover {
+      background-color: #fccb16;
+    }
   }
 `
