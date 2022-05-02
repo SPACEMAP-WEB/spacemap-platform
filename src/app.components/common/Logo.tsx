@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const Logo = () => {
   return (
     <LogoWrapper>
-      <Image src="/logo.png" alt="logo" width={250} height={40} />
+      <Image src="/logo-white.svg" alt="logo" width={250} height={40} />
     </LogoWrapper>
   )
 }
@@ -14,5 +14,4 @@ export default Logo
 
 const LogoWrapper = styled.div`
   position: fixed;
-  width: 500px;
 `

@@ -25,7 +25,8 @@
       "@app.feature/*": ["src/app.feature/*"],
       "@app.modules/*": ["src/app.modules/*"],
       "@pages/*": ["src/pages/*"],
-      "@public/*": ["public/*"]
+      "@public/*": ["public/*"],
+      "@types/*": ["types/*"]
     }
   },
   "include": [
