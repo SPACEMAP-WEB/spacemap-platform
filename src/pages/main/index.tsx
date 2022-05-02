@@ -16,7 +16,6 @@ const PageMain = () => {
         ></link>
       </Head>
       <MainLayout />
-      <div id="cesiumContainer" />
       <CesiumComponent />
     </>
   )
