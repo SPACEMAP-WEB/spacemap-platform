@@ -5,7 +5,6 @@ import styled from 'styled-components'
 const AssessmentModal = () => {
   const { state } = useMenuContext()
   const { isLaunchConjunctionsClicked } = state
-  console.log(isLaunchConjunctionsClicked)
   return (
     <>
       {isLaunchConjunctionsClicked && (
