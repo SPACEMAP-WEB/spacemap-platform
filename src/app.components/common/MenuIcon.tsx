@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
+import { MenuType } from 'src/types/sideMenu/MenuType'
 
 type MenuIconProps = {
   path: string
   alt: string
   width?: number
   height?: number
-  menuDescription: string
+  menuDescription: MenuType
+  onClick: React.MouseEventHandler<HTMLDivElement>
 }
 
 type IconWrapperStyleProps = {
   isMouseHover: boolean
 }
 
-const MenuIcon = ({ path, alt, width, height, menuDescription }: MenuIconProps) => {
+const MenuIcon = ({ path, alt, width, height, menuDescription, onClick }: MenuIconProps) => {
   const [isMouseHover, setIsMouseHover] = useState<boolean>(false)
 
   const handleHover = () => {
@@ -32,6 +34,7 @@ const MenuIcon = ({ path, alt, width, height, menuDescription }: MenuIconProps) 
         className="menu-icon-wrapper"
         onMouseEnter={handleHover}
         onMouseLeave={handleLeave}
+        onClick={onClick}
       >
         <Image src={path} alt={alt} width={width ?? 30} height={height ?? 30} />
       </div>

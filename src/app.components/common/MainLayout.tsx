@@ -1,5 +1,7 @@
 import ConjunctionsTable from '@app.components/conjunctions/ConjunctionsTable'
+import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
 import React from 'react'
+import MenuProvider from 'src/providers/MenuProvider'
 import styled from 'styled-components'
 import Button from './Button'
 import Logo from './Logo'
@@ -7,12 +9,15 @@ import SideMenu from './SideMenu'
 
 const MainLayout = () => {
   return (
-    <MainLayoutWrapper>
-      <Logo />
-      <SideMenu />
-      <Button />
-      <ConjunctionsTable />
-    </MainLayoutWrapper>
+    <MenuProvider>
+      <MainLayoutWrapper>
+        <Logo />
+        <SideMenu />
+        <Button />
+        <ConjunctionsTable />
+        <AssessmentModal />
+      </MainLayoutWrapper>
+    </MenuProvider>
   )
 }
 

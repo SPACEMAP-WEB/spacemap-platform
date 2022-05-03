@@ -19,9 +19,7 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   width: 120px;
   height: 40px;
-  background-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(6px);
+  border: 0.8px solid #fccb16;
   z-index: 4;
   border-top-left-radius: 1rem;
   border-top-right-radius: 0.3rem;
