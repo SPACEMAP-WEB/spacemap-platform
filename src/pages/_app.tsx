@@ -7,6 +7,8 @@ import React from 'react'
 import { AppContext, AppInitialProps, AppProps } from 'next/app'
 import { NextComponentType } from 'next'
 import AppIndex from '.'
+import { Provider } from 'react-redux'
+import { store } from 'src/app.store/config/configureStore'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,12 +34,14 @@ const AppContainer: NextComponentType<AppContext, AppInitialProps, AppProps> = (
         <title> Space-Map Platform</title>
       </Head>
       <GlobalStyle />
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <Hydrate state={pageProps.dehydratedState}>
-          <AppIndex />
-        </Hydrate>
-      </QueryClientProvider>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Hydrate state={pageProps.dehydratedState}>
+            <AppIndex />
+          </Hydrate>
+        </QueryClientProvider>
+      </Provider>
     </>
   )
 }
