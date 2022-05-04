@@ -1,9 +1,14 @@
 const webpack = require('webpack')
 const CopywebpackPlugin = require('copy-webpack-plugin')
 const path = require('path')
+const envrc = require('./.env.config.json')
+const env = envrc[process.env.NODE_ENV]
 
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    SPACEMAP_PLATFORM_API_URI: env.SPACEMAP_PLATFORM_API_URI,
+  },
   webpack: (config) => {
     config.plugins.push(
       new CopywebpackPlugin({
