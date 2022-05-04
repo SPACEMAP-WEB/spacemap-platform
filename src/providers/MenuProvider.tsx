@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, useContext, useReducer } from 'react'
+import React, { createContext, Dispatch, useReducer } from 'react'
 
 type MenuContextType = {
   state: MenuStateType

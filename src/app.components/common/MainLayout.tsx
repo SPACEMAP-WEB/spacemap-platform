@@ -1,5 +1,6 @@
 import ConjunctionsTable from '@app.components/conjunctions/ConjunctionsTable'
 import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
+import SignInModal from '@app.components/signIn/SignInModal'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
@@ -17,9 +18,10 @@ const MainLayout = () => {
       <MainLayoutWrapper>
         <Logo />
         <SideMenu />
-        <Button />
+        <Button login={login} />
         <ConjunctionsTable />
         <AssessmentModal />
+        <SignInModal />
       </MainLayoutWrapper>
     </MenuProvider>
   )

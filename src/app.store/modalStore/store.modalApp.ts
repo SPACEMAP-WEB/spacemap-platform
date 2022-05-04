@@ -17,3 +17,5 @@ export const modalSlice = createSlice({
     },
   },
 })
+
+export const { setModal } = modalSlice.actions
