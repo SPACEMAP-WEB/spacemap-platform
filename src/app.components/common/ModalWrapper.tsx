@@ -1,14 +1,8 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { closeModal } from 'src/app.store/modalStore/store.modalApp'
 import styled from 'styled-components'
 
-const ModalWrapper = ({ children }) => {
-  const dispatch = useDispatch()
-  const handleBlur = () => {
-    dispatch(closeModal())
-  }
-  return <StyledWrapper onClick={handleBlur}>{children}</StyledWrapper>
+const ModalWrapper = ({ children, onClick }) => {
+  return <StyledWrapper onClick={onClick}>{children}</StyledWrapper>
 }
 
 export default ModalWrapper
