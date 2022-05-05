@@ -1,4 +1,6 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { setModal } from 'src/app.store/modalStore/store.modalApp'
 import styled from 'styled-components'
 
 type TProps = {
@@ -6,15 +8,17 @@ type TProps = {
 }
 
 const Button = ({ login }: TProps) => {
+  const dispatch = useDispatch()
+
   const handleSnsLogin = () => {
-    if (login) console.log('login')
-    else console.log('logout')
+    !login && dispatch(setModal())
   }
+
   return (
     <ButtonWrapper>
       {login && <div className="login-user">{`name님`}</div>}
       <button className="login-button" onClick={handleSnsLogin}>
-        {login ? 'Sign In' : 'Sign Out'}
+        {login ? 'Sign Out' : 'Sign In'}
       </button>
     </ButtonWrapper>
   )
