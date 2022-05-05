@@ -43,17 +43,14 @@ const ButtonWrapper = styled.div`
     font-size: 1rem;
     cursor: pointer;
     color: white;
-    background-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(6px);
+    background-color: transparent;
     z-index: 4;
     border-top-left-radius: 1rem;
     border-top-right-radius: 0.3rem;
     border-bottom-right-radius: 1rem;
     border-bottom-left-radius: 0.3rem;
-    background-size: 200% 100%;
-    background-position: right bottom;
     transition: all 0.3s ease-in;
+    border: 0.8px solid #fccb16;
     &:hover {
       background-color: #fccb16;
     }

@@ -7,7 +7,7 @@ const env = envrc[process.env.NODE_ENV]
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    SPACEMAP_PLATFORM_API_URI: env.SPACEMAP_PLATFORM_API_URI,
+    SPACEMAP_PLATFORM_API_URI: process.env.SPACEMAP_PLATFORM_API_URI,
   },
   webpack: (config) => {
     config.plugins.push(

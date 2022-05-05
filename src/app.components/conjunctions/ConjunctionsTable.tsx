@@ -1,9 +1,9 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { Column, useTable } from 'react-table'
-import { useMenuContext } from 'src/hooks/useMenuContext'
+import { useMenuContext } from '@app.modules/hooks/useMenuContext'
 import { PPDBData } from 'src/test/testData/PPDBData'
-import { PPDBTableColumnType } from 'src/types/conjunctions/PPDBType'
+import { PPDBTableColumnType } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
@@ -44,7 +44,9 @@ const ConjunctionsTable = () => {
 
     tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
     tableRef.current.style.opacity = isConjunctionsClicked ? '1' : '0'
-    tableRef.current.style.transform = `translateX(-${isConjunctionsClicked ? 0 : 1}00%)`
+    tableContainerRef.current.style.transform = `translateX(${
+      isConjunctionsClicked ? '0' : '30rem'
+    })`
   })
 
   return (
@@ -83,5 +85,5 @@ const ConjunctionsTableWrapper = styled.div`
   z-index: 4;
   right: 1.25rem;
   top: 5.5rem;
-  transition: all 0.8s ease-out;
+  transition: all 0.5s ease-out;
 `

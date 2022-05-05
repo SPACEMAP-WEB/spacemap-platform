@@ -9,7 +9,6 @@ const CesiumComponent = () => {
   // Initialize the Cesium Viewer in the HTML element with the "cesiumContainer" ID.
 
   useEffect(() => {
-    console.log('cesium')
     new Cesium.Viewer('cesiumContainer', {
       // sceneMode: Cesium.SceneMode.SCENE3D,
       terrainProvider: Cesium.EllipsoidTerrainProvider(),

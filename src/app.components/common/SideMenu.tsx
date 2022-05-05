@@ -1,5 +1,5 @@
 import React from 'react'
-import { useMenuContext } from 'src/hooks/useMenuContext'
+import { useMenuContext } from '@app.modules/hooks/useMenuContext'
 import styled from 'styled-components'
 import MenuIcon from './MenuIcon'
 
@@ -10,11 +10,11 @@ const SideMenu = () => {
   const { dispatch } = useMenuContext()
 
   const handleConjunctionClick = () => {
-    dispatch({ type: 'UPDATE_CONJUCTIONS_CLICKED' })
+    dispatch({ type: 'UPDATE_CONJUCTIONS_CLICKED', payload: true })
   }
 
   const handleLaunchConjunctionClick = () => {
-    dispatch({ type: 'UPDATE_LAUNCH_CONJUCTIONS_CLICKED' })
+    dispatch({ type: 'UPDATE_LAUNCH_CONJUCTIONS_CLICKED', payload: true })
   }
 
   return (
@@ -43,7 +43,7 @@ const SideMenuWrapper = styled.div`
   position: fixed;
   top: 5.5rem;
   width: 3.2rem;
-  height: 18.75rem;
+  height: auto;
   background-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
   backdrop-filter: blur(8px);

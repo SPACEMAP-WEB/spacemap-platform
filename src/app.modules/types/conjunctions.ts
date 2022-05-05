@@ -15,3 +15,11 @@ export type PPDBTableColumnType = {
   dca: number
   tca: string
 }
+
+export type PPDBSearchParamsType = {
+  limit: number
+  page: number
+  sort: 'tcaTime' | 'dca' | 'probability'
+  dec: '-'
+  satelite: number | string
+}
