@@ -15,7 +15,7 @@ class API {
   private readonly requestApi: AxiosInstance
 
   constructor() {
-    this.requestApi = axios.create({ baseURL: process.env.SPACEMAP_PLATFORM_API_URI })
+    this.requestApi = axios.create({ baseURL: process.env.SPACEMAP_ADMIN_API_URI })
   }
 
   async Fetch<T>({ headers = {}, url = '', method, data = null }: ApiData & { data?: T | null }) {
@@ -36,10 +36,7 @@ class API {
 
       return response
     } catch (error) {
-      const axiosError = error as AxiosError
-      //   const response = axiosError.response?.data
-
-      throw axiosError
+      throw error
     }
   }
 

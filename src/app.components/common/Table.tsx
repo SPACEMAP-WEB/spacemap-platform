@@ -14,7 +14,8 @@ export const Table = styled.table<{ css?: string }>`
   th {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
-    background-color: violet;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
     font-weight: 900;
   }
   ${({ css }) =>

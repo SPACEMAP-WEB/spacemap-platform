@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
-import { MenuType } from 'src/types/sideMenu/MenuType'
+import { MenuType } from '@app.modules/types/sideMenu'
 
 type MenuIconProps = {
   path: string

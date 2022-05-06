@@ -1,4 +1,4 @@
-import { PPDBDataType } from 'src/types/conjunctions/PPDBType'
+import { PPDBDataType } from '@app.modules/types/conjunctions'
 
 export const PPDBData: PPDBDataType[] = [
   {
