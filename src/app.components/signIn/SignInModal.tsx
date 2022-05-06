@@ -1,6 +1,6 @@
 import ModalWrapper from '@app.components/common/ModalWrapper'
 import { useRouter } from 'next/router'
-import React, { useRef } from 'react'
+import React, { MouseEvent, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import { closeModal } from 'src/app.store/modalStore/store.modalApp'
@@ -8,18 +8,16 @@ import styled from 'styled-components'
 
 const SignInModal = () => {
   const router = useRouter()
-  const { visible } = useSelector((state: RootState) => state.modal)
+  const { visible, type } = useSelector((state: RootState) => state.modal)
   const modalEl = useRef<HTMLDivElement>(null)
   const dispatch = useDispatch()
 
   const handleClose = (event: React.MouseEvent<HTMLImageElement>) => {
-    event.preventDefault()
     dispatch(closeModal())
   }
 
-  const handleCloseExternalClickModal = (event: MouseEvent) => {
-    if (visible && modalEl && !modalEl?.current?.contains(event.target as Node))
-      dispatch(closeModal())
+  const handleCloseExternalClickModal = (event: MouseEvent<HTMLElement>) => {
+    if (visible && !modalEl?.current?.contains(event.target as Node)) dispatch(closeModal())
   }
 
   const handleClickLogin = (sns: string) => {
@@ -28,9 +26,9 @@ const SignInModal = () => {
 
   return (
     <>
-      {visible && (
+      {type === 'LOGIN' && visible && (
         <ModalWrapper onClick={handleCloseExternalClickModal}>
-          <Modal ref={modalEl} className="modal-content-container">
+          <Modal ref={modalEl}>
             <img src="/svg/close-black.svg" className="modal-close" onClick={handleClose} />
             <button className="google-login" onClick={() => handleClickLogin('google')}>
               <img src="/image/icon/ico-google.png" />

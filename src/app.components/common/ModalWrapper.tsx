@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
 import styled from 'styled-components'
 
-const ModalWrapper = ({ children, onClick }) => {
+type TProps = {
+  children: JSX.Element
+  onClick: (event: MouseEvent<HTMLElement>) => void
+}
+
+const ModalWrapper = ({ children, onClick }: TProps) => {
   return <StyledWrapper onClick={onClick}>{children}</StyledWrapper>
 }
 

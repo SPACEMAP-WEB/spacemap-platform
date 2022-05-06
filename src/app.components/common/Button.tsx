@@ -11,7 +11,7 @@ const Button = ({ login }: TProps) => {
   const dispatch = useDispatch()
 
   const handleSnsLogin = () => {
-    !login && dispatch(setModal())
+    !login && dispatch(setModal({ type: 'LOGIN' }))
   }
 
   return (
