@@ -1,20 +1,25 @@
 import React from 'react'
-import { useMenuContext } from '@app.modules/hooks/useMenuContext'
 import styled from 'styled-components'
 import MenuIcon from './MenuIcon'
+import { useDispatch } from 'react-redux'
+import { setModal } from 'src/app.store/modalStore/store.modalApp'
+import { useModal } from '@app.modules/hooks/useModal'
 
 const conjunctionsPath = '/sideMenu/conjunction.svg'
 const launchConjunctionPath = '/sideMenu/launch-conjunction.svg'
 
 const SideMenu = () => {
-  const { dispatch } = useMenuContext()
+  const dispatch = useDispatch()
+  const { modalVisible, modalType, handleCloseModal } = useModal(null)
 
   const handleConjunctionClick = () => {
-    dispatch({ type: 'UPDATE_CONJUCTIONS_CLICKED', payload: true })
+    modalVisible && modalType === 'CONJUCTIONS'
+      ? handleCloseModal()
+      : dispatch(setModal({ type: 'CONJUCTIONS' }))
   }
 
   const handleLaunchConjunctionClick = () => {
-    dispatch({ type: 'UPDATE_LAUNCH_CONJUCTIONS_CLICKED', payload: true })
+    dispatch(setModal({ type: 'LAUNCHCONJUCTIONS' }))
   }
 
   return (

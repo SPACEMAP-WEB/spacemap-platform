@@ -1,7 +1,19 @@
-import { useState } from 'react'
+import { modalType } from '@app.modules/types/modal'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'src/app.store/config/configureStore'
+import { closeModal, setModal } from 'src/app.store/modalStore/store.modalApp'
 
-export const useModal = (initialMode = false) => {
-  const [modalOpen, setModalOpen] = useState(initialMode)
-  const toggle = () => setModalOpen(!modalOpen)
-  return { modalOpen, setModalOpen, toggle }
+export const useModal = (type: modalType) => {
+  const dispatch = useDispatch()
+  const { modalType, modalVisible } = useSelector((state: RootState) => state.modal)
+
+  const handleCloseModal = () => {
+    dispatch(closeModal())
+  }
+
+  const handleSetModal = () => {
+    dispatch(setModal({ type }))
+  }
+
+  return { modalType, modalVisible, handleCloseModal, handleSetModal }
 }
