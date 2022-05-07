@@ -1,22 +1,28 @@
+import { modalType } from '@app.modules/types/modal'
 import { createSlice } from '@reduxjs/toolkit'
 
-type modalType = {
-  visible: boolean
+type TModal = {
+  modalVisible: boolean
+  modalType: modalType
 }
 
-const initialState: modalType = {
-  visible: false,
+const initialState: TModal = {
+  modalVisible: false,
+  modalType: null,
 }
 
 export const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    setModal: (state) => {
-      state.visible = true
+    setModal: (state, { payload: { type } }: { payload: { type: modalType } }) => {
+      console.log(type)
+      state.modalVisible = true
+      state.modalType = type
     },
     closeModal: (state) => {
-      state.visible = false
+      state.modalVisible = false
+      state.modalType = null
     },
   },
 })

@@ -6,7 +6,7 @@ import { objectToURL } from '@app.modules/util'
 import { PPDBSearchParamsType } from '@app.modules/types/conjunctions'
 
 export const requestAPiGetPPDB = async (query: PPDBSearchParamsType) => {
-  const response = await api.GET(API_PPDB + objectToURL(query))
+  const response = await api.GET(`http://localhost:4033/ppdbs/conjunctions` + objectToURL(query))
   return response.data
 }
 
