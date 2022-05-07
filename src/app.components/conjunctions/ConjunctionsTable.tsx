@@ -1,6 +1,6 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, useTable } from 'react-table'
+import { Column, useTable, CellProps, HeaderProps } from 'react-table'
 import {
   PPDBDataType,
   PPDBSearchParamsType,
@@ -11,6 +11,7 @@ import { useQueryGetInfinitePPDB } from '@app.feature/conjunctions/query/useQuer
 import { useModal } from '@app.modules/hooks/useModal'
 import { useInView } from 'react-intersection-observer'
 import Search from '@app.components/common/Search'
+import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
@@ -57,10 +58,30 @@ const ConjunctionsTable = () => {
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
-    columns,
-    data,
-  })
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
+    {
+      columns,
+      data,
+    },
+    (hooks) => {
+      hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
+        ...columns,
+        {
+          id: 'bookmark',
+          Header: () => (
+            <div>
+              <IndeterminateCheckbox />
+            </div>
+          ),
+          Cell: ({ row }: CellProps<any>) => (
+            <div>
+              <IndeterminateCheckbox />
+            </div>
+          ),
+        },
+      ])
+    }
+  )
 
   useEffect(() => {
     if (!tableContainerRef || !tableContainerRef.current) return
