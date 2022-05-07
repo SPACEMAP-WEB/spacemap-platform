@@ -13,6 +13,7 @@ import { useInView } from 'react-intersection-observer'
 import Search from '@app.components/common/Search'
 import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
 
+
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
     Header: 'Primary',
