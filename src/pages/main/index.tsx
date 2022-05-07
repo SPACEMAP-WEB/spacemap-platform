@@ -1,12 +1,14 @@
 import MainLayout from '@app.components/common/MainLayout'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
+import { useEffect } from 'react'
 
 const CesiumComponent = dynamic(() => import('@app.components/Cesium'), {
   ssr: false,
 })
 
 const PageMain = () => {
+  useEffect(()=>{})
   return (
     <>
       <Head>
