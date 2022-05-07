@@ -1,10 +1,10 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { Column, useTable } from 'react-table'
-import { useMenuContext } from '@app.modules/hooks/useMenuContext'
 import { PPDBData } from 'src/test/testData/PPDBData'
 import { PPDBTableColumnType } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
+import { useModal } from '@app.modules/hooks/useModal'
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
@@ -28,10 +28,10 @@ const COLUMNS: Column<PPDBTableColumnType>[] = [
 const ConjunctionsTable = () => {
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => PPDBData, [PPDBData])
-  const { state } = useMenuContext()
-  const { isConjunctionsClicked } = state
+  const { modalType, modalVisible } = useModal('CONJUCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
+  const isConjunctionsClicked = modalType === 'CONJUCTIONS' && modalVisible
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
     columns,

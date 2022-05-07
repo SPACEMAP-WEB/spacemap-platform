@@ -3,11 +3,17 @@ import styled from 'styled-components'
 
 type TProps = {
   children: JSX.Element
-  onClick: (event: MouseEvent<HTMLElement>) => void
+  visible: boolean
+  modalEl: React.MutableRefObject<HTMLDivElement>
+  handleCloseModal: () => void
 }
 
-const ModalWrapper = ({ children, onClick }: TProps) => {
-  return <StyledWrapper onClick={onClick}>{children}</StyledWrapper>
+const ModalWrapper = ({ children, visible, modalEl, handleCloseModal }: TProps) => {
+  const handleCloseExternalClickModal = (event: MouseEvent<HTMLElement>) => {
+    if (visible && !modalEl?.current?.contains(event.target as Node)) handleCloseModal()
+  }
+
+  return <StyledWrapper onClick={handleCloseExternalClickModal}>{children}</StyledWrapper>
 }
 
 export default ModalWrapper

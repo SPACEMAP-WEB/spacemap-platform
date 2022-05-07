@@ -1,32 +1,25 @@
-import React, { MouseEvent, useRef } from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useDispatch, useSelector } from 'react-redux'
-import { closeModal } from 'src/app.store/modalStore/store.modalApp'
-import { RootState } from 'src/app.store/config/configureStore'
 import ModalWrapper from '@app.components/common/ModalWrapper'
+import { useModal } from '@app.modules/hooks/useModal'
 
 const AssessmentModal = () => {
-  const { visible, type } = useSelector((state: RootState) => state.modal)
-  const dispatch = useDispatch()
+  const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUCTIONS')
   const imageInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
 
   const handleClose = () => {
-    dispatch(closeModal())
+    handleCloseModal()
   }
 
   const onCickImageUpload = () => {
     imageInput?.current.click()
   }
 
-  const handleCloseExternalClickModal = (event: MouseEvent<HTMLElement>) => {
-    if (visible && !modalEl?.current?.contains(event.target as Node)) dispatch(closeModal())
-  }
-
   return (
     <>
-      {type['CONJUCTIONS'] && visible && (
-        <ModalWrapper onClick={handleCloseExternalClickModal}>
+      {modalType === 'LAUNCHCONJUCTIONS' && modalVisible && (
+        <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
           <Modal ref={modalEl}>
             <div className="modal-content-container">
               <header className="modal-header">
