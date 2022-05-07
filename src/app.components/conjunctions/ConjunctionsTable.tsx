@@ -1,11 +1,16 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Column, useTable } from 'react-table'
-import { PPDBData } from 'src/test/testData/PPDBData'
-import { PPDBSearchParamsType, PPDBTableColumnType } from '@app.modules/types/conjunctions'
+import {
+  PPDBDataType,
+  PPDBSearchParamsType,
+  PPDBTableColumnType,
+} from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
-import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
+import { useQueryGetInfinitePPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
+import { useInView } from 'react-intersection-observer'
+import Search from '@app.components/common/Search'
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
@@ -27,20 +32,31 @@ const COLUMNS: Column<PPDBTableColumnType>[] = [
 ]
 
 const ConjunctionsTable = () => {
-  const columns = useMemo(() => COLUMNS, [])
-  const data = useMemo(() => PPDBData, [PPDBData])
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
-    limit: 20,
+    limit: 10,
     page: 1,
   })
+  const [tableData, setTableData] = useState<PPDBDataType[]>([])
+  const [searchValue, setSearchValue] = useState<string>('')
+  const [isSearchClick, setIsSearchClick] = useState<boolean>(false)
+  const [ref, inView] = useInView()
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
   const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
 
-  const response = useQueryGetPPDB(queryParams)
-  console.log(response)
+  const {
+    data: fetchedPPDBData,
+    isLoading,
+    fetchNextPage,
+    refetch,
+  } = useQueryGetInfinitePPDB({
+    query: queryParams,
+    isConjunctionsClicked,
+  })
 
+  const columns = useMemo(() => COLUMNS, [])
+  const data = useMemo(() => tableData, [tableData])
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
     columns,
     data,
@@ -57,32 +73,91 @@ const ConjunctionsTable = () => {
     })`
   })
 
+  useEffect(() => {
+    if (fetchedPPDBData) {
+      const lastIndex = fetchedPPDBData.pages.length - 1
+      const { result } = fetchedPPDBData.pages[lastIndex]
+      const newData = result.map((item, index) => {
+        const { _id, pid, sid, dca, tcaStartTime, tcaEndTime, tcaTime, probability } = item
+        return {
+          index,
+          id: _id,
+          primary: pid,
+          secondary: sid,
+          dca,
+          start: tcaStartTime,
+          tca: tcaTime,
+          end: tcaEndTime,
+          probability,
+        }
+      })
+      setTableData(lastIndex === 0 ? newData : (prevState) => prevState.concat(newData))
+    }
+  }, [fetchedPPDBData])
+
+  useEffect(() => {
+    setIsSearchClick(false)
+  }, [queryParams])
+
+  useEffect(() => {
+    if (isSearchClick) {
+      refetch()
+    }
+  }, [isSearchClick, refetch])
+
+  useEffect(() => {
+    if (!data) return
+    if (inView) fetchNextPage()
+  }, [inView])
+
+  const handleSearch = () => {
+    setQueryParams({
+      ...queryParams,
+      satelite: searchValue,
+    })
+    setIsSearchClick(true)
+  }
+
   return (
-    <ConjunctionsTableWrapper ref={tableContainerRef}>
-      <Table {...getTableProps()} ref={tableRef}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row)
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+    <>
+      {/* FIXME: change loading page into proper one */}
+      {isLoading && <div>loading</div>}
+      {!!tableData.length && (
+        <ConjunctionsTableWrapper ref={tableContainerRef}>
+          <Search
+            handleSearch={handleSearch}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+          />
+          <section className="table-wrapper">
+            <Table {...getTableProps()} ref={tableRef}>
+              <thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            )
-          })}
-        </tbody>
-      </Table>
-    </ConjunctionsTableWrapper>
+              </thead>
+              <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
+                {rows.map((row) => {
+                  prepareRow(row)
+                  return (
+                    <tr {...row.getRowProps()}>
+                      {row.cells.map((cell) => (
+                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      ))}
+                    </tr>
+                  )
+                })}
+              </tbody>
+              <tbody ref={ref} />
+            </Table>
+          </section>
+        </ConjunctionsTableWrapper>
+      )}
+    </>
   )
 }
 
@@ -94,4 +169,11 @@ const ConjunctionsTableWrapper = styled.div`
   right: 1.25rem;
   top: 5.5rem;
   transition: all 0.5s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  .table-wrapper {
+    height: 480px;
+    overflow-y: scroll;
+  }
 `

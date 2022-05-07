@@ -16,7 +16,6 @@ export const modalSlice = createSlice({
   initialState,
   reducers: {
     setModal: (state, { payload: { type } }: { payload: { type: modalType } }) => {
-      console.log(type)
       state.modalVisible = true
       state.modalType = type
     },
