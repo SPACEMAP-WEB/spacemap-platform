@@ -17,6 +17,8 @@ export const Table = styled.table<{ css?: string }>`
     background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
     font-weight: 900;
+    position: sticky;
+    top: 0;
   }
   ${({ css }) =>
     css ??

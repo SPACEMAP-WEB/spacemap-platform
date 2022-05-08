@@ -41,7 +41,6 @@ class API {
   }
 
   GET<T, D>(urlData: string) {
-    console.log(urlData)
     return this.CALL<T, D>({
       method: 'GET',
       url: urlData,

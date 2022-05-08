@@ -1,1 +1,1 @@
-export type modalType = 'LOGIN' | 'CONJUCTIONS' | 'LAUNCHCONJUCTIONS' | null
+export type modalType = 'LOGIN' | 'CONJUNCTIONS' | 'LAUNCHCONJUNCTIONS' | null

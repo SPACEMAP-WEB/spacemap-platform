@@ -4,7 +4,6 @@ import SignInModal from '@app.components/signIn/SignInModal'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
-import MenuProvider from '@app.modules/providers/MenuProvider'
 import styled from 'styled-components'
 import Button from './Button'
 import Logo from './Logo'
@@ -14,16 +13,14 @@ const MainLayout = () => {
   const { login } = useSelector((state: RootState) => state.login)
 
   return (
-    <MenuProvider>
-      <MainLayoutWrapper>
-        <Logo />
-        <SideMenu />
-        <Button login={login} />
-        <ConjunctionsTable />
-        <AssessmentModal />
-        <SignInModal />
-      </MainLayoutWrapper>
-    </MenuProvider>
+    <MainLayoutWrapper>
+      <Logo />
+      <SideMenu />
+      <Button login={login} />
+      <ConjunctionsTable />
+      <AssessmentModal />
+      <SignInModal />
+    </MainLayoutWrapper>
   )
 }
 
