@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosRequestHeaders, AxiosResponse } from 'axios'
 
 axios.defaults.withCredentials = true
 
@@ -15,7 +15,7 @@ class API {
   private readonly requestApi: AxiosInstance
 
   constructor() {
-    this.requestApi = axios.create({ baseURL: process.env.SPACEMAP_ADMIN_API_URI })
+    this.requestApi = axios.create({ baseURL: process.env.SPACEMAP_PLATFORM_API_URI })
   }
 
   async Fetch<T>({ headers = {}, url = '', method, data = null }: ApiData & { data?: T | null }) {
@@ -33,9 +33,9 @@ class API {
     const config = { headers, url, method, data }
     try {
       const response: AxiosResponse<D> = await this.Fetch<T>(config)
-
       return response
     } catch (error) {
+      console.error(error)
       throw error
     }
   }
