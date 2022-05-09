@@ -1,6 +1,6 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, useTable } from 'react-table'
+import { Column, useTable, usePagination } from 'react-table'
 import {
   PPDBDataType,
   PPDBSearchParamsType,
@@ -10,7 +10,6 @@ import {
 import styled from 'styled-components'
 import { useQueryGetInfinitePPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
-import { useInView } from 'react-intersection-observer'
 import Search from '@app.components/common/Search'
 // import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
 import { useSelector } from 'react-redux'
@@ -46,7 +45,6 @@ const ConjunctionsTable = () => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [searchValue, setSearchValue] = useState<string>('')
   const [isSearchClick, setIsSearchClick] = useState<boolean>(false)
-  const [ref, inView] = useInView()
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
@@ -56,7 +54,6 @@ const ConjunctionsTable = () => {
   const {
     data: fetchedPPDBData,
     isLoading,
-    fetchNextPage,
     refetch,
   } = useQueryGetInfinitePPDB({
     query: queryParams,
@@ -65,11 +62,28 @@ const ConjunctionsTable = () => {
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
     {
       columns,
       data,
-    }
+      initialState: { pageIndex: 2 },
+    },
+    usePagination
     // (hooks) => {
     //   hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
     //     ...columns,
@@ -134,11 +148,6 @@ const ConjunctionsTable = () => {
     }
   }, [isSearchClick, refetch])
 
-  useEffect(() => {
-    if (!data) return
-    if (inView) fetchNextPage()
-  }, [inView])
-
   const handleSearch = () => {
     setQueryParams({
       ...queryParams,
@@ -173,7 +182,7 @@ const ConjunctionsTable = () => {
               {!!tableData.length && (
                 <>
                   <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-                    {rows.map((row) => {
+                    {page.map((row) => {
                       prepareRow(row)
                       return (
                         <tr {...row.getRowProps()}>
@@ -184,10 +193,53 @@ const ConjunctionsTable = () => {
                       )
                     })}
                   </tbody>
-                  <tbody ref={ref} />
                 </>
               )}
             </Table>
+            <div className="pagination">
+              <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                {'<<'}
+              </button>{' '}
+              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                {'<'}
+              </button>{' '}
+              <button onClick={() => nextPage()} disabled={!canNextPage}>
+                {'>'}
+              </button>{' '}
+              <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                {'>>'}
+              </button>{' '}
+              <span>
+                Page{' '}
+                <strong>
+                  {pageIndex + 1} of {pageOptions.length}
+                </strong>{' '}
+              </span>
+              <span>
+                | Go to page:{' '}
+                <input
+                  type="number"
+                  defaultValue={pageIndex + 1}
+                  onChange={(e) => {
+                    const page = e.target.value ? Number(e.target.value) - 1 : 0
+                    gotoPage(page)
+                  }}
+                  style={{ width: '100px' }}
+                />
+              </span>{' '}
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value))
+                }}
+              >
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </select>
+            </div>
           </section>
           {true && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>

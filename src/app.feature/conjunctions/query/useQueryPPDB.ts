@@ -1,14 +1,8 @@
-import React from 'react'
 import { useInfiniteQuery } from 'react-query'
 import api from '@app.modules/api'
 import { API_PPDB } from '@app.modules/keyFactory'
 import { objectToURL } from '@app.modules/util'
 import { PPDBResponseType, PPDBSearchParamsType } from '@app.modules/types/conjunctions'
-
-type useQueryGetPPDBProps = {
-  query: PPDBSearchParamsType
-  isConjunctionsClicked: boolean
-}
 
 export const requestAPiGetPPDB = async (query: PPDBSearchParamsType) => {
   const response = await api.GET<null, PPDBResponseType>(
