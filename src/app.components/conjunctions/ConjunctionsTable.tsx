@@ -1,9 +1,10 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, useTable, CellProps, HeaderProps, useRowSelect } from 'react-table'
+import { Column, useTable, CellProps, useRowSelect } from 'react-table'
 import {
   PPDBDataType,
   PPDBSearchParamsType,
+  // eslint-disable-next-line @typescript-eslint/comma-dangle
   PPDBTableColumnType,
 } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
@@ -12,6 +13,10 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { useInView } from 'react-intersection-observer'
 import Search from '@app.components/common/Search'
 import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/app.store/config/configureStore'
+import ConjuctionsFavorite from './ConjuctionsFavorite'
+import ConjuctionsTabs from './ConjuctionsTabs'
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
@@ -37,6 +42,7 @@ const ConjunctionsTable = () => {
     limit: 10,
     page: 1,
   })
+  const { login } = useSelector((state: RootState) => state.login)
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [searchValue, setSearchValue] = useState<string>('')
   const [isSearchClick, setIsSearchClick] = useState<boolean>(false)
@@ -152,6 +158,7 @@ const ConjunctionsTable = () => {
             searchValue={searchValue}
             setSearchValue={setSearchValue}
           />
+          <ConjuctionsTabs />
           <section className="table-wrapper">
             <Table {...getTableProps()} ref={tableRef}>
               <thead>
@@ -184,7 +191,7 @@ const ConjunctionsTable = () => {
           </section>
         </ConjunctionsTableWrapper>
       )}
-      )
+      ){login && <ConjuctionsFavorite />}
     </>
   )
 }
