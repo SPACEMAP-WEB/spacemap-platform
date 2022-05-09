@@ -1,6 +1,6 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, useTable, CellProps, HeaderProps } from 'react-table'
+import { Column, useTable, CellProps, HeaderProps, useRowSelect } from 'react-table'
 import {
   PPDBDataType,
   PPDBSearchParamsType,
@@ -12,7 +12,6 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { useInView } from 'react-intersection-observer'
 import Search from '@app.components/common/Search'
 import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
-
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
@@ -64,19 +63,22 @@ const ConjunctionsTable = () => {
       columns,
       data,
     },
+    useRowSelect,
     (hooks) => {
       hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
         ...columns,
         {
           id: 'bookmark',
-          Header: () => (
+          Header: ({ getToggleAllRowsSelectedProps }) => (
             <div>
-              <IndeterminateCheckbox />
+              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
             </div>
           ),
+          // The cell can use the individual row's getToggleRowSelectedProps method
+          // to the render a checkbox
           Cell: ({ row }: CellProps<any>) => (
             <div>
-              <IndeterminateCheckbox />
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
             </div>
           ),
         },
@@ -89,9 +91,8 @@ const ConjunctionsTable = () => {
     if (!tableRef || !tableRef.current) return
 
     tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
-    tableRef.current.style.opacity = isConjunctionsClicked ? '1' : '0'
     tableContainerRef.current.style.transform = `translateX(${
-      isConjunctionsClicked ? '0' : '30rem'
+      isConjunctionsClicked ? '0' : '40rem'
     })`
   })
 
@@ -144,7 +145,7 @@ const ConjunctionsTable = () => {
     <>
       {/* FIXME: change loading page into proper one */}
       {isLoading && <div>loading</div>}
-      {!!tableData.length && (
+      {data && (
         <ConjunctionsTableWrapper ref={tableContainerRef}>
           <Search
             handleSearch={handleSearch}
@@ -162,23 +163,28 @@ const ConjunctionsTable = () => {
                   </tr>
                 ))}
               </thead>
-              <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-                {rows.map((row) => {
-                  prepareRow(row)
-                  return (
-                    <tr {...row.getRowProps()}>
-                      {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                      ))}
-                    </tr>
-                  )
-                })}
-              </tbody>
-              <tbody ref={ref} />
+              {!!tableData.length && (
+                <>
+                  <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
+                    {rows.map((row) => {
+                      prepareRow(row)
+                      return (
+                        <tr {...row.getRowProps()}>
+                          {row.cells.map((cell) => (
+                            <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                          ))}
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                  <tbody ref={ref} />
+                </>
+              )}
             </Table>
           </section>
         </ConjunctionsTableWrapper>
       )}
+      )
     </>
   )
 }

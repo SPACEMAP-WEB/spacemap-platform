@@ -20,7 +20,6 @@ const AssessmentModal = () => {
   return (
     <>
       {modalType === 'LAUNCHCONJUNCTIONS' && modalVisible && (
-
         <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
           <Modal ref={modalEl}>
             <div className="modal-content-container">
