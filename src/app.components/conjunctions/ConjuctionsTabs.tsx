@@ -9,8 +9,6 @@ const ConjuctionsTabs = () => {
     setToggle(index)
   }
 
-  console.log(toggle)
-
   return (
     <StyledTabs>
       {tabs.map((tab, index) => {
@@ -36,6 +34,7 @@ const StyledTabs = styled.div`
     width: 110px;
     text-align: center;
     font-size: 20px;
+    font-weight: bold;
     color: white;
     cursor: pointer;
     :first-child {

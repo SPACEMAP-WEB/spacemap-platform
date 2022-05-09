@@ -1,6 +1,6 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, useTable, CellProps, useRowSelect } from 'react-table'
+import { Column, useTable } from 'react-table'
 import {
   PPDBDataType,
   PPDBSearchParamsType,
@@ -12,7 +12,7 @@ import { useQueryGetInfinitePPDB } from '@app.feature/conjunctions/query/useQuer
 import { useModal } from '@app.modules/hooks/useModal'
 import { useInView } from 'react-intersection-observer'
 import Search from '@app.components/common/Search'
-import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
+// import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import ConjuctionsFavorite from './ConjuctionsFavorite'
@@ -52,6 +52,7 @@ const ConjunctionsTable = () => {
   const tableRef = useRef<HTMLTableElement>(null)
   const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
 
+  console.log(login)
   const {
     data: fetchedPPDBData,
     isLoading,
@@ -68,28 +69,27 @@ const ConjunctionsTable = () => {
     {
       columns,
       data,
-    },
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
-        ...columns,
-        {
-          id: 'bookmark',
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }: CellProps<any>) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-      ])
     }
+    // (hooks) => {
+    //   hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
+    //     ...columns,
+    //     {
+    //       id: 'bookmark',
+    //       Header: ({ getToggleAllRowsSelectedProps }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+    //         </div>
+    //       ),
+    //       // The cell can use the individual row's getToggleRowSelectedProps method
+    //       // to the render a checkbox
+    //       Cell: ({ row }: CellProps<any>) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    //         </div>
+    //       ),
+    //     },
+    //   ])
+    // }
   )
 
   useEffect(() => {
@@ -189,9 +189,9 @@ const ConjunctionsTable = () => {
               )}
             </Table>
           </section>
+          {true && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>
       )}
-      ){login && <ConjuctionsFavorite />}
     </>
   )
 }

@@ -60,3 +60,8 @@ export type PPDBSearchParamsType = {
   dec?: '-'
   satelite?: number | string
 }
+
+export type FavoriteColumnType = {
+  noradId: string
+  satName: string
+}
