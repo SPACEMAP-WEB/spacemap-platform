@@ -1,5 +1,7 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'src/app.store/config/configureStore'
+import { requestLogout } from 'src/app.store/loginStore/loginUser'
 import { setModal } from 'src/app.store/modalStore/store.modalApp'
 import styled from 'styled-components'
 
@@ -9,14 +11,15 @@ type TProps = {
 
 const Button = ({ login }: TProps) => {
   const dispatch = useDispatch()
+  const { user } = useSelector((state: RootState) => state.login)
 
   const handleSnsLogin = () => {
-    !login && dispatch(setModal({ type: 'LOGIN' }))
+    login ? dispatch(requestLogout()) : dispatch(setModal({ type: 'LOGIN' }))
   }
 
   return (
     <ButtonWrapper>
-      {login && <div className="login-user">{`name님`}</div>}
+      {login && <div className="login-user">{`${user.nickname}님`}</div>}
       <button className="login-button" onClick={handleSnsLogin}>
         {login ? 'Sign Out' : 'Sign In'}
       </button>
