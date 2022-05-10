@@ -106,14 +106,14 @@ const ConjunctionsTable = () => {
     pageCount,
     previousPage,
     rowSpanHeaders,
-    state: { pageIndex, pageSize },
+    state: { pageIndex },
   } = useTable(
     {
       columns,
       data,
       initialState: { pageIndex: 0 },
       manualPagination: true,
-      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount / pageSize,
+      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount / 10 - 1,
     },
     usePagination,
     (hooks) => {
@@ -196,7 +196,6 @@ const ConjunctionsTable = () => {
                       return null
                     })}
                     {page.map((row) => {
-                      // prepareRow(row)
                       return (
                         <tr {...row.getRowProps()}>
                           {row.cells.map((cell) => {
@@ -249,7 +248,7 @@ const ConjunctionsTable = () => {
                   defaultValue={pageIndex + 1}
                   onChange={(e) => {
                     const page = e.target.value ? Number(e.target.value) - 1 : 0
-                    gotoPage(page)
+                    handlePage(() => gotoPage(page))
                   }}
                   style={{ width: '100px' }}
                 />
