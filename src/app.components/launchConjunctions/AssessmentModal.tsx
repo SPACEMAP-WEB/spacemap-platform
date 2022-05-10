@@ -4,7 +4,8 @@ import ModalWrapper from '@app.components/common/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
 
 const AssessmentModal = () => {
-  const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUCTIONS')
+  const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
+
   const imageInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
 
@@ -18,7 +19,7 @@ const AssessmentModal = () => {
 
   return (
     <>
-      {modalType === 'LAUNCHCONJUCTIONS' && modalVisible && (
+      {modalType === 'LAUNCHCONJUNCTIONS' && modalVisible && (
         <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
           <Modal ref={modalEl}>
             <div className="modal-content-container">

@@ -13,13 +13,13 @@ const SideMenu = () => {
   const { modalVisible, modalType, handleCloseModal } = useModal(null)
 
   const handleConjunctionClick = () => {
-    modalVisible && modalType === 'CONJUCTIONS'
+    modalVisible && modalType === 'CONJUNCTIONS'
       ? handleCloseModal()
-      : dispatch(setModal({ type: 'CONJUCTIONS' }))
+      : dispatch(setModal({ type: 'CONJUNCTIONS' }))
   }
 
   const handleLaunchConjunctionClick = () => {
-    dispatch(setModal({ type: 'LAUNCHCONJUCTIONS' }))
+    dispatch(setModal({ type: 'LAUNCHCONJUNCTIONS' }))
   }
 
   return (
