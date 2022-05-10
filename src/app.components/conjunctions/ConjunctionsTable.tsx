@@ -41,15 +41,21 @@ const COLUMNS: Column<PPDBTableColumnType>[] = [
     },
   },
   {
-    Header: 'DCA',
-    accessor: 'dca',
-    enableRowSpan: true,
+    Header: 'TCA/DCA',
+    accessor: (row) => {
+      return Object.values(row['tca/dca'])
+    },
   },
-  {
-    Header: 'TCA',
-    accessor: 'tca',
-    enableRowSpan: true,
-  },
+  // {
+  //   Header: 'DCA',
+  //   accessor: 'dca',
+  //   enableRowSpan: true,
+  // },
+  // {
+  //   Header: 'TCA',
+  //   accessor: 'tca',
+  //   enableRowSpan: true,
+  // },
 ]
 
 const ConjunctionsTable = () => {

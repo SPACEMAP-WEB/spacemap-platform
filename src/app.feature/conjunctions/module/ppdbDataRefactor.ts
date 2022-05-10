@@ -18,11 +18,13 @@ export const ppdbDataRefactor = (ppdbData: ConjunctionsDataType[]): PPDBDataType
       ...spanData,
       primary: String(pid),
       secondary: String(sid),
+      'tca/dca': tcaTime,
     })
     newData.push({
       ...spanData,
       primary: pName,
       secondary: sName,
+      'tca/dca': String(dca),
     })
   })
   return newData

@@ -8,6 +8,7 @@ export type PPDBDataType = {
   tca: string
   end: string
   probability: string
+  'tca/dca': string
 }
 
 export type ConjunctionsDataType = {
