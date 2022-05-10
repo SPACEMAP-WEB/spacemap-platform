@@ -19,7 +19,7 @@ import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefac
 import ConjunctionsPagination from './ConjunctionsPagination'
 
 const borderStyle = {
-  border: '1px dashed white',
+  border: '1px solid gray',
 }
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
