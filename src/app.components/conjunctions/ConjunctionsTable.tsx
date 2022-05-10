@@ -11,28 +11,43 @@ import styled from 'styled-components'
 import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
 import Search from '@app.components/common/Search'
-// import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import ConjuctionsFavorite from './ConjuctionsFavorite'
 import ConjuctionsTabs from './ConjuctionsTabs'
+import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
+
+const borderStyle = {
+  border: '1px dashed white',
+}
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
+    Header: 'Index',
+    accessor: 'index',
+    enableRowSpan: true,
+  },
+  {
     Header: 'Primary',
-    accessor: 'primary',
+    accessor: (row) => {
+      return Object.values(row.primary)
+    },
   },
   {
     Header: 'Secondary',
-    accessor: 'secondary',
+    accessor: (row) => {
+      return Object.values(row.secondary)
+    },
   },
   {
     Header: 'DCA',
     accessor: 'dca',
+    enableRowSpan: true,
   },
   {
     Header: 'TCA',
     accessor: 'tca',
+    enableRowSpan: true,
   },
 ]
 
@@ -42,9 +57,8 @@ const ConjunctionsTable = () => {
     page: 1,
   })
   const { login } = useSelector((state: RootState) => state.login)
-  const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [searchValue, setSearchValue] = useState<string>('')
-  const [isSearchClick, setIsSearchClick] = useState<boolean>(false)
+  const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
@@ -53,11 +67,28 @@ const ConjunctionsTable = () => {
   const {
     data: fetchedPPDBData,
     isLoading,
-    refetch,
+    isSuccess,
   } = useQueryGetPPDB({
     query: queryParams,
     isConjunctionsClicked,
   })
+
+  function useInstance(instance) {
+    const { allColumns } = instance
+
+    let rowSpanHeaders = []
+
+    allColumns.forEach((column, i) => {
+      const { id, enableRowSpan } = column
+
+      if (enableRowSpan !== undefined) {
+        rowSpanHeaders = [...rowSpanHeaders, { id, topCellValue: null, topCellIndex: 0 }]
+        console.log(rowSpanHeaders)
+      }
+    })
+
+    Object.assign(instance, { rowSpanHeaders })
+  }
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
@@ -74,16 +105,20 @@ const ConjunctionsTable = () => {
     nextPage,
     pageCount,
     previousPage,
-    state: { pageIndex },
+    rowSpanHeaders,
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
       data,
       initialState: { pageIndex: 0 },
       manualPagination: true,
-      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount,
+      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount / pageSize,
     },
-    usePagination
+    usePagination,
+    (hooks) => {
+      hooks.useInstance.push(useInstance)
+    }
   )
 
   useEffect(() => {
@@ -96,55 +131,31 @@ const ConjunctionsTable = () => {
     })`
   })
 
-  const handlePage = (callback) => {
-    callback()
-    setQueryParams({ ...queryParams, page: pageIndex })
-  }
-
   useEffect(() => {
     if (fetchedPPDBData) {
-      const { result } = fetchedPPDBData
-      const newData = result.map((item, index) => {
-        const { _id, pid, sid, dca, tcaStartTime, tcaEndTime, tcaTime, probability } = item
-        return {
-          index,
-          id: _id,
-          primary: pid,
-          secondary: sid,
-          dca,
-          start: tcaStartTime,
-          tca: tcaTime,
-          end: tcaEndTime,
-          probability,
-        }
-      })
+      const newData = ppdbDataRefactor(fetchedPPDBData.result)
       setTableData(newData)
     }
   }, [fetchedPPDBData])
 
-  useEffect(() => {
-    setIsSearchClick(false)
-  }, [queryParams])
-
-  useEffect(() => {
-    if (isSearchClick) {
-      refetch()
-    }
-  }, [isSearchClick, refetch])
+  const handlePage = (callback) => {
+    callback()
+    setQueryParams({ ...queryParams, page: pageIndex })
+  }
 
   const handleSearch = () => {
     setQueryParams({
       ...queryParams,
       satelite: searchValue,
     })
-    setIsSearchClick(true)
   }
+
+  if (isLoading) return <div>Loading</div>
 
   return (
     <>
       {/* FIXME: change loading page into proper one */}
-      {isLoading && <div>loading</div>}
-      {data && (
+      {isSuccess && (
         <ConjunctionsTableWrapper ref={tableContainerRef}>
           <Search
             handleSearch={handleSearch}
@@ -153,7 +164,7 @@ const ConjunctionsTable = () => {
           />
           <ConjuctionsTabs />
           <section className="table-wrapper">
-            <Table {...getTableProps()} ref={tableRef}>
+            <Table className="table" {...getTableProps()} ref={tableRef}>
               <thead>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
@@ -166,13 +177,42 @@ const ConjunctionsTable = () => {
               {!!tableData.length && (
                 <>
                   <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-                    {page.map((row) => {
+                    {page.map((row, i) => {
                       prepareRow(row)
+                      for (let j = 0; j < row.allCells.length; j++) {
+                        let cell = row.allCells[j]
+                        let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
+
+                        if (rowSpanHeader !== undefined) {
+                          if (i % 2 !== 1) {
+                            cell.rowSpan = 2
+                            cell.isRowSpanned = false
+                          } else {
+                            cell.isRowSpan = 1
+                            cell.isRowSpanned = true
+                          }
+                        }
+                      }
+                      return null
+                    })}
+                    {page.map((row) => {
+                      // prepareRow(row)
                       return (
                         <tr {...row.getRowProps()}>
-                          {row.cells.map((cell) => (
-                            <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                          ))}
+                          {row.cells.map((cell) => {
+                            if (cell.isRowSpanned) return null
+                            else {
+                              return (
+                                <td
+                                  rowSpan={cell.rowSpan}
+                                  {...cell.getCellProps()}
+                                  style={borderStyle}
+                                >
+                                  {cell.render('Cell')}
+                                </td>
+                              )
+                            }
+                          })}
                         </tr>
                       )
                     })}
@@ -226,6 +266,7 @@ const ConjunctionsTable = () => {
 export default ConjunctionsTable
 
 const ConjunctionsTableWrapper = styled.div`
+  width: 500px;
   position: fixed;
   z-index: 4;
   right: 1.25rem;
@@ -235,11 +276,15 @@ const ConjunctionsTableWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
   .table-wrapper {
-  }
-  .pagination {
-    .pagination-count {
-      color: white;
-      font-weight: bold;
+    .table {
+      font-size: 12px;
+    }
+    .pagination {
+      margin-top: 10px;
+      .pagination-count {
+        color: white;
+        font-weight: bold;
+      }
     }
   }
 `

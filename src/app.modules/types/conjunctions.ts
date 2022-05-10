@@ -1,8 +1,8 @@
 export type PPDBDataType = {
   index: number
   id: string
-  primary: number
-  secondary: number
+  primary: number | string
+  secondary: number | string
   dca: number
   start: string
   tca: string
