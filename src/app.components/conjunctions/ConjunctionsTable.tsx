@@ -8,7 +8,7 @@ import {
   PPDBTableColumnType,
 } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
-import { useQueryGetInfinitePPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
+import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
 import Search from '@app.components/common/Search'
 // import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
@@ -50,12 +50,11 @@ const ConjunctionsTable = () => {
   const tableRef = useRef<HTMLTableElement>(null)
   const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
 
-  console.log(login)
   const {
     data: fetchedPPDBData,
     isLoading,
     refetch,
-  } = useQueryGetInfinitePPDB({
+  } = useQueryGetPPDB({
     query: queryParams,
     isConjunctionsClicked,
   })
@@ -71,39 +70,20 @@ const ConjunctionsTable = () => {
     canPreviousPage,
     canNextPage,
     pageOptions,
-    pageCount,
     gotoPage,
     nextPage,
+    pageCount,
     previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex },
   } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 2 },
+      initialState: { pageIndex: 0 },
+      manualPagination: true,
+      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount,
     },
     usePagination
-    // (hooks) => {
-    //   hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
-    //     ...columns,
-    //     {
-    //       id: 'bookmark',
-    //       Header: ({ getToggleAllRowsSelectedProps }) => (
-    //         <div>
-    //           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-    //         </div>
-    //       ),
-    //       // The cell can use the individual row's getToggleRowSelectedProps method
-    //       // to the render a checkbox
-    //       Cell: ({ row }: CellProps<any>) => (
-    //         <div>
-    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-    //         </div>
-    //       ),
-    //     },
-    //   ])
-    // }
   )
 
   useEffect(() => {
@@ -116,10 +96,14 @@ const ConjunctionsTable = () => {
     })`
   })
 
+  const handlePage = (callback) => {
+    callback()
+    setQueryParams({ ...queryParams, page: pageIndex })
+  }
+
   useEffect(() => {
     if (fetchedPPDBData) {
-      const lastIndex = fetchedPPDBData.pages.length - 1
-      const { result } = fetchedPPDBData.pages[lastIndex]
+      const { result } = fetchedPPDBData
       const newData = result.map((item, index) => {
         const { _id, pid, sid, dca, tcaStartTime, tcaEndTime, tcaTime, probability } = item
         return {
@@ -134,7 +118,7 @@ const ConjunctionsTable = () => {
           probability,
         }
       })
-      setTableData(lastIndex === 0 ? newData : (prevState) => prevState.concat(newData))
+      setTableData(newData)
     }
   }, [fetchedPPDBData])
 
@@ -197,19 +181,22 @@ const ConjunctionsTable = () => {
               )}
             </Table>
             <div className="pagination">
-              <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+              <button onClick={() => handlePage(() => gotoPage(0))} disabled={!canPreviousPage}>
                 {'<<'}
               </button>{' '}
-              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+              <button onClick={() => handlePage(() => previousPage())} disabled={!canPreviousPage}>
                 {'<'}
               </button>{' '}
-              <button onClick={() => nextPage()} disabled={!canNextPage}>
+              <button onClick={() => handlePage(() => nextPage())} disabled={!canNextPage}>
                 {'>'}
               </button>{' '}
-              <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+              <button
+                onClick={() => handlePage(() => gotoPage(pageCount - 1))}
+                disabled={!canNextPage}
+              >
                 {'>>'}
               </button>{' '}
-              <span>
+              <span className="pagination-count">
                 Page{' '}
                 <strong>
                   {pageIndex + 1} of {pageOptions.length}
@@ -226,19 +213,7 @@ const ConjunctionsTable = () => {
                   }}
                   style={{ width: '100px' }}
                 />
-              </span>{' '}
-              <select
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value))
-                }}
-              >
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
-                ))}
-              </select>
+              </span>
             </div>
           </section>
           {true && <ConjuctionsFavorite />}
@@ -260,7 +235,11 @@ const ConjunctionsTableWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
   .table-wrapper {
-    height: 480px;
-    overflow-y: scroll;
+  }
+  .pagination {
+    .pagination-count {
+      color: white;
+      font-weight: bold;
+    }
   }
 `

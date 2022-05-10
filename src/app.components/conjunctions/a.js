@@ -1,3 +1,24 @@
+// (hooks) => {
+//   hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
+//     ...columns,
+//     {
+//       id: 'bookmark',
+//       Header: ({ getToggleAllRowsSelectedProps }) => (
+//         <div>
+//           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+//         </div>
+//       ),
+//       // The cell can use the individual row's getToggleRowSelectedProps method
+//       // to the render a checkbox
+//       Cell: ({ row }: CellProps<any>) => (
+//         <div>
+//           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+//         </div>
+//       ),
+//     },
+//   ])
+// }
+
 import React from 'react'
 import styled from 'styled-components'
 import { useTable, usePagination } from 'react-table'
