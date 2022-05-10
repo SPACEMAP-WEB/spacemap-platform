@@ -16,6 +16,7 @@ import { RootState } from 'src/app.store/config/configureStore'
 import ConjuctionsFavorite from './ConjuctionsFavorite'
 import ConjuctionsTabs from './ConjuctionsTabs'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
+import ConjunctionsPagination from './ConjunctionsPagination'
 
 const borderStyle = {
   border: '1px dashed white',
@@ -150,6 +151,18 @@ const ConjunctionsTable = () => {
     })
   }
 
+  const paginationProps = {
+    gotoPage,
+    previousPage,
+    nextPage,
+    canPreviousPage,
+    canNextPage,
+    pageCount,
+    pageIndex,
+    pageOptions,
+    handlePage,
+  }
+
   if (isLoading) return <div>Loading</div>
 
   return (
@@ -219,41 +232,7 @@ const ConjunctionsTable = () => {
                 </>
               )}
             </Table>
-            <div className="pagination">
-              <button onClick={() => handlePage(() => gotoPage(0))} disabled={!canPreviousPage}>
-                {'<<'}
-              </button>{' '}
-              <button onClick={() => handlePage(() => previousPage())} disabled={!canPreviousPage}>
-                {'<'}
-              </button>{' '}
-              <button onClick={() => handlePage(() => nextPage())} disabled={!canNextPage}>
-                {'>'}
-              </button>{' '}
-              <button
-                onClick={() => handlePage(() => gotoPage(pageCount - 1))}
-                disabled={!canNextPage}
-              >
-                {'>>'}
-              </button>{' '}
-              <span className="pagination-count">
-                Page{' '}
-                <strong>
-                  {pageIndex + 1} of {pageOptions.length}
-                </strong>{' '}
-              </span>
-              <span>
-                | Go to page:{' '}
-                <input
-                  type="number"
-                  defaultValue={pageIndex + 1}
-                  onChange={(e) => {
-                    const page = e.target.value ? Number(e.target.value) - 1 : 0
-                    handlePage(() => gotoPage(page))
-                  }}
-                  style={{ width: '100px' }}
-                />
-              </span>
-            </div>
+            <ConjunctionsPagination {...paginationProps} />
           </section>
           {true && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>
