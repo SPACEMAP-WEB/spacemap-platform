@@ -1,6 +1,7 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
+import ConjuctionsFavroiteTable from './ConjuctionsFavroiteTable'
 
 const ConjuctionsFavorite = () => {
   const {
@@ -26,6 +27,7 @@ const ConjuctionsFavorite = () => {
         <button type="submit">Search</button>
         {errors.favorite && <span>Favorite Field is Required</span>}
       </form>
+      <ConjuctionsFavroiteTable />
     </StyledWrapper>
   )
 }
