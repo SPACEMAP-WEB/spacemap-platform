@@ -6,6 +6,7 @@ import {
   PPDBSearchParamsType,
   // eslint-disable-next-line @typescript-eslint/comma-dangle
   PPDBTableColumnType,
+  SortType,
 } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
 import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
@@ -17,10 +18,23 @@ import ConjuctionsFavorite from './ConjuctionsFavorite'
 import ConjuctionsTabs from './ConjuctionsTabs'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
 import ConjunctionsPagination from './ConjunctionsPagination'
+import FilterSelect from '@app.components/common/FilterSelect'
+import { FilterSelectType } from '@app.modules/types'
 
 const borderStyle = {
   border: '1px solid gray',
 }
+
+const filterOptions: FilterSelectType[] = [
+  {
+    label: 'tca',
+    value: 'tcaTime',
+  },
+  {
+    label: 'dca',
+    value: 'dca',
+  },
+]
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
@@ -66,6 +80,7 @@ const ConjunctionsTable = () => {
     data: fetchedPPDBData,
     isLoading,
     isSuccess,
+    refetch,
   } = useQueryGetPPDB({
     query: queryParams,
     isConjunctionsClicked,
@@ -149,6 +164,14 @@ const ConjunctionsTable = () => {
     })
   }
 
+  const handleFilterChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setQueryParams({
+      ...queryParams,
+      sort: e.target.value as SortType,
+    })
+    await refetch()
+  }
+
   const paginationProps = {
     gotoPage,
     previousPage,
@@ -178,6 +201,7 @@ const ConjunctionsTable = () => {
             searchValue={searchValue}
             setSearchValue={setSearchValue}
           />
+          <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
           <ConjuctionsTabs />
           <section className="table-wrapper">
             <Table className="table" {...getTableProps()} ref={tableRef}>
