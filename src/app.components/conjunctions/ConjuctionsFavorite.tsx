@@ -1,7 +1,5 @@
-import { FavoriteColumnType } from '@app.modules/types/conjunctions'
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { Column } from 'react-table'
 import styled from 'styled-components'
 
 const ConjuctionsFavorite = () => {
@@ -15,11 +13,6 @@ const ConjuctionsFavorite = () => {
   const handleFavorite = (text) => {
     console.log(text)
   }
-
-  const COLUMNS: Column<FavoriteColumnType>[] = [
-    { Header: 'NoradId', accessor: 'noradId' },
-    { Header: 'SatName', accessor: 'satName' },
-  ]
 
   return (
     <StyledWrapper>
