@@ -14,7 +14,7 @@ const SignInModal = () => {
   }
 
   const handleClickLogin = (sns: string) => {
-    router.push('http://localhost:4033/oauth/google')
+    router.push(`${process.env.SPACEMAP_PLATFORM_API_URI}/oauth/google`)
   }
 
   return (

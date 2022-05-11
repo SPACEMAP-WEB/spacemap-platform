@@ -1,46 +1,62 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, useTable, CellProps, HeaderProps, useRowSelect } from 'react-table'
+import { Column, useTable, usePagination } from 'react-table'
 import {
   PPDBDataType,
   PPDBSearchParamsType,
+  // eslint-disable-next-line @typescript-eslint/comma-dangle
   PPDBTableColumnType,
 } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
-import { useQueryGetInfinitePPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
+import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
-import { useInView } from 'react-intersection-observer'
 import Search from '@app.components/common/Search'
-import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/app.store/config/configureStore'
+import ConjuctionsFavorite from './ConjuctionsFavorite'
+import ConjuctionsTabs from './ConjuctionsTabs'
+import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
+import ConjunctionsPagination from './ConjunctionsPagination'
 
+const borderStyle = {
+  border: '1px solid gray',
+}
+        
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
+    Header: 'Index',
+    accessor: 'index',
+    enableRowSpan: true,
+  },
+  {
     Header: 'Primary',
-    accessor: 'primary',
+    accessor: (row) => {
+      return Object.values(row.primary)
+    },
   },
   {
     Header: 'Secondary',
-    accessor: 'secondary',
+    accessor: (row) => {
+      return Object.values(row.secondary)
+    },
   },
   {
-    Header: 'DCA',
-    accessor: 'dca',
-  },
-  {
-    Header: 'TCA',
-    accessor: 'tca',
+    Header: 'TCA/DCA',
+    accessor: (row) => {
+      return Object.values(row['tca/dca'])
+    },
   },
 ]
 
 const ConjunctionsTable = () => {
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
-    limit: 10,
+    limit: 5,
     page: 1,
   })
-  const [tableData, setTableData] = useState<PPDBDataType[]>([])
+  const { login } = useSelector((state: RootState) => state.login)
   const [searchValue, setSearchValue] = useState<string>('')
-  const [isSearchClick, setIsSearchClick] = useState<boolean>(false)
-  const [ref, inView] = useInView()
+  const [tableData, setTableData] = useState<PPDBDataType[]>([])
+  const [customPageSize, setCustomPageSize] = useState(10)
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
@@ -49,40 +65,58 @@ const ConjunctionsTable = () => {
   const {
     data: fetchedPPDBData,
     isLoading,
-    fetchNextPage,
-    refetch,
-  } = useQueryGetInfinitePPDB({
+    isSuccess,
+  } = useQueryGetPPDB({
     query: queryParams,
     isConjunctionsClicked,
   })
 
+  function useInstance(instance) {
+    const { allColumns } = instance
+
+    let rowSpanHeaders = []
+
+    allColumns.forEach((column, i) => {
+      const { id, enableRowSpan } = column
+
+      if (enableRowSpan !== undefined) {
+        rowSpanHeaders = [...rowSpanHeaders, { id, topCellValue: null, topCellIndex: 0 }]
+      }
+    })
+
+    Object.assign(instance, { rowSpanHeaders })
+  }
+
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    gotoPage,
+    nextPage,
+    pageCount,
+    previousPage,
+    rowSpanHeaders,
+    setPageSize,
+    pageSize,
+    state: { pageIndex },
+  } = useTable(
     {
       columns,
       data,
+      initialState: { pageIndex: 0 },
+      manualPagination: true,
+      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount / customPageSize - 1,
     },
-    useRowSelect,
+    usePagination,
     (hooks) => {
-      hooks.visibleColumns.push((columns: Column<PPDBTableColumnType>[]) => [
-        ...columns,
-        {
-          id: 'bookmark',
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }: CellProps<any>) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-      ])
+      hooks.useInstance.push(useInstance)
     }
   )
 
@@ -98,62 +132,55 @@ const ConjunctionsTable = () => {
 
   useEffect(() => {
     if (fetchedPPDBData) {
-      const lastIndex = fetchedPPDBData.pages.length - 1
-      const { result } = fetchedPPDBData.pages[lastIndex]
-      const newData = result.map((item, index) => {
-        const { _id, pid, sid, dca, tcaStartTime, tcaEndTime, tcaTime, probability } = item
-        return {
-          index,
-          id: _id,
-          primary: pid,
-          secondary: sid,
-          dca,
-          start: tcaStartTime,
-          tca: tcaTime,
-          end: tcaEndTime,
-          probability,
-        }
-      })
-      setTableData(lastIndex === 0 ? newData : (prevState) => prevState.concat(newData))
+      const newData = ppdbDataRefactor(fetchedPPDBData.result)
+      setTableData(newData)
     }
   }, [fetchedPPDBData])
 
-  useEffect(() => {
-    setIsSearchClick(false)
-  }, [queryParams])
-
-  useEffect(() => {
-    if (isSearchClick) {
-      refetch()
-    }
-  }, [isSearchClick, refetch])
-
-  useEffect(() => {
-    if (!data) return
-    if (inView) fetchNextPage()
-  }, [inView])
+  const handlePage = (callback) => {
+    callback()
+    setQueryParams({ ...queryParams, page: pageIndex })
+  }
 
   const handleSearch = () => {
     setQueryParams({
       ...queryParams,
       satelite: searchValue,
     })
-    setIsSearchClick(true)
   }
+
+  const paginationProps = {
+    gotoPage,
+    previousPage,
+    nextPage,
+    canPreviousPage,
+    canNextPage,
+    pageCount,
+    pageIndex,
+    pageOptions,
+    handlePage,
+    setPageSize,
+    pageSize,
+    setCustomPageSize,
+    setQueryParams,
+    queryParams,
+  }
+
+  if (isLoading) return <div>Loading</div>
 
   return (
     <>
       {/* FIXME: change loading page into proper one */}
-      {isLoading && <div>loading</div>}
-      {data && (
+      {isSuccess && (
         <ConjunctionsTableWrapper ref={tableContainerRef}>
           <Search
             handleSearch={handleSearch}
             searchValue={searchValue}
             setSearchValue={setSearchValue}
           />
+          <ConjuctionsTabs />
           <section className="table-wrapper">
-            <Table {...getTableProps()} ref={tableRef}>
+            <Table className="table" {...getTableProps()} ref={tableRef}>
               <thead>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
@@ -166,22 +193,51 @@ const ConjunctionsTable = () => {
               {!!tableData.length && (
                 <>
                   <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-                    {rows.map((row) => {
+                    {page.map((row, i) => {
                       prepareRow(row)
+                      for (let j = 0; j < row.allCells.length; j++) {
+                        let cell = row.allCells[j]
+                        let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
+
+                        if (rowSpanHeader !== undefined) {
+                          if (i % 2 !== 1) {
+                            cell.rowSpan = 2
+                            cell.isRowSpanned = false
+                          } else {
+                            cell.isRowSpan = 1
+                            cell.isRowSpanned = true
+                          }
+                        }
+                      }
+                      return null
+                    })}
+                    {page.map((row) => {
                       return (
                         <tr {...row.getRowProps()}>
-                          {row.cells.map((cell) => (
-                            <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                          ))}
+                          {row.cells.map((cell) => {
+                            if (cell.isRowSpanned) return null
+                            else {
+                              return (
+                                <td
+                                  rowSpan={cell.rowSpan}
+                                  {...cell.getCellProps()}
+                                  style={borderStyle}
+                                >
+                                  {cell.render('Cell')}
+                                </td>
+                              )
+                            }
+                          })}
                         </tr>
                       )
                     })}
                   </tbody>
-                  <tbody ref={ref} />
                 </>
               )}
             </Table>
+            <ConjunctionsPagination {...paginationProps} />
           </section>
+          {true && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>
       )}
       )
@@ -192,6 +248,7 @@ const ConjunctionsTable = () => {
 export default ConjunctionsTable
 
 const ConjunctionsTableWrapper = styled.div`
+  width: 500px;
   position: fixed;
   z-index: 4;
   right: 1.25rem;
@@ -201,7 +258,15 @@ const ConjunctionsTableWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
   .table-wrapper {
-    height: 480px;
-    overflow-y: scroll;
+    .table {
+      font-size: 12px;
+    }
+    .pagination {
+      margin-top: 10px;
+      .pagination-count {
+        color: white;
+        font-weight: bold;
+      }
+    }
   }
 `

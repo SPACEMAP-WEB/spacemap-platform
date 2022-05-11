@@ -1,13 +1,14 @@
 export type PPDBDataType = {
   index: number
   id: string
-  primary: number
-  secondary: number
+  primary: number | string
+  secondary: number | string
   dca: number
   start: string
   tca: string
   end: string
   probability: string
+  'tca/dca': string
 }
 
 export type ConjunctionsDataType = {
@@ -59,4 +60,9 @@ export type PPDBSearchParamsType = {
   sort?: 'tcaTime' | 'dca' | 'probability'
   dec?: '-'
   satelite?: number | string
+}
+
+export type FavoriteColumnType = {
+  noradId: string
+  satName: string
 }
