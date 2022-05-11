@@ -4,7 +4,6 @@ import { Column, useTable, usePagination } from 'react-table'
 import {
   PPDBDataType,
   PPDBSearchParamsType,
-  // eslint-disable-next-line @typescript-eslint/comma-dangle
   PPDBTableColumnType,
   SortType,
 } from '@app.modules/types/conjunctions'
@@ -261,7 +260,7 @@ const ConjunctionsTable = () => {
             </Table>
             <ConjunctionsPagination {...paginationProps} />
           </section>
-          {true && <ConjuctionsFavorite />}
+          {login && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>
       )}
       )

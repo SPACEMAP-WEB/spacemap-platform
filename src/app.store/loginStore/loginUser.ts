@@ -3,9 +3,7 @@ import { API_OAUTH, API_OAUTH_LOGOUT } from '@app.modules/keyFactory'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { TUserData } from './store.loginApp'
 
-type loginCheckResponse = {
-  data: { login: string; data: TUserData }
-}
+type loginCheckResponse = { login: string; data: TUserData }
 
 export const requestCheckLogin = createAsyncThunk('LOGIN_CHECK', async () => {
   try {

@@ -63,7 +63,20 @@ export type PPDBSearchParamsType = {
   satelite?: number | string
 }
 
+export type FavoriteDataType = {
+  _id: string
+  email: string
+  __v: number
+  satellitesIDs: number[]
+}
+
 export type FavoriteColumnType = {
   noradId: string
   satName: string
+}
+
+export type FavoriteResponseType = {
+  success: boolean
+  message: string
+  data: FavoriteDataType | object
 }

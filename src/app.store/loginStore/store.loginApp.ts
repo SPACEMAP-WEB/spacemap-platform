@@ -31,7 +31,8 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(requestCheckLogin.fulfilled, (state, { payload }) => {
-      return { ...state, login: true, isLoading: false, error: false, user: { ...payload.data } }
+      console.log(payload)
+      return { ...state, login: true, isLoading: false, error: false, user: { ...payload } }
     })
     builder.addCase(requestCheckLogin.rejected, (state) => {
       return {
