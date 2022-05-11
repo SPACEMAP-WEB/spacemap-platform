@@ -46,26 +46,17 @@ const COLUMNS: Column<PPDBTableColumnType>[] = [
       return Object.values(row['tca/dca'])
     },
   },
-  // {
-  //   Header: 'DCA',
-  //   accessor: 'dca',
-  //   enableRowSpan: true,
-  // },
-  // {
-  //   Header: 'TCA',
-  //   accessor: 'tca',
-  //   enableRowSpan: true,
-  // },
 ]
 
 const ConjunctionsTable = () => {
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
-    limit: 10,
+    limit: 5,
     page: 1,
   })
   const { login } = useSelector((state: RootState) => state.login)
   const [searchValue, setSearchValue] = useState<string>('')
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
+  const [customPageSize, setCustomPageSize] = useState(10)
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
@@ -90,7 +81,6 @@ const ConjunctionsTable = () => {
 
       if (enableRowSpan !== undefined) {
         rowSpanHeaders = [...rowSpanHeaders, { id, topCellValue: null, topCellIndex: 0 }]
-        console.log(rowSpanHeaders)
       }
     })
 
@@ -113,6 +103,8 @@ const ConjunctionsTable = () => {
     pageCount,
     previousPage,
     rowSpanHeaders,
+    setPageSize,
+    pageSize,
     state: { pageIndex },
   } = useTable(
     {
@@ -120,7 +112,7 @@ const ConjunctionsTable = () => {
       data,
       initialState: { pageIndex: 0 },
       manualPagination: true,
-      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount / 10 - 1,
+      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount / customPageSize - 1,
     },
     usePagination,
     (hooks) => {
@@ -167,6 +159,11 @@ const ConjunctionsTable = () => {
     pageIndex,
     pageOptions,
     handlePage,
+    setPageSize,
+    pageSize,
+    setCustomPageSize,
+    setQueryParams,
+    queryParams,
   }
 
   if (isLoading) return <div>Loading</div>
