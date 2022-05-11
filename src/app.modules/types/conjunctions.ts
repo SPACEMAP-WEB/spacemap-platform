@@ -46,10 +46,11 @@ export type PPDBTableColumnType = {
 }
 
 export type PPDBQueryKeyType = 'sort' | 'dec' | 'satellite'
+export type SortType = 'tcaTime' | 'dca' | 'probability'
 
 // use it when it is necessary
 export type QueryValueType = {
-  sort: 'tcaTime' | 'dca' | 'probability'
+  sort?: SortType
   dec: '-'
   satelite: number | string
 }
@@ -57,7 +58,7 @@ export type QueryValueType = {
 export type PPDBSearchParamsType = {
   limit: number
   page: number
-  sort?: 'tcaTime' | 'dca' | 'probability'
+  sort?: SortType
   dec?: '-'
   satelite?: number | string
 }
