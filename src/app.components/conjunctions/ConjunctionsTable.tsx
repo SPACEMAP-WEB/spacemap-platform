@@ -21,7 +21,7 @@ import ConjunctionsPagination from './ConjunctionsPagination'
 const borderStyle = {
   border: '1px solid gray',
 }
-
+        
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
     Header: 'Index',
@@ -240,6 +240,7 @@ const ConjunctionsTable = () => {
           {true && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>
       )}
+      )
     </>
   )
 }
