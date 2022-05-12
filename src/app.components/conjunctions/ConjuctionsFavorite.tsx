@@ -36,6 +36,7 @@ export default ConjuctionsFavorite
 
 const StyledWrapper = styled.div`
   .favorite-form {
+    margin-bottom: 10px;
     .favorite-form-input {
       margin-right: 10px;
     }

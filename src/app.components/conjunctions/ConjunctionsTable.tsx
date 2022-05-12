@@ -37,11 +37,6 @@ const filterOptions: FilterSelectType[] = [
 
 const COLUMNS: Column<PPDBTableColumnType>[] = [
   {
-    Header: 'Index',
-    accessor: 'index',
-    enableRowSpan: true,
-  },
-  {
     Header: 'Primary',
     accessor: (row) => {
       return Object.values(row.primary)

@@ -64,10 +64,11 @@ export type PPDBSearchParamsType = {
 }
 
 export type FavoriteDataType = {
-  _id: string
-  email: string
-  __v: number
-  satellitesIDs: number[]
+  _id?: string
+  email?: string
+  __v?: number
+  satellitesIds?: number[]
+  satellitesNames?: string[]
 }
 
 export type FavoriteColumnType = {
@@ -78,5 +79,5 @@ export type FavoriteColumnType = {
 export type FavoriteResponseType = {
   success: boolean
   message: string
-  data: FavoriteDataType | object
+  data: FavoriteDataType
 }

@@ -9,8 +9,6 @@ const Button = () => {
   const dispatch = useDispatch()
   const { user, login } = useSelector((state: RootState) => state.login)
 
-  console.log(user, login)
-
   const handleSnsLogin = () => {
     login ? dispatch(requestLogout()) : dispatch(setModal({ type: 'LOGIN' }))
   }
