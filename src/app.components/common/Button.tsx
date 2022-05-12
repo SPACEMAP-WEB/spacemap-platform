@@ -45,17 +45,14 @@ const ButtonWrapper = styled.div`
     height: 40px;
     font-size: 1rem;
     cursor: pointer;
-    color: white;
-    background-color: transparent;
+    background-color: rgba(124, 124, 124, 0.4);
+    color: #e2e2e2;
     z-index: 4;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 1rem;
-    border-bottom-left-radius: 0.3rem;
+    border-radius: 10px;
     transition: all 0.3s ease-in;
-    border: 0.8px solid #fccb16;
     &:hover {
       background-color: #fccb16;
+      color: #7a7a7a;
     }
   }
 `

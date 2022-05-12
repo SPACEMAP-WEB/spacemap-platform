@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const ConjuctionsTabs = () => {
   const [toggle, setToggle] = useState(0)
-  const tabs = ['ALL', 'Favorite']
+  const tabs = ['ALL', 'Favorites']
 
   const handleClickTab = (index) => {
     setToggle(index)
@@ -42,6 +42,6 @@ const StyledTabs = styled.div`
     }
   }
   .active {
-    color: red;
+    color: #fccb16;
   }
 `
