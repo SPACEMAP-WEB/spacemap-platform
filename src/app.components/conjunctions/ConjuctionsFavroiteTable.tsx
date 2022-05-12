@@ -1,25 +1,19 @@
-import { FavoriteColumnType, FavoriteDataType } from '@app.modules/types/conjunctions'
+import { FavoriteColumnType } from '@app.modules/types/conjunctions'
 import { Table } from '@app.components/common/Table'
 import { Column, useTable } from 'react-table'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useQueryFavorite } from '@app.feature/conjunctions/query/useQueryFavorite'
+import {
+  favoriteDataRefactor,
+  favoriteFindDataRefactor,
+} from '@app.feature/conjunctions/module/favoriteDataRefactor'
 
 const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjuctionsFavroiteTable = () => {
-  const [tableData, setTableData] = useState<FavoriteDataType>([])
-
-  const fakeData = [
-    { noradId: '123', satName: 'hello' },
-    { noradId: '123', satName: 'hello' },
-    { noradId: '123', satName: 'hello' },
-    { noradId: '123', satName: 'hello' },
-    { noradId: '123', satName: 'hello' },
-    { noradId: '123', satName: 'hello' },
-    { noradId: '123', satName: 'hello' },
-  ]
+const ConjuctionsFavroiteTable = ({ inputValue }: { inputValue: string }) => {
+  const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
 
   const COLUMNS: Column<FavoriteColumnType>[] = [
     {
@@ -31,10 +25,10 @@ const ConjuctionsFavroiteTable = () => {
     },
   ]
 
-  const { data: favoriteData } = useQueryFavorite()
+  const { data: favoriteData, isLoading } = useQueryFavorite(inputValue)
 
   const columns = useMemo(() => COLUMNS, [])
-  const data = useMemo(() => fakeData, [tableData])
+  const data = useMemo(() => tableData, [tableData])
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
@@ -43,9 +37,14 @@ const ConjuctionsFavroiteTable = () => {
 
   useEffect(() => {
     if (favoriteData) {
-      setTableData(favoriteData)
+      const newData = inputValue
+        ? favoriteFindDataRefactor(favoriteData)
+        : favoriteDataRefactor(favoriteData)
+      setTableData(newData)
     }
   }, [favoriteData])
+
+  if (isLoading) return null
 
   return (
     <Table {...getTableProps()}>

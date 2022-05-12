@@ -5,6 +5,7 @@ import {
   PPDBDataType,
   PPDBSearchParamsType,
   PPDBTableColumnType,
+  // eslint-disable-next-line @typescript-eslint/comma-dangle
   SortType,
 } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
@@ -59,12 +60,12 @@ const COLUMNS: Column<PPDBTableColumnType>[] = [
 const ConjunctionsTable = () => {
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: 5,
-    page: 1,
+    page: 0,
   })
   const { login } = useSelector((state: RootState) => state.login)
   const [searchValue, setSearchValue] = useState<string>('')
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
-  const [customPageSize, setCustomPageSize] = useState(10)
+  const [customPageSize, setCustomPageSize] = useState(5)
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
@@ -74,7 +75,6 @@ const ConjunctionsTable = () => {
     data: fetchedPPDBData,
     isLoading,
     isSuccess,
-    refetch,
   } = useQueryGetPPDB({
     query: queryParams,
     isConjunctionsClicked,
@@ -96,8 +96,16 @@ const ConjunctionsTable = () => {
     Object.assign(instance, { rowSpanHeaders })
   }
 
+  useEffect(() => {
+    if (fetchedPPDBData) {
+      const newData = ppdbDataRefactor(fetchedPPDBData.result)
+      setTableData(newData)
+    }
+  }, [fetchedPPDBData])
+
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -121,13 +129,17 @@ const ConjunctionsTable = () => {
       data,
       initialState: { pageIndex: 0 },
       manualPagination: true,
-      pageCount: isLoading ? 0 : fetchedPPDBData?.totalCount / customPageSize - 1,
+      pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
     usePagination,
     (hooks) => {
       hooks.useInstance.push(useInstance)
     }
   )
+
+  useEffect(() => {
+    setQueryParams({ ...queryParams, page: pageIndex })
+  }, [pageIndex])
 
   useEffect(() => {
     if (!tableContainerRef || !tableContainerRef.current) return
@@ -139,22 +151,15 @@ const ConjunctionsTable = () => {
     })`
   })
 
-  useEffect(() => {
-    if (fetchedPPDBData) {
-      const newData = ppdbDataRefactor(fetchedPPDBData.result)
-      setTableData(newData)
-    }
-  }, [fetchedPPDBData])
-
-  const handlePage = (callback) => {
+  const handlePage = async (callback) => {
     callback()
-    setQueryParams({ ...queryParams, page: pageIndex })
   }
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     setQueryParams({
       ...queryParams,
-      satelite: searchValue,
+      page: 0,
+      satellite: searchValue,
     })
   }
 
@@ -163,7 +168,6 @@ const ConjunctionsTable = () => {
       ...queryParams,
       sort: e.target.value as SortType,
     })
-    await refetch()
   }
 
   const paginationProps = {
