@@ -160,7 +160,7 @@ const ConjunctionsTable = () => {
   const handleSearch = () => {
     setQueryParams({
       ...queryParams,
-      satelite: searchValue,
+      satellite: searchValue,
     })
   }
 
@@ -196,12 +196,14 @@ const ConjunctionsTable = () => {
       {/* FIXME: change loading page into proper one */}
       {isSuccess && (
         <ConjunctionsTableWrapper ref={tableContainerRef}>
-          <Search
-            handleSearch={handleSearch}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-          />
-          <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
+          <div className="sort-container">
+            <Search
+              handleSearch={handleSearch}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+            />
+            <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
+          </div>
           <ConjuctionsTabs />
           <section className="table-wrapper">
             <Table className="table" {...getTableProps()} ref={tableRef}>
@@ -272,7 +274,10 @@ const ConjunctionsTable = () => {
 export default ConjunctionsTable
 
 const ConjunctionsTableWrapper = styled.div`
-  width: 500px;
+  width: 450px;
+  padding: 1rem 0;
+  background-color: rgba(84, 84, 84, 0.4);
+  border-radius: 15px;
   position: fixed;
   z-index: 4;
   right: 1.25rem;
@@ -280,10 +285,20 @@ const ConjunctionsTableWrapper = styled.div`
   transition: all 0.5s ease-out;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 1rem;
+  .sort-container {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
   .table-wrapper {
+    width: 400px;
+    border-radius: 10px;
     .table {
-      font-size: 12px;
+      font-size: 11px;
     }
     .pagination {
       margin-top: 10px;
