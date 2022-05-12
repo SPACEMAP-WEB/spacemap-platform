@@ -90,5 +90,5 @@ export type FavoriteResponseType = ResponseType & {
 }
 
 export type FavoriteFindResponseType = ResponseType & {
-  data: FavoriteFindDataType
+  data: FavoriteFindDataType[]
 }
