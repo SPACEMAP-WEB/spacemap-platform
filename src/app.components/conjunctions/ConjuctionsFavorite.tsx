@@ -7,6 +7,7 @@ const ConjuctionsFavorite = () => {
   const {
     handleSubmit,
     register,
+    watch,
     formState: { errors },
   } = useForm()
   const [inputValue, setInpuValue] = useState('')
@@ -27,7 +28,7 @@ const ConjuctionsFavorite = () => {
         <button type="submit">Search</button>
         {errors.favorite && <span>Favorite Field is Required</span>}
       </form>
-      <ConjuctionsFavroiteTable inputValue={inputValue} />
+      <ConjuctionsFavroiteTable inputValue={inputValue} watch={watch('favorite')} />
     </StyledWrapper>
   )
 }

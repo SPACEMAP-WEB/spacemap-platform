@@ -5,7 +5,7 @@ import {
   FavoriteFindDataType,
 } from '@app.modules/types/conjunctions'
 import { Table } from '@app.components/common/Table'
-import { Column, useTable, CellProps, useRowSelect } from 'react-table'
+import { Column, useTable, CellProps, useRowSelect, usePagination } from 'react-table'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useQueryFavorite } from '@app.feature/conjunctions/query/useQueryFavorite'
 import {
@@ -23,7 +23,7 @@ const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjuctionsFavroiteTable = ({ inputValue }: { inputValue: string }) => {
+const ConjuctionsFavroiteTable = ({ inputValue, watch }: { inputValue: string; watch: string }) => {
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
   const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
 
@@ -50,15 +50,16 @@ const ConjuctionsFavroiteTable = ({ inputValue }: { inputValue: string }) => {
         columns,
         data,
       },
+      usePagination,
       useRowSelect,
       (hooks) => {
         hooks.visibleColumns.push((columns: Column<FavoriteColumnType>[]) => [
           ...columns,
           {
             id: 'bookmark',
-            Header: ({ getToggleAllRowsSelectedProps }) => (
+            Header: ({ getToggleAllPageRowsSelectedProps }) => (
               <div>
-                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+                <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
               </div>
             ),
             Cell: ({ row }: CellProps<any>) => (
