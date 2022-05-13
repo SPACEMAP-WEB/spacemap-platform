@@ -13,6 +13,11 @@ import {
   favoriteFindDataRefactor,
 } from '@app.feature/conjunctions/module/favoriteDataRefactor'
 import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
+import {
+  useDeleteMutationFavorite,
+  usePostMutationFavorite,
+} from '@app.feature/conjunctions/query/useMutationFavorite'
+import { updateBookmarkData } from '@app.feature/conjunctions/module/bookmakrDataCompare'
 
 const borderStyle = {
   border: '1px solid gray',
@@ -20,6 +25,7 @@ const borderStyle = {
 
 const ConjuctionsFavroiteTable = ({ inputValue }: { inputValue: string }) => {
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
+  const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
 
   const COLUMNS: Column<FavoriteColumnType>[] = [
     {
@@ -32,35 +38,38 @@ const ConjuctionsFavroiteTable = ({ inputValue }: { inputValue: string }) => {
   ]
 
   const { data: favoriteData, isLoading } = useQueryFavorite(inputValue)
+  const favoritePostMutation = usePostMutationFavorite()
+  const favoriteDeleteMutation = useDeleteMutationFavorite()
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
-    {
-      columns,
-      data,
-    },
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns: Column<FavoriteColumnType>[]) => [
-        ...columns,
-        {
-          id: 'bookmark',
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          Cell: ({ row }: CellProps<any>) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-      ])
-    }
-  )
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, selectedFlatRows } =
+    useTable(
+      {
+        columns,
+        data,
+      },
+      useRowSelect,
+      (hooks) => {
+        hooks.visibleColumns.push((columns: Column<FavoriteColumnType>[]) => [
+          ...columns,
+          {
+            id: 'bookmark',
+            Header: ({ getToggleAllRowsSelectedProps }) => (
+              <div>
+                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              </div>
+            ),
+            Cell: ({ row }: CellProps<any>) => (
+              <div>
+                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              </div>
+            ),
+          },
+        ])
+      }
+    )
 
   useEffect(() => {
     if (favoriteData) {
@@ -70,6 +79,22 @@ const ConjuctionsFavroiteTable = ({ inputValue }: { inputValue: string }) => {
       setTableData(newData)
     }
   }, [favoriteData])
+
+  const requsetMutationApi = async (state: string, bookmarks: FavoriteColumnType[]) => {
+    const mutation = state === 'delete' ? favoriteDeleteMutation : favoritePostMutation
+    await Promise.all(bookmarks.map((boomark) => mutation.mutateAsync(boomark.noradId)))
+  }
+
+  useEffect(() => {
+    try {
+      const originData = selectedFlatRows.map((row) => row.original)
+      const { state, data } = updateBookmarkData(bookmarkData, originData)
+      setBookmarkData(originData)
+      requsetMutationApi(state, data)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [selectedFlatRows])
 
   if (isLoading) return null
 
@@ -85,7 +110,7 @@ const ConjuctionsFavroiteTable = ({ inputValue }: { inputValue: string }) => {
         ))}
       </thead>
       <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
+        {rows.map((row) => {
           prepareRow(row)
           return (
             <tr {...row.getRowProps()}>

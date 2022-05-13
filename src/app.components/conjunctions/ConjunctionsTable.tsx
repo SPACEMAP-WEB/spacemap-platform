@@ -262,7 +262,6 @@ const ConjunctionsTable = () => {
           {login && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>
       )}
-      )
     </>
   )
 }
