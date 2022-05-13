@@ -77,6 +77,7 @@ export type FavoriteDataType = {
 export type FavoriteColumnType = {
   noradId: string
   satName: string
+  isInterested: boolean
 }
 
 export type FavoriteFindDataType = {

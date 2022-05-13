@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
-import ConjuctionsFavroiteTable from './ConjuctionsFavroiteTable'
+import ConjuctionsFavoriteTable from './ConjuctionsFavroiteTable'
 
 const ConjuctionsFavorite = () => {
   const {
     handleSubmit,
     register,
-    watch,
     formState: { errors },
   } = useForm()
   const [inputValue, setInpuValue] = useState('')
@@ -28,7 +27,7 @@ const ConjuctionsFavorite = () => {
         <button type="submit">Search</button>
         {errors.favorite && <span>Favorite Field is Required</span>}
       </form>
-      <ConjuctionsFavroiteTable inputValue={inputValue} watch={watch('favorite')} />
+      <ConjuctionsFavoriteTable inputValue={inputValue} />
     </StyledWrapper>
   )
 }

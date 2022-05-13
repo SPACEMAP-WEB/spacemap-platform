@@ -23,9 +23,14 @@ const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjuctionsFavroiteTable = ({ inputValue, watch }: { inputValue: string; watch: string }) => {
+const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
   const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
+  const [prevInput, setPrevInput] = useState(inputValue)
+
+  const { data: favoriteData, isLoading, isSuccess } = useQueryFavorite(inputValue)
+  const favoritePostMutation = usePostMutationFavorite()
+  const favoriteDeleteMutation = useDeleteMutationFavorite()
 
   const COLUMNS: Column<FavoriteColumnType>[] = [
     {
@@ -37,18 +42,32 @@ const ConjuctionsFavroiteTable = ({ inputValue, watch }: { inputValue: string; w
     },
   ]
 
-  const { data: favoriteData, isLoading } = useQueryFavorite(inputValue)
-  const favoritePostMutation = usePostMutationFavorite()
-  const favoriteDeleteMutation = useDeleteMutationFavorite()
-
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
+
+  useEffect(() => {
+    if (isSuccess) {
+      const newData = inputValue
+        ? favoriteFindDataRefactor(favoriteData as FavoriteFindDataType[])
+        : favoriteDataRefactor(favoriteData as FavoriteDataType)
+      setTableData(newData)
+      if (!inputValue) setBookmarkData(newData)
+    }
+  }, [isSuccess, favoriteData])
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, selectedFlatRows } =
     useTable(
       {
         columns,
         data,
+        initialState: {
+          selectedRowIds: data.reduce((data, ppdb, idx) => {
+            if (ppdb.isInterested) {
+              data[idx] = true
+            }
+            return data
+          }, {}),
+        },
       },
       usePagination,
       useRowSelect,
@@ -57,11 +76,13 @@ const ConjuctionsFavroiteTable = ({ inputValue, watch }: { inputValue: string; w
           ...columns,
           {
             id: 'bookmark',
-            Header: ({ getToggleAllPageRowsSelectedProps }) => (
-              <div>
-                <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
-              </div>
-            ),
+            Header: (header) => {
+              return (
+                <div>
+                  <IndeterminateCheckbox {...header.getToggleAllPageRowsSelectedProps()} />
+                </div>
+              )
+            },
             Cell: ({ row }: CellProps<any>) => (
               <div>
                 <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -72,26 +93,25 @@ const ConjuctionsFavroiteTable = ({ inputValue, watch }: { inputValue: string; w
       }
     )
 
-  useEffect(() => {
-    if (favoriteData) {
-      const newData = inputValue
-        ? favoriteFindDataRefactor(favoriteData as FavoriteFindDataType[])
-        : favoriteDataRefactor(favoriteData as FavoriteDataType)
-      setTableData(newData)
-    }
-  }, [favoriteData])
+  console.log(selectedFlatRows)
 
   const requsetMutationApi = async (state: string, bookmarks: FavoriteColumnType[]) => {
     const mutation = state === 'delete' ? favoriteDeleteMutation : favoritePostMutation
-    await Promise.all(bookmarks.map((boomark) => mutation.mutateAsync(boomark.noradId)))
+    await Promise.all(bookmarks.map(async (boomark) => await mutation.mutateAsync(boomark.noradId)))
   }
 
   useEffect(() => {
     try {
+      if (inputValue === '' && selectedFlatRows.length === 0) return
       const originData = selectedFlatRows.map((row) => row.original)
+      if (inputValue !== prevInput) {
+        setPrevInput(inputValue)
+        setBookmarkData(originData)
+        return
+      }
       const { state, data } = updateBookmarkData(bookmarkData, originData)
       setBookmarkData(originData)
-      requsetMutationApi(state, data)
+      if (data.length) requsetMutationApi(state, data)
     } catch (error) {
       console.error(error)
     }
@@ -130,4 +150,4 @@ const ConjuctionsFavroiteTable = ({ inputValue, watch }: { inputValue: string; w
   )
 }
 
-export default ConjuctionsFavroiteTable
+export default ConjuctionsFavoriteTable
