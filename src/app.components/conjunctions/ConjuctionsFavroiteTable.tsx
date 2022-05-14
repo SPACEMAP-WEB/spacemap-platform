@@ -18,12 +18,15 @@ import {
   usePostMutationFavorite,
 } from '@app.feature/conjunctions/query/useMutationFavorite'
 import { updateBookmarkData } from '@app.feature/conjunctions/module/bookmakrDataCompare'
+import { useQueryClient } from 'react-query'
+import { API_FAVORITE } from '@app.modules/keyFactory'
 
 const borderStyle = {
   border: '1px solid gray',
 }
 
 const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
+  const queryClient = useQueryClient()
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
   const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
   const [prevInput, setPrevInput] = useState(inputValue)
@@ -55,49 +58,57 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     }
   }, [isSuccess, favoriteData])
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, selectedFlatRows } =
-    useTable(
-      {
-        columns,
-        data,
-        initialState: {
-          selectedRowIds: data.reduce((data, ppdb, idx) => {
-            if (ppdb.isInterested) {
-              data[idx] = true
-            }
-            return data
-          }, {}),
-        },
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    selectedFlatRows,
+    state: { selectedRowIds },
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        selectedRowIds: tableData.reduce((data, ppdb, idx) => {
+          if (ppdb.isInterested) {
+            data[idx] = true
+          }
+          return data
+        }, {}),
       },
-      usePagination,
-      useRowSelect,
-      (hooks) => {
-        hooks.visibleColumns.push((columns: Column<FavoriteColumnType>[]) => [
-          ...columns,
-          {
-            id: 'bookmark',
-            Header: (header) => {
-              return (
-                <div>
-                  <IndeterminateCheckbox {...header.getToggleAllPageRowsSelectedProps()} />
-                </div>
-              )
-            },
-            Cell: ({ row }: CellProps<any>) => (
+    },
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns: Column<FavoriteColumnType>[]) => [
+        ...columns,
+        {
+          id: 'bookmark',
+          Header: (header) => {
+            return (
               <div>
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                <IndeterminateCheckbox {...header.getToggleAllPageRowsSelectedProps()} />
               </div>
-            ),
+            )
           },
-        ])
-      }
-    )
+          Cell: ({ row }: CellProps<any>) => (
+            <div>
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+            </div>
+          ),
+        },
+      ])
+    }
+  )
 
-  console.log(selectedFlatRows)
+  console.log(selectedFlatRows, selectedRowIds)
 
   const requsetMutationApi = async (state: string, bookmarks: FavoriteColumnType[]) => {
     const mutation = state === 'delete' ? favoriteDeleteMutation : favoritePostMutation
     await Promise.all(bookmarks.map(async (boomark) => await mutation.mutateAsync(boomark.noradId)))
+    queryClient.invalidateQueries([API_FAVORITE])
   }
 
   useEffect(() => {
@@ -115,7 +126,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     } catch (error) {
       console.error(error)
     }
-  }, [selectedFlatRows])
+  }, [selectedRowIds])
 
   if (isLoading) return null
 

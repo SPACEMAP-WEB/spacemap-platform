@@ -6,7 +6,8 @@ export const usePostMutationFavorite = () => {
   // const queryClient = useQueryClient()
   return useMutation(
     async (id: string) => {
-      await api.POST({ url: API_FAVORITE + `/${id}` })
+      const res = await api.POST({ url: API_FAVORITE + `/${id}` })
+      return res.data
     },
     {
       onSuccess: () => {
@@ -23,7 +24,8 @@ export const useDeleteMutationFavorite = () => {
   // const queryClient = useQueryClient()
   return useMutation(
     async (id: string) => {
-      await api.DELETE({ url: API_FAVORITE + `/${id}` })
+      const res = await api.DELETE({ url: API_FAVORITE + `/${id}` })
+      return res.data
     },
     {
       onSuccess: () => {
