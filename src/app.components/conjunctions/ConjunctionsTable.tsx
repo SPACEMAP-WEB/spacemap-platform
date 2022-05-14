@@ -2,6 +2,7 @@ import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Column, useTable, usePagination } from 'react-table'
 import {
+  FavoriteResponseType,
   PPDBDataType,
   PPDBSearchParamsType,
   PPDBTableColumnType,
@@ -20,6 +21,8 @@ import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefac
 import ConjunctionsPagination from './ConjunctionsPagination'
 import FilterSelect from '@app.components/common/FilterSelect'
 import { FilterSelectType } from '@app.modules/types'
+import { API_FAVORITE } from '@app.modules/keyFactory'
+import api from '@app.modules/api'
 
 const borderStyle = {
   border: '1px solid gray',
@@ -66,6 +69,9 @@ const ConjunctionsTable = () => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(5)
+  const [toggle, setToggle] = useState(0)
+  const [close, setClose] = useState(false)
+  const [favoriteData, setFavoriteData] = useState<{ label: string; value: string }[]>([])
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
@@ -78,6 +84,7 @@ const ConjunctionsTable = () => {
   } = useQueryGetPPDB({
     query: queryParams,
     isConjunctionsClicked,
+    toggle,
   })
 
   function useInstance(instance) {
@@ -95,6 +102,17 @@ const ConjunctionsTable = () => {
 
     Object.assign(instance, { rowSpanHeaders })
   }
+
+  const requestFavoriteData = async () => {
+    const res = await api.GET<null, FavoriteResponseType>(API_FAVORITE)
+    setFavoriteData(
+      res.data.data.satellitesIds.map((id) => ({ label: String(id), value: String(id) }))
+    )
+  }
+
+  useEffect(() => {
+    toggle && requestFavoriteData()
+  }, [toggle])
 
   useEffect(() => {
     if (fetchedPPDBData) {
@@ -121,8 +139,7 @@ const ConjunctionsTable = () => {
     previousPage,
     rowSpanHeaders,
     setPageSize,
-    pageSize,
-    state: { pageIndex },
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
@@ -150,6 +167,11 @@ const ConjunctionsTable = () => {
       isConjunctionsClicked ? '0' : '40rem'
     })`
   })
+
+  const handleToggle = (index: number) => {
+    setToggle(index)
+    setQueryParams({ ...queryParams, page: 0, limit: 5 })
+  }
 
   const handlePage = async (callback) => {
     callback()
@@ -200,65 +222,73 @@ const ConjunctionsTable = () => {
             setSearchValue={setSearchValue}
           />
           <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
-          <ConjuctionsTabs />
-          <section className="table-wrapper">
-            <Table className="table" {...getTableProps()} ref={tableRef}>
-              <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              {!!tableData.length && (
-                <>
-                  <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-                    {page.map((row, i) => {
-                      prepareRow(row)
-                      for (let j = 0; j < row.allCells.length; j++) {
-                        let cell = row.allCells[j]
-                        let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
+          {toggle === 1 && (
+            <FilterSelect filterOptions={favoriteData} onChange={handleFilterChange} />
+          )}
+          <ConjuctionsTabs toggle={toggle} onClick={handleToggle} />
+          <button className="btn-close" onClick={() => setClose(!close)}>
+            -
+          </button>
+          {!close && (
+            <section className="table-wrapper">
+              <Table className="table" {...getTableProps()} ref={tableRef}>
+                <thead>
+                  {headerGroups.map((headerGroup) => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                      {headerGroup.headers.map((column) => (
+                        <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                {!!tableData.length && (
+                  <>
+                    <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
+                      {page.map((row, i) => {
+                        prepareRow(row)
+                        for (let j = 0; j < row.allCells.length; j++) {
+                          let cell = row.allCells[j]
+                          let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
 
-                        if (rowSpanHeader !== undefined) {
-                          if (i % 2 !== 1) {
-                            cell.rowSpan = 2
-                            cell.isRowSpanned = false
-                          } else {
-                            cell.isRowSpan = 1
-                            cell.isRowSpanned = true
+                          if (rowSpanHeader !== undefined) {
+                            if (i % 2 !== 1) {
+                              cell.rowSpan = 2
+                              cell.isRowSpanned = false
+                            } else {
+                              cell.isRowSpan = 1
+                              cell.isRowSpanned = true
+                            }
                           }
                         }
-                      }
-                      return null
-                    })}
-                    {page.map((row) => {
-                      return (
-                        <tr {...row.getRowProps()}>
-                          {row.cells.map((cell) => {
-                            if (cell.isRowSpanned) return null
-                            else {
-                              return (
-                                <td
-                                  rowSpan={cell.rowSpan}
-                                  {...cell.getCellProps()}
-                                  style={borderStyle}
-                                >
-                                  {cell.render('Cell')}
-                                </td>
-                              )
-                            }
-                          })}
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </>
-              )}
-            </Table>
-            <ConjunctionsPagination {...paginationProps} />
-          </section>
+                        return null
+                      })}
+                      {page.map((row) => {
+                        return (
+                          <tr {...row.getRowProps()}>
+                            {row.cells.map((cell) => {
+                              if (cell.isRowSpanned) return null
+                              else {
+                                return (
+                                  <td
+                                    rowSpan={cell.rowSpan}
+                                    {...cell.getCellProps()}
+                                    style={borderStyle}
+                                  >
+                                    {cell.render('Cell')}
+                                  </td>
+                                )
+                              }
+                            })}
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </>
+                )}
+              </Table>
+              <ConjunctionsPagination {...paginationProps} />
+            </section>
+          )}
           {login && <ConjuctionsFavorite />}
         </ConjunctionsTableWrapper>
       )}

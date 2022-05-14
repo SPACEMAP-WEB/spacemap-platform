@@ -10,11 +10,11 @@ const ConjunctionsPagination = ({
   pageIndex,
   pageOptions,
   handlePage,
-  setPageSize,
-  pageSize,
-  setCustomPageSize,
-  setQueryParams,
-  queryParams,
+  setPageSize = null,
+  pageSize = null,
+  setCustomPageSize = null,
+  setQueryParams = null,
+  queryParams = null,
 }) => {
   return (
     <div className="pagination">
@@ -48,24 +48,26 @@ const ConjunctionsPagination = ({
           style={{ width: '100px', marginRight: '5px' }}
         />
       </span>
-      <select
-        value={pageSize}
-        onChange={(e) => {
-          const pageSize = Number(e.target.value)
-          setQueryParams({
-            ...queryParams,
-            limit: pageSize,
-          })
-          setCustomPageSize(pageSize)
-          setPageSize(pageSize)
-        }}
-      >
-        {[5, 10].map((pageSize) => (
-          <option key={pageSize} value={pageSize}>
-            Show {pageSize}
-          </option>
-        ))}
-      </select>
+      {pageSize && (
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            const pageSize = Number(e.target.value)
+            setQueryParams({
+              ...queryParams,
+              limit: pageSize,
+            })
+            setCustomPageSize(pageSize)
+            setPageSize(pageSize)
+          }}
+        >
+          {[5, 10].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      )}
     </div>
   )
 }
