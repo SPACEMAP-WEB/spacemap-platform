@@ -36,27 +36,6 @@ const filterOptions: FilterSelectType[] = [
   },
 ]
 
-const COLUMNS: Column<PPDBTableColumnType>[] = [
-  {
-    Header: 'Primary',
-    accessor: (row) => {
-      return Object.values(row.primary)
-    },
-  },
-  {
-    Header: 'Secondary',
-    accessor: (row) => {
-      return Object.values(row.secondary)
-    },
-  },
-  {
-    Header: 'TCA/DCA',
-    accessor: (row) => {
-      return Object.values(row['tca/dca'])
-    },
-  },
-]
-
 const ConjunctionsTable = () => {
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: 5,
@@ -79,6 +58,41 @@ const ConjunctionsTable = () => {
     query: queryParams,
     isConjunctionsClicked,
   })
+
+  const COLUMNS: Column<PPDBTableColumnType>[] = [
+    {
+      Header: 'Primary',
+      accessor: (row) => {
+        return Object.values(row.primary)
+      },
+    },
+    {
+      Header: 'Secondary',
+      accessor: (row) => {
+        return Object.values(row.secondary)
+      },
+    },
+    {
+      Header: 'TCA/DCA',
+      accessor: (row) => {
+        return Object.values(row['tca/dca'])
+      },
+    },
+    {
+      Header: 'Visualization',
+      accessor: (row) => {
+        return (
+          <div
+            onClick={() => console.log(row)}
+            style={{ width: '100%', height: '100%', cursor: 'pointer' }}
+          >
+            class
+          </div>
+        )
+      },
+      enableRowSpan: true,
+    },
+  ]
 
   function useInstance(instance) {
     const { allColumns } = instance

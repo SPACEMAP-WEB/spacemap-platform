@@ -4,6 +4,7 @@ interface IndeterminateCheckboxProps {
   row: any
   indeterminate?: boolean
   disabled?: boolean
+  onClick: any
 }
 
 const useCombinedRefs = (...refs: any[]): React.MutableRefObject<any> => {

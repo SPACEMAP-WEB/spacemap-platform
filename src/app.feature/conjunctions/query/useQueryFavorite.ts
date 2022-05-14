@@ -7,7 +7,7 @@ import { RootState } from 'src/app.store/config/configureStore'
 
 const requestApiFavorite = (email) => {
   return useQuery(
-    [API_FAVORITE, email],
+    [API_FAVORITE],
     async () => {
       const res = await api.GET<null, FavoriteResponseType>(API_FAVORITE)
       return res.data.data

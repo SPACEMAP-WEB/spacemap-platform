@@ -19,6 +19,9 @@ export const Table = styled.table<{ css?: string }>`
     font-weight: 900;
     position: sticky;
     top: 0;
+    :last-child {
+      width: 10px !important;
+    }
   }
   ${({ css }) =>
     css ??
