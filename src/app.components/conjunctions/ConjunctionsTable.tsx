@@ -105,9 +105,10 @@ const ConjunctionsTable = () => {
 
   const requestFavoriteData = async () => {
     const res = await api.GET<null, FavoriteResponseType>(API_FAVORITE)
-    setFavoriteData(
-      res.data.data.satellitesIds.map((id) => ({ label: String(id), value: String(id) }))
-    )
+    setFavoriteData([
+      { label: 'ALL', value: 'ALL' },
+      ...res.data.data.satellitesIds.map((id) => ({ label: String(id), value: String(id) })),
+    ])
   }
 
   useEffect(() => {
@@ -192,6 +193,13 @@ const ConjunctionsTable = () => {
     })
   }
 
+  const handleFavoriteIdChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setQueryParams({
+      ...queryParams,
+      id: e.target.value,
+    })
+  }
+
   const paginationProps = {
     gotoPage,
     previousPage,
@@ -223,7 +231,7 @@ const ConjunctionsTable = () => {
           />
           <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
           {toggle === 1 && (
-            <FilterSelect filterOptions={favoriteData} onChange={handleFilterChange} />
+            <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
           )}
           <ConjuctionsTabs toggle={toggle} onClick={handleToggle} />
           <button className="btn-close" onClick={() => setClose(!close)}>

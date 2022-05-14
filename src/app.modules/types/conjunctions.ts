@@ -63,6 +63,7 @@ export type PPDBSearchParamsType = {
   page: number
   sort?: SortType
   dec?: '-'
+  id?: string
   satellite?: number | string
 }
 

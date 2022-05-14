@@ -18,7 +18,6 @@ export const requestApiGetFavorite = async (query) => {
     API_FAVORITE_CONJUCTIONS + objectToURL(query)
   )
   const result = response.data.data
-  console.log(result)
   return {
     result: result.conjunctions,
     totalCount: result.totalcount,
