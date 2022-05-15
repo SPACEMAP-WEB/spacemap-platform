@@ -1,6 +1,7 @@
 import React, { useEffect, forwardRef } from 'react'
 
 interface IndeterminateCheckboxProps {
+  row: any
   indeterminate?: boolean
   disabled?: boolean
 }

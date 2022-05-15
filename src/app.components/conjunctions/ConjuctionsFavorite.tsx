@@ -1,18 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
-import ConjuctionsFavroiteTable from './ConjuctionsFavroiteTable'
+import ConjuctionsFavoriteTable from './ConjuctionsFavroiteTable'
 
 const ConjuctionsFavorite = () => {
   const {
     handleSubmit,
     register,
-    watch,
     formState: { errors },
   } = useForm()
+  const [inputValue, setInpuValue] = useState('')
 
-  const handleFavorite = (text) => {
-    console.log(text)
+  const handleFavorite = (filed: { favorite: string }) => {
+    setInpuValue(filed.favorite.trim())
   }
 
   return (
@@ -27,7 +27,7 @@ const ConjuctionsFavorite = () => {
         <button type="submit">Search</button>
         {errors.favorite && <span>Favorite Field is Required</span>}
       </form>
-      <ConjuctionsFavroiteTable />
+      <ConjuctionsFavoriteTable inputValue={inputValue} />
     </StyledWrapper>
   )
 }
@@ -36,6 +36,7 @@ export default ConjuctionsFavorite
 
 const StyledWrapper = styled.div`
   .favorite-form {
+    margin-bottom: 10px;
     .favorite-form-input {
       margin-right: 10px;
     }

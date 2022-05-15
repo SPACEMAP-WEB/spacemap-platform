@@ -1,3 +1,8 @@
+export type ResponseType = {
+  message: string
+  success: boolean
+}
+
 export type PPDBDataType = {
   index: number
   id: string
@@ -32,9 +37,7 @@ export type PPDBResponseDataType = {
   conjunctions: ConjunctionsDataType[]
 }
 
-export type PPDBResponseType = {
-  message: string
-  success: boolean
+export type PPDBResponseType = ResponseType & {
   data: PPDBResponseDataType
 }
 
@@ -63,7 +66,30 @@ export type PPDBSearchParamsType = {
   satellite?: number | string
 }
 
+export type FavoriteDataType = {
+  _id?: string
+  email?: string
+  __v?: number
+  satellitesIds?: number[]
+  satellitesNames?: string[]
+}
+
 export type FavoriteColumnType = {
   noradId: string
   satName: string
+  isInterested: boolean
+}
+
+export type FavoriteFindDataType = {
+  id: string
+  name: string
+  isInterested: boolean
+}
+
+export type FavoriteResponseType = ResponseType & {
+  data: FavoriteDataType
+}
+
+export type FavoriteFindResponseType = ResponseType & {
+  data: FavoriteFindDataType[]
 }

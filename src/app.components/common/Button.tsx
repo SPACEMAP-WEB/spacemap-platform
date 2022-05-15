@@ -5,13 +5,9 @@ import { requestLogout } from 'src/app.store/loginStore/loginUser'
 import { setModal } from 'src/app.store/modalStore/store.modalApp'
 import styled from 'styled-components'
 
-type TProps = {
-  login: boolean
-}
-
-const Button = ({ login }: TProps) => {
+const Button = () => {
   const dispatch = useDispatch()
-  const { user } = useSelector((state: RootState) => state.login)
+  const { user, login } = useSelector((state: RootState) => state.login)
 
   const handleSnsLogin = () => {
     login ? dispatch(requestLogout()) : dispatch(setModal({ type: 'LOGIN' }))
