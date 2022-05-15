@@ -37,6 +37,6 @@ const StyledTabs = styled.div`
     }
   }
   .active {
-    color: red;
+    color: #fccb16;
   }
 `

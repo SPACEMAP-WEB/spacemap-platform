@@ -19,7 +19,9 @@ const Search = ({ handleSearch, searchValue, setSearchValue }: SearchProps) => {
         value={searchValue}
         onChange={handleValueChange}
       />
-      <button onClick={handleSearch}>Search</button>
+      <button className="search-button" onClick={handleSearch}>
+        Search
+      </button>
     </SearchWrapper>
   )
 }
@@ -31,6 +33,15 @@ export const SearchWrapper = styled.div`
   display: flex;
   gap: 1rem;
   .search-input {
+    border: none;
+    border-radius: 5px;
     width: 100%;
+    height: 30px;
+    background-color: rgba(149, 149, 149, 0.4);
+  }
+  .search-button {
+    background-color: rgba(124, 124, 124, 0.4);
+    color: #e2e2e2;
+    border-radius: 5px;
   }
 `

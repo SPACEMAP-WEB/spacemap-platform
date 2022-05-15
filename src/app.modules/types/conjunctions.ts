@@ -55,7 +55,7 @@ export type SortType = 'tcaTime' | 'dca' | 'probability'
 export type QueryValueType = {
   sort?: SortType
   dec: '-'
-  satelite: number | string
+  satellite: number | string
 }
 
 export type PPDBSearchParamsType = {

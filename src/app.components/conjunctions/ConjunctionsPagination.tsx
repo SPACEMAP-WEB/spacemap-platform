@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 
 const ConjunctionsPagination = ({
   gotoPage,
@@ -17,16 +18,19 @@ const ConjunctionsPagination = ({
   queryParams = null,
 }) => {
   return (
-    <div className="pagination">
+    <PaginationWrapper>
       <button onClick={() => handlePage(() => gotoPage(0))} disabled={!canPreviousPage}>
         {'<<'}
-      </button>{' '}
+      </button>
       <button onClick={() => handlePage(() => previousPage())} disabled={!canPreviousPage}>
         {'<'}
-      </button>{' '}
+      </button>
+      <strong className="page-text">
+        <span className="page-count">{pageIndex + 1}</span> of {pageOptions.length}
+      </strong>
       <button onClick={() => handlePage(() => nextPage())} disabled={!canNextPage}>
         {'>'}
-      </button>{' '}
+      </button>
       <button onClick={() => handlePage(() => gotoPage(pageCount - 1))} disabled={!canNextPage}>
         {'>>'}
       </button>{' '}
@@ -68,8 +72,31 @@ const ConjunctionsPagination = ({
           ))}
         </select>
       )}
-    </div>
+    </PaginationWrapper>
   )
 }
 
 export default ConjunctionsPagination
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  position: relative;
+  gap: 10px;
+  button {
+    background-color: rgba(149, 149, 149, 0.4);
+    border: none;
+    border-radius: 5px;
+    color: #e2e2e2;
+  }
+  .page-text {
+    color: white;
+    .page-count {
+      color: #fccb16;
+    }
+  }
+  .page-size-select {
+    position: absolute;
+    right: 0;
+  }
+`
