@@ -43,13 +43,8 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const favoriteDeleteMutation = useDeleteMutationFavorite()
 
   const COLUMNS: Column<FavoriteColumnType>[] = [
-    {
-      Header: 'Interested Satellites',
-      columns: [
-        { Header: 'NoradId', accessor: 'noradId' },
-        { Header: 'SatName', accessor: 'satName' },
-      ],
-    },
+    { Header: 'NoradId', accessor: 'noradId' },
+    { Header: 'SatName', accessor: 'satName' },
   ]
 
   const columns = useMemo(() => COLUMNS, [])
@@ -172,7 +167,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
 
   return (
     <StyledWrapper>
-      <Table {...getTableProps()}>
+      <Table className="table" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -207,6 +202,16 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
 export default ConjuctionsFavoriteTable
 
 const StyledWrapper = styled.div`
+  width: 400px;
+  margin-top: 10px;
+  .table {
+    font-size: 11px;
+  }
+  @media screen and (min-width: 1920px) {
+    .table {
+      font-size: 13px;
+    }
+  }
   .pagination {
     margin-top: 10px;
     .pagination-count {

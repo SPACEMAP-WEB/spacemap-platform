@@ -34,26 +34,9 @@ const ConjunctionsPagination = ({
       <button onClick={() => handlePage(() => gotoPage(pageCount - 1))} disabled={!canNextPage}>
         {'>>'}
       </button>{' '}
-      <span className="pagination-count">
-        Page{' '}
-        <strong>
-          {pageIndex + 1} of {pageOptions.length}
-        </strong>{' '}
-      </span>
-      <span>
-        | Go to page:{' '}
-        <input
-          type="number"
-          defaultValue={pageIndex + 1}
-          onChange={(e) => {
-            const page = e.target.value ? Number(e.target.value) - 1 : 0
-            handlePage(() => gotoPage(page))
-          }}
-          style={{ width: '100px', marginRight: '5px' }}
-        />
-      </span>
       {pageSize && (
         <select
+          className="page-size-select"
           value={pageSize}
           onChange={(e) => {
             const pageSize = Number(e.target.value)
@@ -83,6 +66,7 @@ const PaginationWrapper = styled.div`
   justify-content: center;
   position: relative;
   gap: 10px;
+  margin-top: 15px;
   button {
     background-color: rgba(149, 149, 149, 0.4);
     border: none;
@@ -97,6 +81,17 @@ const PaginationWrapper = styled.div`
   }
   .page-size-select {
     position: absolute;
+    font-size: 12px;
+    color: white;
     right: 0;
+    width: 85px;
+    padding: 2px 7px;
+    background-color: rgba(149, 149, 149, 0.4);
+    border: none;
+    border-radius: 5px;
+    color: #e2e2e2;
+    :active {
+      border: none;
+    }
   }
 `

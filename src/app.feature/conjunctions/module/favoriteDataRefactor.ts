@@ -6,6 +6,7 @@ import {
 } from '@app.modules/types/conjunctions'
 
 export const favoriteDataRefactor = (data: FavoriteDataType): FavoriteColumnType[] => {
+  if (!data) return
   if (!Object.keys(data).length) return []
   const { satellitesIds, satellitesNames } = data
   let refactorArr = []
