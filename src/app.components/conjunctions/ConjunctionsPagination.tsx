@@ -11,11 +11,11 @@ const ConjunctionsPagination = ({
   pageIndex,
   pageOptions,
   handlePage,
-  setPageSize,
-  pageSize,
-  setCustomPageSize,
-  setQueryParams,
-  queryParams,
+  setPageSize = null,
+  pageSize = null,
+  setCustomPageSize = null,
+  setQueryParams = null,
+  queryParams = null,
 }) => {
   return (
     <PaginationWrapper>
@@ -33,26 +33,45 @@ const ConjunctionsPagination = ({
       </button>
       <button onClick={() => handlePage(() => gotoPage(pageCount - 1))} disabled={!canNextPage}>
         {'>>'}
-      </button>
-      <select
-        className="page-size-select"
-        value={pageSize}
-        onChange={(e) => {
-          const pageSize = Number(e.target.value)
-          setQueryParams({
-            ...queryParams,
-            limit: pageSize,
-          })
-          setCustomPageSize(pageSize)
-          setPageSize(pageSize)
-        }}
-      >
-        {[5, 10].map((pageSize) => (
-          <option key={pageSize} value={pageSize}>
-            Show {pageSize}
-          </option>
-        ))}
-      </select>
+      </button>{' '}
+      <span className="pagination-count">
+        Page{' '}
+        <strong>
+          {pageIndex + 1} of {pageOptions.length}
+        </strong>{' '}
+      </span>
+      <span>
+        | Go to page:{' '}
+        <input
+          type="number"
+          defaultValue={pageIndex + 1}
+          onChange={(e) => {
+            const page = e.target.value ? Number(e.target.value) - 1 : 0
+            handlePage(() => gotoPage(page))
+          }}
+          style={{ width: '100px', marginRight: '5px' }}
+        />
+      </span>
+      {pageSize && (
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            const pageSize = Number(e.target.value)
+            setQueryParams({
+              ...queryParams,
+              limit: pageSize,
+            })
+            setCustomPageSize(pageSize)
+            setPageSize(pageSize)
+          }}
+        >
+          {[5, 10].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      )}
     </PaginationWrapper>
   )
 }

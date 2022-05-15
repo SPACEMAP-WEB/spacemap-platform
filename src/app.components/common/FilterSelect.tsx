@@ -1,5 +1,4 @@
 import { FilterSelectType } from '@app.modules/types'
-import { PPDBSearchParamsType } from '@app.modules/types/conjunctions'
 import React from 'react'
 import styled from 'styled-components'
 
