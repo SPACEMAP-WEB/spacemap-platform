@@ -1,3 +1,4 @@
+import LaunchConjunctions from '@app.components/launchConjunctions'
 import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
 import SignInModal from '@app.components/signIn/SignInModal'
 import Conjunctions from '@app.feature/conjunctions/component/Conjunctions'
@@ -14,7 +15,7 @@ const MainLayout = () => {
       <SideMenu />
       <Button />
       <Conjunctions />
-      <AssessmentModal />
+      <LaunchConjunctions />
       <SignInModal />
     </MainLayoutWrapper>
   )
