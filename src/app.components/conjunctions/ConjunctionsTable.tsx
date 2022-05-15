@@ -173,7 +173,7 @@ const ConjunctionsTable = () => {
     setToggle(index)
     setQueryParams({ ...queryParams, page: 0, limit: 5 })
   }
-  
+
   const handlePage = async (callback) => {
     callback()
   }
@@ -223,82 +223,88 @@ const ConjunctionsTable = () => {
     <>
       {/* FIXME: change loading page into proper one */}
       {isSuccess && (
-        <ConjunctionsTableWrapper ref={tableContainerRef}>
-          <Search
-            handleSearch={handleSearch}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-          />
-          <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
-          {toggle === 1 && (
-            <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
-          )}
-          <ConjuctionsTabs toggle={toggle} onClick={handleToggle} />
+        <ConjunctionsWrapper ref={tableContainerRef}>
           <button className="btn-close" onClick={() => setClose(!close)}>
-            -
+            {!close ? <div className="close" /> : '+'}
           </button>
           {!close && (
-            <section className="table-wrapper">
-              <Table className="table" {...getTableProps()} ref={tableRef}>
-                <thead>
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column) => (
-                        <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                {!!tableData.length && (
-                  <>
-                    <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-                      {page.map((row, i) => {
-                        prepareRow(row)
-                        for (let j = 0; j < row.allCells.length; j++) {
-                          let cell = row.allCells[j]
-                          let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
+            <>
+              <div className="header-group">
+                <Search
+                  handleSearch={handleSearch}
+                  searchValue={searchValue}
+                  setSearchValue={setSearchValue}
+                />
+                <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
+              </div>
+              {toggle === 1 && (
+                <div className="favorite-filter">
+                  <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+                </div>
+              )}
+              <ConjuctionsTabs toggle={toggle} onClick={handleToggle} />
+              <section className="table-wrapper">
+                <Table className="table" {...getTableProps()} ref={tableRef}>
+                  <thead>
+                    {headerGroups.map((headerGroup) => (
+                      <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                          <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                        ))}
+                      </tr>
+                    ))}
+                  </thead>
+                  {!!tableData.length && (
+                    <>
+                      <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
+                        {page.map((row, i) => {
+                          prepareRow(row)
+                          for (let j = 0; j < row.allCells.length; j++) {
+                            let cell = row.allCells[j]
+                            let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
 
-                          if (rowSpanHeader !== undefined) {
-                            if (i % 2 !== 1) {
-                              cell.rowSpan = 2
-                              cell.isRowSpanned = false
-                            } else {
-                              cell.isRowSpan = 1
-                              cell.isRowSpanned = true
+                            if (rowSpanHeader !== undefined) {
+                              if (i % 2 !== 1) {
+                                cell.rowSpan = 2
+                                cell.isRowSpanned = false
+                              } else {
+                                cell.isRowSpan = 1
+                                cell.isRowSpanned = true
+                              }
                             }
                           }
-                        }
-                        return null
-                      })}
-                      {page.map((row) => {
-                        return (
-                          <tr {...row.getRowProps()}>
-                            {row.cells.map((cell) => {
-                              if (cell.isRowSpanned) return null
-                              else {
-                                return (
-                                  <td
-                                    rowSpan={cell.rowSpan}
-                                    {...cell.getCellProps()}
-                                    style={borderStyle}
-                                  >
-                                    {cell.render('Cell')}
-                                  </td>
-                                )
-                              }
-                            })}
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </>
-                )}
-              </Table>
-              <ConjunctionsPagination {...paginationProps} />
-            </section>
+                          return null
+                        })}
+                        {page.map((row) => {
+                          return (
+                            <tr {...row.getRowProps()}>
+                              {row.cells.map((cell) => {
+                                if (cell.isRowSpanned) return null
+                                else {
+                                  return (
+                                    <td
+                                      rowSpan={cell.rowSpan}
+                                      {...cell.getCellProps()}
+                                      style={borderStyle}
+                                    >
+                                      {cell.render('Cell')}
+                                    </td>
+                                  )
+                                }
+                              })}
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </>
+                  )}
+                </Table>
+                <ConjunctionsPagination {...paginationProps} />
+              </section>
+            </>
           )}
           {login && <ConjuctionsFavorite />}
-        </ConjunctionsTableWrapper>
+        </ConjunctionsWrapper>
       )}
     </>
   )
@@ -306,7 +312,7 @@ const ConjunctionsTable = () => {
 
 export default ConjunctionsTable
 
-const ConjunctionsTableWrapper = styled.div`
+const ConjunctionsWrapper = styled.div`
   width: 450px;
   padding: 1rem 0;
   background-color: rgba(84, 84, 84, 0.4);
@@ -321,6 +327,32 @@ const ConjunctionsTableWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  .btn-close {
+    position: absolute;
+    right: 10px;
+    top: 23px;
+    height: 18px;
+    background-color: rgba(149, 149, 149, 0.4);
+    border-radius: 3px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    .close {
+      width: 8px;
+      border-top: 3px solid white;
+    }
+  }
+  .header-group {
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  .favorite-filter {
+    position: absolute;
+    top: 65px;
+    right: 20px;
+  }
+
   .sort-container {
     width: 80%;
     display: flex;
@@ -332,6 +364,11 @@ const ConjunctionsTableWrapper = styled.div`
     border-radius: 10px;
     .table {
       font-size: 11px;
+    }
+    @media screen and (min-width: 1920px) {
+      .table {
+        font-size: 13px;
+      }
     }
     .pagination {
       margin-top: 10px;
