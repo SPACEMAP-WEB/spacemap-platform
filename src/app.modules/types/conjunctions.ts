@@ -71,8 +71,7 @@ export type FavoriteDataType = {
   _id?: string
   email?: string
   __v?: number
-  satellitesIds?: number[]
-  satellitesNames?: string[]
+  interestedArray: { id: number; name: string }[]
 }
 
 export type FavoriteColumnType = {

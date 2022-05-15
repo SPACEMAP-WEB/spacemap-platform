@@ -1,6 +1,6 @@
-import ConjunctionsTable from '@app.components/conjunctions/ConjunctionsTable'
 import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
 import SignInModal from '@app.components/signIn/SignInModal'
+import Conjunctions from '@app.feature/conjunctions/component/Conjunctions'
 import React from 'react'
 import styled from 'styled-components'
 import Button from './Button'
@@ -13,7 +13,7 @@ const MainLayout = () => {
       <Logo />
       <SideMenu />
       <Button />
-      <ConjunctionsTable />
+      <Conjunctions />
       <AssessmentModal />
       <SignInModal />
     </MainLayoutWrapper>

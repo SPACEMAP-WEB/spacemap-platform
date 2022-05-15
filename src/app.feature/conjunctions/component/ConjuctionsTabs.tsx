@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const ConjuctionsTabs = ({ toggle, onClick }) => {
-  const tabs = ['ALL', 'Favorite']
+const ConjuctionsTabs = ({ toggle, onClick, login }) => {
+  const tabs = login ? ['ALL', 'Favorite'] : ['ALL']
 
   return (
     <StyledTabs>
@@ -25,6 +25,8 @@ export default ConjuctionsTabs
 
 const StyledTabs = styled.div`
   display: flex;
+  justify-content: center;
+  margin: 20px 0px;
   .conjuctions-tab-menu {
     width: 110px;
     text-align: center;

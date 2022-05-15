@@ -8,7 +8,7 @@ import { RootState } from 'src/app.store/config/configureStore'
 
 const requestApiFavorite = (email, queryParams) => {
   return useQuery(
-    [API_FAVORITE, email],
+    [API_FAVORITE],
     async () => {
       const res = await api.GET<null, FavoriteResponseType>(API_FAVORITE + objectToURL(queryParams))
       return res.data.data
@@ -23,7 +23,7 @@ const requestApiFavorite = (email, queryParams) => {
 
 const requestApiFindFavorite = (inputValue, email, queryParams) => {
   return useQuery(
-    [API_FAVORITE_FIND, email, inputValue],
+    [API_FAVORITE_FIND, inputValue],
     async () => {
       const res = await api.GET<null, FavoriteFindResponseType>(
         API_FAVORITE_FIND + `/${inputValue}` + objectToURL(queryParams)
@@ -31,6 +31,7 @@ const requestApiFindFavorite = (inputValue, email, queryParams) => {
       return res.data.data
     },
     {
+      enabled: !!email,
       keepPreviousData: true,
       staleTime: Infinity,
     }
