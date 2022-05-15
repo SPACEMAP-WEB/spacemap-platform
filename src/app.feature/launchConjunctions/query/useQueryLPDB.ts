@@ -22,3 +22,9 @@ export const useQueryGetLPDBDetail = (id: string) => {
     return api.GET(process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB + `/${id}`)
   })
 }
+
+export const useQueryGetLPDBDownload = (filePath: string) => {
+  return useQuery([API_LPDB, filePath], () => {
+    return api.GET(process.env.SPACEMAP_PLATFORM_API_URI + filePath)
+  })
+}
