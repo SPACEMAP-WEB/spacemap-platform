@@ -8,21 +8,21 @@ import {
 import { Table } from '@app.components/common/Table'
 import { Column, useTable, CellProps, useRowSelect, usePagination } from 'react-table'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useQueryFavorite } from '@app.feature/conjunctions/query/useQueryFavorite'
+import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
 import {
   favoriteDataRefactor,
   favoriteFindDataRefactor,
-} from '@app.feature/conjunctions/module/favoriteDataRefactor'
+} from '@app.feature/favorite/module/favoriteDataRefactor'
 import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
 import {
   useDeleteMutationFavorite,
   usePostMutationFavorite,
-} from '@app.feature/conjunctions/query/useMutationFavorite'
-import { updateBookmarkData } from '@app.feature/conjunctions/module/bookmakrDataCompare'
+} from '@app.feature/favorite/query/useMutationFavorite'
 import { useQueryClient } from 'react-query'
 import { API_FAVORITE } from '@app.modules/keyFactory'
-import ConjunctionsPagination from './ConjunctionsPagination'
+import ConjunctionsPagination from '../../conjunctions/component/ConjunctionsPagination'
 import styled from 'styled-components'
+import { updateBookmarkData } from '../module/bookmakrDataCompare'
 
 const borderStyle = {
   border: '1px solid gray',
@@ -64,7 +64,6 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     nextPage,
     pageCount,
     previousPage,
-    setPageSize,
     state: { selectedRowIds, pageIndex },
   } = useTable(
     {
@@ -78,6 +77,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
           return data
         }, {}),
         pageIndex: 0,
+        pageSize: 5,
       },
     },
     usePagination,
@@ -103,20 +103,6 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
       ])
     }
   )
-
-  useEffect(() => {
-    if (isSuccess) {
-      const newData = inputValue
-        ? favoriteFindDataRefactor(favoriteData as FavoriteFindDataType[])
-        : favoriteDataRefactor(favoriteData as FavoriteDataType)
-      setTableData(newData)
-      if (!inputValue) setBookmarkData(newData)
-    }
-  }, [isSuccess, favoriteData])
-
-  useEffect(() => {
-    setPageSize(5)
-  }, [isSuccess])
 
   const handlePage = async (callback) => {
     callback()
@@ -146,6 +132,16 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     setBookmarkData(originData)
     queryClient.invalidateQueries([API_FAVORITE])
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      const newData = inputValue
+        ? favoriteFindDataRefactor(favoriteData as FavoriteFindDataType[])
+        : favoriteDataRefactor(favoriteData as FavoriteDataType)
+      setTableData(newData)
+      if (!inputValue) setBookmarkData(newData)
+    }
+  }, [isSuccess, favoriteData])
 
   useEffect(() => {
     try {

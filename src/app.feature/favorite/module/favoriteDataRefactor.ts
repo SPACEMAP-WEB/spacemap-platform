@@ -6,13 +6,14 @@ import {
 } from '@app.modules/types/conjunctions'
 
 export const favoriteDataRefactor = (data: FavoriteDataType): FavoriteColumnType[] => {
-  if (!data) return
+  if (!data) return []
   if (!Object.keys(data).length) return []
-  const { satellitesIds, satellitesNames } = data
-  let refactorArr = []
-  for (let i = 0; i < satellitesIds.length; i++) {
-    refactorArr.push({ noradId: satellitesIds[i], satName: satellitesNames[i], isInterested: true })
-  }
+  const { interestedArray } = data
+  const refactorArr = interestedArray.map((sat) => ({
+    noradId: String(sat.id),
+    satName: sat.name,
+    isInterested: true,
+  }))
   return refactorArr
 }
 
