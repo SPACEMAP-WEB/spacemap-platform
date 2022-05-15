@@ -1,10 +1,14 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import ModalWrapper from '@app.components/common/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
+import { useMutationPostLPDB } from '@app.feature/conjunctions/query/useMutationLPDB'
 
 const AssessmentModal = () => {
-  const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
+  const { modalVisible, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
+  const [thresholdValue, setThresholdValue] = useState<number>(0)
+  const [inputFile, setInputFile] = useState<File>()
+  const { mutate } = useMutationPostLPDB()
 
   const imageInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
@@ -17,50 +21,77 @@ const AssessmentModal = () => {
     imageInput?.current.click()
   }
 
+  const handleInputChange = (e) => {
+    setThresholdValue(e.target.value)
+  }
+
+  const handleFileChange = (e) => {
+    console.log(e.target.files[0])
+    setInputFile(e.target.files[0])
+  }
+
+  const handleSubmit = (e) => {
+    console.log(inputFile)
+    console.log(thresholdValue)
+    mutate({ threshold: String(thresholdValue), trajectory: inputFile })
+  }
+
   return (
-    <>
-      {modalType === 'LAUNCHCONJUNCTIONS' && modalVisible && (
-        <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
-          <Modal ref={modalEl}>
-            <div className="modal-content-container">
-              <header className="modal-header">
-                <h1 className="modal-title">Launch Conjunctions Assessment</h1>
-                <img src="/svg/close-white.svg" className="modal-close" onClick={handleClose} />
-              </header>
-              <div className="body-container">
-                <section className="description-container">
-                  <p className="description-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
-                </section>
-                <section className="file-input-container" onClick={onCickImageUpload}>
-                  <input type="file" style={{ display: 'none' }} ref={imageInput} />
-                  <img src="/svg/file.svg" className="add-file" />
-                  <p className="file-input-button">Upload File</p>
-                </section>
-                <section className="example-container">
-                  <p className="link-notice-text">
-                    Click
-                    <a href="https://www.google.com" target="_blank" className="link-text">
-                      this link
-                      <svg viewBox="0 0 70 36">
-                        <path d="M6.9739 30.8153H63.0244C65.5269 30.8152 75.5358 -3.68471 35.4998 2.81531C-16.1598 11.2025 0.894099 33.9766 26.9922 34.3153C104.062 35.3153 54.5169 -6.68469 23.489 9.31527" />
-                      </svg>
-                    </a>
-                    to see Example!
-                  </p>
-                </section>
-              </div>
-            </div>
-          </Modal>
-        </ModalWrapper>
-      )}
-    </>
+    <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
+      <Modal ref={modalEl}>
+        <div className="modal-content-container">
+          <header className="modal-header">
+            <h1 className="modal-title">Launch Conjunctions Assessment</h1>
+            <img src="/svg/close-white.svg" className="modal-close" onClick={handleClose} />
+          </header>
+          <div className="body-container">
+            <section className="description-container">
+              <p className="description-text">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum.
+              </p>
+            </section>
+            <section className="file-input-container" onClick={onCickImageUpload}>
+              <input
+                type="file"
+                style={{ display: 'none' }}
+                ref={imageInput}
+                onChange={handleFileChange}
+              />
+              <img src="/svg/file.svg" className="add-file" />
+              <p className="file-input-button">Upload File</p>
+            </section>
+            <section className="example-container">
+              <p className="link-notice-text">
+                Click
+                <a href="https://www.google.com" target="_blank" className="link-text">
+                  this link
+                  <svg viewBox="0 0 70 36">
+                    <path d="M6.9739 30.8153H63.0244C65.5269 30.8152 75.5358 -3.68471 35.4998 2.81531C-16.1598 11.2025 0.894099 33.9766 26.9922 34.3153C104.062 35.3153 54.5169 -6.68469 23.489 9.31527" />
+                  </svg>
+                </a>
+                to see Example!
+              </p>
+            </section>
+            <section>
+              <input
+                type="number"
+                value={thresholdValue}
+                onChange={handleInputChange}
+                className="threshold-input-container"
+              ></input>
+            </section>
+            <button className="button-container" onClick={handleSubmit}>
+              submit
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </ModalWrapper>
   )
 }
 

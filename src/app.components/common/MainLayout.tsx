@@ -1,5 +1,5 @@
 import ConjunctionsTable from '@app.components/conjunctions/ConjunctionsTable'
-import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
+import LaunchConjunctions from '@app.components/launchConjunctions'
 import SignInModal from '@app.components/signIn/SignInModal'
 import React from 'react'
 import { useSelector } from 'react-redux'
@@ -18,7 +18,7 @@ const MainLayout = () => {
       <SideMenu />
       <Button login={login} />
       <ConjunctionsTable />
-      <AssessmentModal />
+      <LaunchConjunctions />
       <SignInModal />
     </MainLayoutWrapper>
   )

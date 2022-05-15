@@ -29,7 +29,7 @@ export const Table = styled.table<{ css?: string }>`
     th:nth-of-type(1) { width: 40px; }
     th:nth-of-type(2) { width: 90px; }
     th:nth-of-type(3) { width: 90px; }
-    th:nth-of-type(4) { width: 100px; }
+    th:nth-of-type(4) { width: 80px; }
     th:nth-of-type(5) { width: 107px; }
     th:nth-of-type(6) { width: 110px; }
     th:nth-of-type(7) { width: 108px; }
