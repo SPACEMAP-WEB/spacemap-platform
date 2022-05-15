@@ -43,6 +43,13 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
   const isLaunchConjunctionsClicked = modalType === 'LAUNCHCONJUNCTIONS' && modalVisible
   const { mutate } = useMutationDeleteLPDB()
 
+  useEffect(() => {
+    if (isVisible) {
+      // FIXME: implement proper view logic
+      console.log('hi')
+    }
+  }, [isVisible])
+
   const handleDetailClick = (id: string) => {
     setSelectedLPDBId(id)
     setIsDoneStatusClicked(true)
@@ -50,6 +57,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
 
   const handleDelete = (id: string) => {
     mutate(id)
+    // FIXME: CORS issue
   }
 
   const handleVisibility = () => {
@@ -58,6 +66,10 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
 
   const handleBackButton = () => {
     setIsDoneStatusClicked(false)
+  }
+
+  const handleDownload = () => {
+    //FIXME: implement download logic
   }
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
@@ -107,16 +119,10 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                   width: '15px',
                   cursor: 'pointer',
                 }}
-                onClick={() => setIsVisible((isVisible) => !isVisible)}
+                onClick={handleVisibility}
                 src={isVisible ? '/svg/open-eye.svg' : '/svg/close-eye.svg'}
                 alt="view"
               />
-              // <img
-              //   // src={isVisible ? '/svg/open-eye.svg' : '/svg/close-eye.svg'}
-              //   src={`/svg/${isVisible}-eye.svg`}
-              //   style={{ width: '15px', cursor: 'pointer' }}
-              //   onClick={handleVisibility}
-              // />
             ),
           },
           ...newColumns,
@@ -129,7 +135,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                   <img
                     src="/svg/download.svg"
                     style={{ width: '13px', cursor: 'pointer' }}
-                    onClick={() => {}}
+                    onClick={handleDownload}
                   />
                 ) : (
                   <div>-</div>
