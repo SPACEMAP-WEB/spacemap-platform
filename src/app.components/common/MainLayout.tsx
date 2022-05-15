@@ -1,5 +1,4 @@
-import LaunchConjunctions from '@app.components/launchConjunctions'
-import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
+import LaunchConjunctions from '@app.feature/launchConjunctions'
 import SignInModal from '@app.components/signIn/SignInModal'
 import Conjunctions from '@app.feature/conjunctions/component/Conjunctions'
 import React from 'react'

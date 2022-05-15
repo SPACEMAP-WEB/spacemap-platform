@@ -2,9 +2,13 @@ import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import ModalWrapper from '@app.components/common/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
-import { useMutationPostLPDB } from '@app.feature/conjunctions/query/useMutationLPDB'
+import { useMutationPostLPDB } from './query/useMutationLPDB'
 
-const AssessmentModal = () => {
+type AssessmentModalProps = {
+  handleAssessmentModalClose: () => void
+}
+
+const AssessmentModal = ({ handleAssessmentModalClose }: AssessmentModalProps) => {
   const { modalVisible, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
   const [thresholdValue, setThresholdValue] = useState<number>(0)
   const [inputFile, setInputFile] = useState<File>()
@@ -12,10 +16,6 @@ const AssessmentModal = () => {
 
   const imageInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
-
-  const handleClose = () => {
-    handleCloseModal()
-  }
 
   const onCickImageUpload = () => {
     imageInput?.current.click()
@@ -42,7 +42,11 @@ const AssessmentModal = () => {
         <div className="modal-content-container">
           <header className="modal-header">
             <h1 className="modal-title">Launch Conjunctions Assessment</h1>
-            <img src="/svg/close-white.svg" className="modal-close" onClick={handleClose} />
+            <img
+              src="/svg/close-white.svg"
+              className="modal-close"
+              onClick={handleAssessmentModalClose}
+            />
           </header>
           <div className="body-container">
             <section className="description-container">

@@ -15,3 +15,9 @@ export const useMutationPostLPDB = () => {
     })
   })
 }
+
+export const useMutationDeleteLPDB = () => {
+  return useMutation((id: string) => {
+    return api.DELETE({ url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB + `/${id}` })
+  })
+}

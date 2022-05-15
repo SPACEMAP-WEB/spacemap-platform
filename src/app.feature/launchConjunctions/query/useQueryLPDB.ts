@@ -16,3 +16,9 @@ export const useQueryGetLPDB = () => {
     keepPreviousData: true,
   })
 }
+
+export const useQueryGetLPDBDetail = (id: string) => {
+  return useQuery([API_LPDB, id], () => {
+    return api.GET(process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB + `/${id}`)
+  })
+}
