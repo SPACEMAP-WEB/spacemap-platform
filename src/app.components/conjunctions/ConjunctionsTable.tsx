@@ -173,7 +173,7 @@ const ConjunctionsTable = () => {
     setToggle(index)
     setQueryParams({ ...queryParams, page: 0, limit: 5 })
   }
-
+  
   const handlePage = async (callback) => {
     callback()
   }
