@@ -1,6 +1,6 @@
-import ConjunctionsTable from '@app.components/conjunctions/ConjunctionsTable'
-import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
+import LaunchConjunctions from '@app.feature/launchConjunctions'
 import SignInModal from '@app.components/signIn/SignInModal'
+import Conjunctions from '@app.feature/conjunctions/component/Conjunctions'
 import React from 'react'
 import styled from 'styled-components'
 import Button from './Button'
@@ -8,7 +8,6 @@ import Logo from './Logo'
 import SideMenu from './SideMenu'
 
 const MainLayout = ({cesiumModule}) => {
-  console.log(cesiumModule);
   return (
     <MainLayoutWrapper>
       <Logo />
@@ -16,6 +15,8 @@ const MainLayout = ({cesiumModule}) => {
       <Button />
       <ConjunctionsTable cesiumModule = {cesiumModule}/>
       <AssessmentModal />
+      <Conjunctions />
+      <LaunchConjunctions />
       <SignInModal />
     </MainLayoutWrapper>
   )

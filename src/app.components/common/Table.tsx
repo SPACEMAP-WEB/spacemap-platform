@@ -4,6 +4,9 @@ export const Table = styled.table<{ css?: string }>`
   width: 100%;
   border-collapse: collapse;
   text-align: center;
+  border-collapse: collapse;
+  border-radius: 10px;
+  border-style: hidden;
   td,
   th {
     padding: 0.5rem;
@@ -14,7 +17,7 @@ export const Table = styled.table<{ css?: string }>`
   th {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #777676;
     backdrop-filter: blur(20px);
     font-weight: 900;
     position: sticky;
@@ -26,10 +29,10 @@ export const Table = styled.table<{ css?: string }>`
   ${({ css }) =>
     css ??
     `
-    th:nth-of-type(1) { width: 80px; }
-    th:nth-of-type(2) { width: 113px; }
-    th:nth-of-type(3) { width: 107px; }
-    th:nth-of-type(4) { width: 107px; }
+    th:nth-of-type(1) { width: 40px; }
+    th:nth-of-type(2) { width: 90px; }
+    th:nth-of-type(3) { width: 90px; }
+    th:nth-of-type(4) { width: 80px; }
     th:nth-of-type(5) { width: 107px; }
     th:nth-of-type(6) { width: 110px; }
     th:nth-of-type(7) { width: 108px; }

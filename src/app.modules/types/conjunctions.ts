@@ -55,7 +55,7 @@ export type SortType = 'tcaTime' | 'dca' | 'probability'
 export type QueryValueType = {
   sort?: SortType
   dec: '-'
-  satelite: number | string
+  satellite: number | string
 }
 
 export type PPDBSearchParamsType = {
@@ -63,6 +63,7 @@ export type PPDBSearchParamsType = {
   page: number
   sort?: SortType
   dec?: '-'
+  id?: string
   satellite?: number | string
 }
 
@@ -70,8 +71,7 @@ export type FavoriteDataType = {
   _id?: string
   email?: string
   __v?: number
-  satellitesIds?: number[]
-  satellitesNames?: string[]
+  interestedArray: { id: number; name: string }[]
 }
 
 export type FavoriteColumnType = {

@@ -19,7 +19,9 @@ const SideMenu = () => {
   }
 
   const handleLaunchConjunctionClick = () => {
-    dispatch(setModal({ type: 'LAUNCHCONJUNCTIONS' }))
+    modalVisible && modalType === 'LAUNCHCONJUNCTIONS'
+      ? handleCloseModal()
+      : dispatch(setModal({ type: 'LAUNCHCONJUNCTIONS' }))
   }
 
   return (

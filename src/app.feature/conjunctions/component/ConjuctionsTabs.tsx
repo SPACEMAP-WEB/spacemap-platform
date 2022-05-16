@@ -1,13 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
-const ConjuctionsTabs = () => {
-  const [toggle, setToggle] = useState(0)
-  const tabs = ['ALL', 'Favorite']
-
-  const handleClickTab = (index) => {
-    setToggle(index)
-  }
+const ConjuctionsTabs = ({ toggle, onClick, login }) => {
+  const tabs = login ? ['ALL', 'Favorite'] : ['ALL']
 
   return (
     <StyledTabs>
@@ -16,7 +11,7 @@ const ConjuctionsTabs = () => {
           <div
             key={index}
             className={`conjuctions-tab-menu ${index} ${toggle === index ? 'active' : ''}`}
-            onClick={() => handleClickTab(index)}
+            onClick={() => onClick(index)}
           >
             {tab}
           </div>
@@ -30,6 +25,8 @@ export default ConjuctionsTabs
 
 const StyledTabs = styled.div`
   display: flex;
+  justify-content: center;
+  margin: 20px 0px;
   .conjuctions-tab-menu {
     width: 110px;
     text-align: center;
@@ -42,6 +39,6 @@ const StyledTabs = styled.div`
     }
   }
   .active {
-    color: red;
+    color: #fccb16;
   }
 `

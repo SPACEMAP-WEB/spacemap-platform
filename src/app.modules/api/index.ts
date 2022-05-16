@@ -1,4 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestHeaders, AxiosResponse } from 'axios'
+import { API_OAUTH } from '@app.modules/keyFactory'
+import axios, { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse } from 'axios'
 
 axios.defaults.withCredentials = true
 
@@ -35,7 +36,11 @@ class API {
       const response: AxiosResponse<D> = await this.Fetch<T>(config)
       return response
     } catch (error) {
-      console.error(error)
+      const { response } = error as AxiosError
+      if (response.status === 401 && url !== API_OAUTH) {
+        location.reload()
+        return
+      }
       throw error
     }
   }
