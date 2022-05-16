@@ -7,10 +7,10 @@ import {
 
 export const favoriteDataRefactor = (data: FavoriteDataType): FavoriteColumnType[] => {
   if (!Object.keys(data).length) return []
-  const { satellitesIds, satellitesNames } = data
+  const { interestedArray } = data
   let refactorArr = []
-  for (let i = 0; i < satellitesIds.length; i++) {
-    refactorArr.push({ noradId: satellitesIds[i], satName: satellitesNames[i], isInterested: true })
+  for (let i = 0; i < interestedArray.length; i++) {
+    refactorArr.push({ noradId: interestedArray[i].id, satName: interestedArray[i].name, isInterested: true })
   }
   return refactorArr
 }

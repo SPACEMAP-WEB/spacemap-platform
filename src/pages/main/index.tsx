@@ -20,11 +20,7 @@ const PageMain = () => {
   }, [])
 
   if (isLoading) return null
-  console.log('-----')
-  const cesiumModule = new CesiumModule(123);
-  // console.log(module)
-  // console.log(module.initiailize())
-  console.log('-----')
+  const cesiumModule = new CesiumModule()
   return (
     <>
       <Head>
@@ -33,8 +29,8 @@ const PageMain = () => {
           rel="stylesheet"
         ></link>
       </Head>
-      <MainLayout cesiumModule = {cesiumModule}/>
-      <CesiumComponent cesiumModule = {cesiumModule}/>
+      <MainLayout cesiumModule={cesiumModule} />
+      <CesiumComponent cesiumModule={cesiumModule} />
       <div id="cesiumContainer" />
     </>
   )

@@ -5,7 +5,7 @@ import CesiumModule from '@app.modules/cesium/cesiumModule'
 import moment from 'moment'
 
 const CesiumComponent = ({cesiumModule}) => {
-  const today = moment();
+  const today = moment().add(-1,'days');
   cesiumModule.initiailize(today.year(), today.month() + 1, today.date(), today.hour());
   console.log(cesiumModule.getViewer());
 

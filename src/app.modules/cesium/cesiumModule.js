@@ -5,8 +5,7 @@ import { API_TLES, API_RSOS } from '@app.modules/keyFactory'
 import { useQuery, useMutation } from 'react-query'
 import { sgp4, twoline2satrec } from 'satellite.js'
 class CesiumModule {
-  constructor(price) {
-    this.price = price
+  constructor() {
     this.viewer
     this.tles
     this.rsoParams
@@ -190,7 +189,7 @@ class CesiumModule {
     scene.debugShowFramesPerSecond = true
 
     scene.globe.enableLighting = true
-    scene.postUpdate.addEventListener(icrf)
+    // scene.postUpdate.addEventListener(icrf)
     function icrf(scene, time) {
       if (scene.mode !== Cesium.SceneMode.SCENE3D) {
         return
