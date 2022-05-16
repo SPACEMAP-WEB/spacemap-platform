@@ -117,7 +117,7 @@ const Conjunctions = ({cesiumModule}) => {
 export default Conjunctions
 
 const ConjunctionsWrapper = styled.div`
-  width: 700px;
+  width: 740px;
   padding: 1rem 0;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;

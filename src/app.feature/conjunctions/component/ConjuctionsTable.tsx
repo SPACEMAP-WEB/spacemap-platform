@@ -91,22 +91,6 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
       },
       enableRowSpan: true,
     },
-    // {
-    //   id: 'visibility',
-    //   Header: 'view',
-    //   Cell: () => (
-    //     <img
-    //       style={{
-    //         width: '15px',
-    //         cursor: 'pointer',
-    //       }}
-    //       // onClick={handleVisibility(cesiumModule)}
-    //       onClick={() => console.log(cesiumModule.getTles())}
-    //       src={'/svg/open-eye.svg'}
-    //       alt="view"
-    //     />
-    //   ),
-    // },
   ]
 
   const columns = useMemo(() => COLUMNS, [queryParams])

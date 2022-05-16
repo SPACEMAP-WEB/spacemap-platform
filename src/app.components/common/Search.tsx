@@ -18,7 +18,7 @@ const Search = ({ handleSearch, searchValue, setSearchValue }: SearchProps) => {
         className="search-input"
         value={searchValue}
         onChange={handleValueChange}
-        placeholder="Search Conjunctions (Sat. ID or Sat. Name)"
+        placeholder="Search Sat. ID or Sat. Name"
       />
       <button className="search-button" onClick={handleSearch}>
         Search
