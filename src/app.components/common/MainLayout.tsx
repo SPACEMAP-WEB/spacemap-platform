@@ -7,13 +7,14 @@ import Button from './Button'
 import Logo from './Logo'
 import SideMenu from './SideMenu'
 
-const MainLayout = () => {
+const MainLayout = ({cesiumModule}) => {
+  console.log(cesiumModule);
   return (
     <MainLayoutWrapper>
       <Logo />
       <SideMenu />
       <Button />
-      <ConjunctionsTable />
+      <ConjunctionsTable cesiumModule = {cesiumModule}/>
       <AssessmentModal />
       <SignInModal />
     </MainLayoutWrapper>

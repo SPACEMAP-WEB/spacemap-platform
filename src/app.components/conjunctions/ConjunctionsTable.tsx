@@ -20,6 +20,7 @@ import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefac
 import ConjunctionsPagination from './ConjunctionsPagination'
 import FilterSelect from '@app.components/common/FilterSelect'
 import { FilterSelectType } from '@app.modules/types'
+import CesiumComponent from '@app.components/Cesium'
 
 const borderStyle = {
   border: '1px solid gray',
@@ -36,7 +37,7 @@ const filterOptions: FilterSelectType[] = [
   },
 ]
 
-const ConjunctionsTable = () => {
+const ConjunctionsTable = ({cesiumModule}) => {
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: 5,
     page: 0,
@@ -83,7 +84,7 @@ const ConjunctionsTable = () => {
       accessor: (row) => {
         return (
           <div
-            onClick={() => console.log(row)}
+            onClick={() => console.log(CesiumComponent)}
             style={{ width: '100%', height: '100%', cursor: 'pointer' }}
           >
             class

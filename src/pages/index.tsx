@@ -1,5 +1,9 @@
 import PageMain from './main'
 
-const AppIndex = () => <PageMain />
+const AppIndex = () => (
+  <>
+    <PageMain />
+  </>
+)
 
 export default AppIndex

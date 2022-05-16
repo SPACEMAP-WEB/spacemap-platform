@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import { requestCheckLogin } from 'src/app.store/loginStore/loginUser'
+import CesiumModule from '@app.modules/cesium/cesiumModule'
 
 const CesiumComponent = dynamic(() => import('@app.components/Cesium'), {
   ssr: false,
@@ -19,7 +20,11 @@ const PageMain = () => {
   }, [])
 
   if (isLoading) return null
-
+  console.log('-----')
+  const cesiumModule = new CesiumModule(123);
+  // console.log(module)
+  // console.log(module.initiailize())
+  console.log('-----')
   return (
     <>
       <Head>
@@ -28,8 +33,9 @@ const PageMain = () => {
           rel="stylesheet"
         ></link>
       </Head>
-      <MainLayout />
-      <CesiumComponent />
+      <MainLayout cesiumModule = {cesiumModule}/>
+      <CesiumComponent cesiumModule = {cesiumModule}/>
+      <div id="cesiumContainer" />
     </>
   )
 }
