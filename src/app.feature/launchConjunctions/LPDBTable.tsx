@@ -6,6 +6,7 @@ import { Table } from '@app.components/common/Table'
 import { useModal } from '@app.modules/hooks/useModal'
 import { useMutationDeleteLPDB } from './query/useMutationLPDB'
 import LPDBDetailTable from './LPDBDetailTable'
+import { useQueryGetLPDBDownload } from './query/useQueryLPDB'
 
 const COLUMNS: Column<LPDBResponseDataType>[] = [
   {
@@ -35,6 +36,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const [isDoneStatusClicked, setIsDoneStatusClicked] = useState<boolean>(false)
   const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
+  const [selectedPath, setSelectedPath] = useState<string>('')
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => LPDBData, [LPDBData])
   const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -42,6 +44,8 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
   const { modalType, modalVisible } = useModal('LAUNCHCONJUNCTIONS')
   const isLaunchConjunctionsClicked = modalType === 'LAUNCHCONJUNCTIONS' && modalVisible
   const { mutate } = useMutationDeleteLPDB()
+
+  const { data: downloadData, refetch } = useQueryGetLPDBDownload(selectedPath)
 
   useEffect(() => {
     if (isVisible) {
@@ -68,9 +72,35 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
     setIsDoneStatusClicked(false)
   }
 
-  const handleDownload = () => {
-    //FIXME: implement download logic
+  const handleDownload = async (filePath: string) => {
+    setSelectedPath(filePath)
+    if (selectedPath) {
+      const response = await refetch()
+
+      const element = document.createElement('a')
+      const textFile = new Blob([response.data.data], {
+        type: 'text/plain',
+      })
+      element.href = URL.createObjectURL(textFile)
+      element.download = 'trajectory_result.txt'
+      document.body.appendChild(element)
+      element.click()
+      setSelectedPath('')
+    }
   }
+
+  // const exportTxt = useCallback(() => {
+  //   let fileName = '파일이름.txt';
+  //   let output = "string 타입의 데이터";
+  //   const element = document.createElement('a');
+  //   const file = new Blob([output], {
+  //     type: 'text/plain',
+  //   });
+  //   element.href = URL.createObjectURL(file);
+  //   element.download = fileName;
+  //   document.body.appendChild(element); // FireFox
+  //   element.click();
+  // },[])
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
@@ -135,7 +165,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                   <img
                     src="/svg/download.svg"
                     style={{ width: '13px', cursor: 'pointer' }}
-                    onClick={handleDownload}
+                    onClick={() => handleDownload(row.original.trajectoryPath)}
                   />
                 ) : (
                   <div>-</div>
