@@ -71,7 +71,7 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
       },
     },
     {
-      Header: 'Visualization',
+      Header: 'View',
       accessor: (row) => {
         return (
           <img
@@ -85,7 +85,7 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
             cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)}}
           // onClick={() => console.log(row)}
           src={'/svg/open-eye.svg'}
-          alt="view"
+          alt="View"
         />
         )
       },
@@ -249,17 +249,10 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
   )
 }
 
-const handleVisibility = (cesiumModule) => {
-  console.log('!');
-  cesiumModule.drawPairs(11,15)
-  console.log('?');
-  return null;
-}
-
 export default ConjuctionsTable
 
 const StyledTable = styled.div`
-  width: 400px;
+  width: 650px;
   border-radius: 10px;
   .table {
     font-size: 11px;

@@ -186,8 +186,6 @@ class CesiumModule {
     })
     const scene = viewer.scene
     scene.requestRenderMode = true
-    scene.debugShowFramesPerSecond = true
-
     scene.globe.enableLighting = true
     // scene.postUpdate.addEventListener(icrf)
     function icrf(scene, time) {

@@ -25,7 +25,7 @@ const SignInModal = () => {
             <img src="/svg/close-black.svg" className="modal-close" onClick={handleClose} />
             <button className="google-login" onClick={() => handleClickLogin('google')}>
               <img src="/image/icon/ico-google.png" />
-              <p>SignIn with Google</p>
+              <p>Sign In with Google</p>
             </button>
           </Modal>
         </ModalWrapper>
