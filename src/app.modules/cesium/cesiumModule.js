@@ -2,7 +2,7 @@ import * as Cesium from 'cesium'
 import moment from 'moment'
 import api from '@app.modules/api'
 import { API_TLES, API_RSOS } from '@app.modules/keyFactory'
-
+import { useQuery, useMutation } from 'react-query'
 class CesiumModule {
   constructor(price) {
     this.price = price
@@ -12,48 +12,33 @@ class CesiumModule {
     return this.viewer
   }
   getTles() {
-    return useMutation(
-      async () => {
-        await api.POST({ url: API_TLES + `/${id}` })
-      },
-      {
-        onSuccess: () => {
-          // queryClient.invalidateQueries([API_FAVORITE])
-        },
-        onError: (error) => {
-          console.error(error)
-        },
-      }
-    )
+    const tles = api.GET({ url: API_TLES })
+    return tles
   }
-  tles2Satrrec(tles){
-    let tles = await fetch('/latest_all_LEO.tle');
-if (tles.status != 200) {
-  throw new Error('Server Error');
-}
+  tles2Satrrec(tles) {
+    tles = tles.text()
+    // let RSOParameterResponseData = readRSOParameters()
 
-tles = await tles.text();
-let RSOParameterResponseData = await readRSOParameters();
+    let tlesArray = tles.split('\r\n')
+    let totalCZML = []
+    // totalCZML.push(await document2czml(currentTime, duration));
 
-let tlesArray = tles.split('\r\n');
-let totalCZML = [];
-// totalCZML.push(await document2czml(currentTime, duration));
-
-// tlesArray.forEach(async function (tle, i) {
-let i = 0;
-let eachTLE = [];
-let satrecArray = [];
-for (let tle of tlesArray) {
-  if (i % 3 == 0) {
-    //first line
-    eachTLE.push(tle);
-  } else if (i % 3 == 1) {
-    //second line
-    eachTLE.push(tle);
-  } else {
-    //third line
-    eachTLE.push(tle);
-
+    // tlesArray.forEach(async function (tle, i) {
+    let i = 0
+    let eachTLE = []
+    let satrecArray = []
+    for (let tle of tlesArray) {
+      if (i % 3 == 0) {
+        //first line
+        eachTLE.push(tle)
+      } else if (i % 3 == 1) {
+        //second line
+        eachTLE.push(tle)
+      } else {
+        //third line
+        eachTLE.push(tle)
+      }
+    }
   }
   initiailize() {
     Cesium.Ion.defaultAccessToken =

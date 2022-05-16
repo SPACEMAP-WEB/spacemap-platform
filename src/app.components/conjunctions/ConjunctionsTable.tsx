@@ -20,7 +20,6 @@ import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefac
 import ConjunctionsPagination from './ConjunctionsPagination'
 import FilterSelect from '@app.components/common/FilterSelect'
 import { FilterSelectType } from '@app.modules/types'
-import CesiumComponent from '@app.components/Cesium'
 
 const borderStyle = {
   border: '1px solid gray',
@@ -84,7 +83,7 @@ const ConjunctionsTable = ({cesiumModule}) => {
       accessor: (row) => {
         return (
           <div
-            onClick={() => console.log(CesiumComponent)}
+            onClick={() => console.log(cesiumModule.getTles())}
             style={{ width: '100%', height: '100%', cursor: 'pointer' }}
           >
             class
