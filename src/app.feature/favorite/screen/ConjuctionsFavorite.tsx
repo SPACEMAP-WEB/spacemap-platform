@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
-import ConjuctionsFavoriteTable from './ConjuctionsFavroiteTable'
+import ConjuctionsFavoriteTable from '../component/ConjuctionsFavroiteTable'
 
 const ConjuctionsFavorite = () => {
   const [inputValue, setInputValue] = useState('')

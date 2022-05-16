@@ -3,12 +3,14 @@ import {
   FavoriteColumnType,
   FavoriteDataType,
   FavoriteFindDataType,
-  PPDBSearchParamsType,
 } from '@app.modules/types/conjunctions'
 import { Table } from '@app.components/common/Table'
 import { Column, useTable, CellProps, useRowSelect, usePagination } from 'react-table'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
+import {
+  useQueryFavorite,
+  useQueryFindFavorite,
+} from '@app.feature/favorite/query/useQueryFavorite'
 import {
   favoriteDataRefactor,
   favoriteFindDataRefactor,
@@ -19,7 +21,7 @@ import {
   usePostMutationFavorite,
 } from '@app.feature/favorite/query/useMutationFavorite'
 import { useQueryClient } from 'react-query'
-import { API_FAVORITE } from '@app.modules/keyFactory'
+import { API_FAVORITE, API_FAVORITE_CONJUCTIONS } from '@app.modules/keyFactory'
 import ConjunctionsPagination from '../../conjunctions/component/ConjunctionsPagination'
 import styled from 'styled-components'
 import { updateBookmarkData } from '../module/bookmakrDataCompare'
@@ -30,15 +32,25 @@ const borderStyle = {
 
 const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const queryClient = useQueryClient()
-  const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
-    limit: 5,
-    page: 0,
-  })
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
   const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
   const [prevInput, setPrevInput] = useState(inputValue)
 
-  const { data: favoriteData, isLoading, isSuccess } = useQueryFavorite(inputValue, queryParams)
+  const {
+    data: favoriteInitialData,
+    isLoading: initialIsLoading,
+    isSuccess: initialIsSuccess,
+  } = useQueryFavorite(inputValue)
+  const {
+    data: favoriteFindData,
+    isLoading: findIsLoading,
+    isSuccess: findIsSuccess,
+  } = useQueryFindFavorite(inputValue)
+
+  const favoriteData = inputValue ? favoriteFindData : favoriteInitialData
+  const isLoading = inputValue ? findIsLoading : initialIsLoading
+  const isSuccess = inputValue ? findIsSuccess : initialIsSuccess
+
   const favoritePostMutation = usePostMutationFavorite()
   const favoriteDeleteMutation = useDeleteMutationFavorite()
 
@@ -118,8 +130,6 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     pageIndex,
     pageOptions,
     handlePage,
-    setQueryParams,
-    queryParams,
   }
 
   const requsetMutationApi = async (
@@ -130,6 +140,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     const mutation = state === 'delete' ? favoriteDeleteMutation : favoritePostMutation
     await Promise.all(bookmarks.map(async (boomark) => await mutation.mutateAsync(boomark.noradId)))
     setBookmarkData(originData)
+    queryClient.invalidateQueries([API_FAVORITE_CONJUCTIONS])
     queryClient.invalidateQueries([API_FAVORITE])
   }
 

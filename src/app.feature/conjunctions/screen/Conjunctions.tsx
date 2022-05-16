@@ -5,11 +5,11 @@ import { useModal } from '@app.modules/hooks/useModal'
 import Search from '@app.components/common/Search'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
-import ConjuctionsFavorite from '../../favorite/component/ConjuctionsFavorite'
-import ConjuctionsTabs from './ConjuctionsTabs'
+import ConjuctionsFavorite from '../../favorite/screen/ConjuctionsFavorite'
+import ConjuctionsTabs from '../component/ConjuctionsTabs'
 import FilterSelect from '@app.components/common/FilterSelect'
 import { FilterSelectType } from '@app.modules/types'
-import ConjuctionsTable from './ConjuctionsTable'
+import ConjuctionsTable from '../component/ConjuctionsTable'
 
 const filterOptions: FilterSelectType[] = [
   {
