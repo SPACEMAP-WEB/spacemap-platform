@@ -144,9 +144,10 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
 
   const requestFavoriteData = async () => {
     const queryFavorite = queryClinet.getQueryData<FavoriteDataType>([API_FAVORITE])
+    console.log(queryFavorite)
     setFavoriteData([
       { label: 'ALL', value: 'ALL' },
-      ...queryFavorite.interestedArray.map((sat) => ({
+      ...queryFavorite?.interestedArray?.map((sat) => ({
         label: String(sat.id),
         value: String(sat.id),
       })),
