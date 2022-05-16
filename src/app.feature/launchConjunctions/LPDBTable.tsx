@@ -89,19 +89,6 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
     }
   }
 
-  // const exportTxt = useCallback(() => {
-  //   let fileName = '파일이름.txt';
-  //   let output = "string 타입의 데이터";
-  //   const element = document.createElement('a');
-  //   const file = new Blob([output], {
-  //     type: 'text/plain',
-  //   });
-  //   element.href = URL.createObjectURL(file);
-  //   element.download = fileName;
-  //   document.body.appendChild(element); // FireFox
-  //   element.click();
-  // },[])
-
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
       columns,
