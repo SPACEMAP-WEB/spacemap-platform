@@ -1,6 +1,6 @@
 import AssessmentModal from '@app.components/launchConjunctions/AssessmentModal'
 import SignInModal from '@app.components/signIn/SignInModal'
-import Conjunctions from '@app.feature/conjunctions/component/Conjunctions'
+import Conjunctions from '@app.feature/conjunctions/screen/Conjunctions'
 import React from 'react'
 import styled from 'styled-components'
 import Button from './Button'
