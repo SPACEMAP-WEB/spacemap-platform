@@ -23,13 +23,14 @@ type TProps = {
   setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
+  cesiumModule
 }
 
 const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams }: TProps) => {
+const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams, cesiumModule }: TProps) => {
   const queryClinet = useQueryClient()
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(5)
@@ -69,6 +70,43 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
         return Object.values(row['tca/dca'])
       },
     },
+    {
+      Header: 'Visualization',
+      accessor: (row) => {
+        return (
+          <img
+          style={{
+            width: '15px',
+            cursor: 'pointer',
+          }}
+          // onClick={handleVisibility(cesiumModule)}
+          onClick={() => {
+            console.log(row)
+            cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)}}
+          // onClick={() => console.log(row)}
+          src={'/svg/open-eye.svg'}
+          alt="view"
+        />
+        )
+      },
+      enableRowSpan: true,
+    },
+    // {
+    //   id: 'visibility',
+    //   Header: 'view',
+    //   Cell: () => (
+    //     <img
+    //       style={{
+    //         width: '15px',
+    //         cursor: 'pointer',
+    //       }}
+    //       // onClick={handleVisibility(cesiumModule)}
+    //       onClick={() => console.log(cesiumModule.getTles())}
+    //       src={'/svg/open-eye.svg'}
+    //       alt="view"
+    //     />
+    //   ),
+    // },
   ]
 
   const columns = useMemo(() => COLUMNS, [queryParams])
@@ -208,6 +246,13 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
       <ConjunctionsPagination {...paginationProps} />
     </StyledTable>
   )
+}
+
+const handleVisibility = (cesiumModule) => {
+  console.log('!');
+  cesiumModule.drawPairs(11,15)
+  console.log('?');
+  return null;
 }
 
 export default ConjuctionsTable

@@ -22,7 +22,7 @@ const filterOptions: FilterSelectType[] = [
   },
 ]
 
-const Conjunctions = () => {
+const Conjunctions = ({cesiumModule}) => {
   const conjuctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: 5,
@@ -105,6 +105,7 @@ const Conjunctions = () => {
             setFavoriteData={setFavoriteData}
             queryParams={queryParams}
             setQueryParams={setQueryParams}
+            cesiumModule={cesiumModule}
           />
         </section>
         {login && <ConjuctionsFavorite />}
