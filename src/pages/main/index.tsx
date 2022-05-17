@@ -32,7 +32,7 @@ const PageMain = () => {
       </Head>
       <MainLayout cesiumModule={cesiumModule} />
       <CesiumComponent cesiumModule={cesiumModule} />
-      <StyledWrapper id="cesiumContainer" ></StyledWrapper>
+      <StyledWrapper id="cesiumContainer"></StyledWrapper>
     </>
   )
 }
@@ -40,5 +40,5 @@ const PageMain = () => {
 export default PageMain
 
 const StyledWrapper = styled.div`
-  height:100vh
+  height: 100vh;
 `

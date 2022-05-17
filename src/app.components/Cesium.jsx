@@ -6,7 +6,7 @@ import moment from 'moment'
 
 const CesiumComponent = ({cesiumModule}) => {
   const today = moment().add(-1,'days');
-  cesiumModule.initiailize(today.year(), today.month() + 1, today.date(), today.hour());
+  cesiumModule.initiailize(today.year(), today.month() + 1, today.date(), 0);
   console.log(cesiumModule.getViewer());
 
   // cesiumModule.cesiumModule.initialize();
