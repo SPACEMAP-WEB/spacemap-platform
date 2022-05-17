@@ -2,7 +2,6 @@ import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable, usePagination } from 'react-table'
 import {
-  FavoriteDataType,
   PPDBDataType,
   PPDBSearchParamsType,
   // eslint-disable-next-line @typescript-eslint/comma-dangle
@@ -13,10 +12,9 @@ import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
 import ConjunctionsPagination from './ConjunctionsPagination'
-import { API_FAVORITE } from '@app.modules/keyFactory'
 import { useInstance } from '../module/useInstance'
 import { FilterSelectType } from '@app.modules/types'
-import { useQueryClient } from 'react-query'
+import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
 
 type TProps = {
   toggle: number
@@ -30,8 +28,13 @@ const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams, cesiumModule }: TProps) => {
-  const queryClinet = useQueryClient()
+const ConjuctionsTable = ({
+  toggle,
+  setFavoriteData,
+  queryParams,
+  setQueryParams,
+  cesiumModule,
+}: TProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(5)
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
@@ -42,6 +45,8 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
     isConjunctionsClicked,
     toggle,
   })
+
+  const { data: queryFavorite, isSuccess } = useQueryFavorite('')
 
   const COLUMNS: Column<PPDBTableColumnType>[] = [
     {
@@ -75,18 +80,19 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
       accessor: (row) => {
         return (
           <img
-          style={{
-            width: '15px',
-            cursor: 'pointer',
-          }}
-          // onClick={handleVisibility(cesiumModule)}
-          onClick={() => {
-            console.log(row)
-            cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)}}
-          // onClick={() => console.log(row)}
-          src={'/svg/open-eye.svg'}
-          alt="View"
-        />
+            style={{
+              width: '15px',
+              cursor: 'pointer',
+            }}
+            // onClick={handleVisibility(cesiumModule)}
+            onClick={() => {
+              console.log(row)
+              cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)
+            }}
+            // onClick={() => console.log(row)}
+            src={'/svg/open-eye.svg'}
+            alt="View"
+          />
         )
       },
       enableRowSpan: true,
@@ -127,15 +133,14 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
   )
 
   const requestFavoriteData = async () => {
-    const queryFavorite = queryClinet.getQueryData<FavoriteDataType>([API_FAVORITE])
-    console.log(queryFavorite)
-    setFavoriteData([
-      { label: 'ALL', value: 'ALL' },
-      ...queryFavorite?.interestedArray?.map((sat) => ({
-        label: String(sat.id),
-        value: String(sat.id),
-      })),
-    ])
+    if (isSuccess)
+      setFavoriteData([
+        { label: 'ALL', value: 'ALL' },
+        ...queryFavorite?.interestedArray?.map((sat) => ({
+          label: String(sat.id),
+          value: String(sat.id),
+        })),
+      ])
   }
 
   useEffect(() => {
@@ -144,7 +149,7 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
 
   useEffect(() => {
     toggle && requestFavoriteData()
-  }, [toggle])
+  }, [toggle, queryFavorite])
 
   useEffect(() => {
     if (fetchedPPDBData) {
