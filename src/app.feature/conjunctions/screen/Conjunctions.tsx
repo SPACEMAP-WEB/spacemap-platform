@@ -22,8 +22,9 @@ const filterOptions: FilterSelectType[] = [
   },
 ]
 
-const Conjunctions = ({cesiumModule}) => {
+const Conjunctions = ({ cesiumModule }) => {
   const conjuctionsRef = useRef<HTMLDivElement>(null)
+  const favoriteConjuctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: 5,
     page: 0,
@@ -77,6 +78,7 @@ const Conjunctions = ({cesiumModule}) => {
 
   useEffect(() => {
     conjuctionsRef.current.style.display = close ? 'none' : 'block'
+    favoriteConjuctionsRef.current.style.display = close ? 'none' : 'block'
   }, [close])
 
   return (
@@ -85,8 +87,9 @@ const Conjunctions = ({cesiumModule}) => {
         <button className="btn-close" onClick={() => setClose(!close)}>
           {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
         </button>
-        <section ref={conjuctionsRef}>
-          <div className="header-group" ref={conjuctionsRef}>
+        <section className="conjuctions-wrapper" ref={conjuctionsRef}>
+          <h1 className="title conjuctions">Conjuctions</h1>
+          <div className="header-group">
             <Search
               handleSearch={handleSearch}
               searchValue={searchValue}
@@ -108,7 +111,12 @@ const Conjunctions = ({cesiumModule}) => {
             cesiumModule={cesiumModule}
           />
         </section>
-        {login && <ConjuctionsFavorite />}
+        <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
+          <h1 className="title bookmark">BookMarking</h1>
+          <div className="bookmark-table-wrapper">
+            <ConjuctionsFavorite login={login} />
+          </div>
+        </section>
       </ConjunctionsWrapper>
     </>
   )
@@ -118,7 +126,7 @@ export default Conjunctions
 
 const ConjunctionsWrapper = styled.div`
   width: 740px;
-  padding: 1rem 0;
+  padding: 1rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
   position: fixed;
@@ -131,10 +139,28 @@ const ConjunctionsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  .title {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  .conjuctions-wrapper {
+    width: 100%;
+  }
+  .bookmark-wrapper {
+    width: 100%;
+    display: flex;
+    .bookmark-table-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
   .btn-close {
     position: absolute;
     right: 10px;
-    top: 23px;
+    top: 8px;
     height: 18px;
     background-color: rgba(149, 149, 149, 0.4);
     border-radius: 3px;

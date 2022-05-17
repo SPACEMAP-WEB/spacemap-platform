@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import ConjuctionsFavoriteTable from '../component/ConjuctionsFavroiteTable'
 
-const ConjuctionsFavorite = () => {
+const ConjuctionsFavorite = ({ login }: { login: boolean }) => {
   const [inputValue, setInputValue] = useState('')
   const {
     handleSubmit,
@@ -12,7 +12,7 @@ const ConjuctionsFavorite = () => {
   } = useForm()
 
   const handleFavorite = (filed: { favorite: string }) => {
-    setInputValue(filed.favorite.trim())
+    login ? setInputValue(filed.favorite.trim()) : alert('login is Required')
   }
 
   return (
@@ -29,7 +29,11 @@ const ConjuctionsFavorite = () => {
         </button>
         {errors.favorite && <span>Favorite Field is Required</span>}
       </form>
-      <ConjuctionsFavoriteTable inputValue={inputValue} />
+      {login ? (
+        <ConjuctionsFavoriteTable inputValue={inputValue} />
+      ) : (
+        <div className="login-required">login and save your favorite satellite!</div>
+      )}
     </StyledWrapper>
   )
 }
@@ -37,7 +41,6 @@ const ConjuctionsFavorite = () => {
 export default ConjuctionsFavorite
 
 const StyledWrapper = styled.div`
-  margin-top: 10px;
   text-align: center;
   .favorite-form {
     margin-bottom: 10px;
@@ -64,5 +67,13 @@ const StyledWrapper = styled.div`
       color: #e2e2e2;
       border-radius: 5px;
     }
+  }
+  .login-required {
+    color: white;
+    border: 2px dashed gray;
+    padding: 2rem;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'SpoqaHanSansNeo';
   }
 `
