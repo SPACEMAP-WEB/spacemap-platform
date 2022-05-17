@@ -55,8 +55,8 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const favoriteDeleteMutation = useDeleteMutationFavorite()
 
   const COLUMNS: Column<FavoriteColumnType>[] = [
-    { Header: 'NoradId', accessor: 'noradId' },
-    { Header: 'SatName', accessor: 'satName' },
+    { Header: 'Norad ID', accessor: 'noradId' },
+    { Header: 'Sat. Name', accessor: 'satName' },
   ]
 
   const columns = useMemo(() => COLUMNS, [])

@@ -22,7 +22,7 @@ const ConjuctionsFavorite = () => {
           className="favorite-form-input"
           type="text"
           {...register('favorite')}
-          placeholder="SatName or NorId"
+          placeholder="Search Your Satellites"
         />
         <button className="favorite-form-btn" type="submit">
           Search

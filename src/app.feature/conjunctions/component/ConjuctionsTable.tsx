@@ -23,13 +23,14 @@ type TProps = {
   setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
+  cesiumModule
 }
 
 const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams }: TProps) => {
+const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams, cesiumModule }: TProps) => {
   const queryClinet = useQueryClient()
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(5)
@@ -68,6 +69,27 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
       accessor: (row) => {
         return Object.values(row['tca/dca'])
       },
+    },
+    {
+      Header: 'View',
+      accessor: (row) => {
+        return (
+          <img
+          style={{
+            width: '15px',
+            cursor: 'pointer',
+          }}
+          // onClick={handleVisibility(cesiumModule)}
+          onClick={() => {
+            console.log(row)
+            cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)}}
+          // onClick={() => console.log(row)}
+          src={'/svg/open-eye.svg'}
+          alt="View"
+        />
+        )
+      },
+      enableRowSpan: true,
     },
   ]
 
@@ -214,7 +236,7 @@ const ConjuctionsTable = ({ toggle, setFavoriteData, queryParams, setQueryParams
 export default ConjuctionsTable
 
 const StyledTable = styled.div`
-  width: 400px;
+  width: 650px;
   border-radius: 10px;
   .table {
     font-size: 11px;

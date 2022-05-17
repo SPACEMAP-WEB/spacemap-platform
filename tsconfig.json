@@ -34,7 +34,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/app.modules/cesium/cesiumModule.js"  ],
   "exclude": [
     "node_modules"
   ]
