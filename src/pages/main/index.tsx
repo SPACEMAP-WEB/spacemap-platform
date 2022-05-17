@@ -1,5 +1,6 @@
 import MainLayout from '@app.components/common/MainLayout'
 import dynamic from 'next/dynamic'
+import styled from 'styled-components'
 import Head from 'next/head'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -31,9 +32,13 @@ const PageMain = () => {
       </Head>
       <MainLayout cesiumModule={cesiumModule} />
       <CesiumComponent cesiumModule={cesiumModule} />
-      <div id="cesiumContainer" />
+      <StyledWrapper id="cesiumContainer" ></StyledWrapper>
     </>
   )
 }
 
 export default PageMain
+
+const StyledWrapper = styled.div`
+  height:100vh
+`
