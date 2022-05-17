@@ -1,45 +1,70 @@
-import { LPDBResponseDataType } from '@app.modules/types/launchConjunctions'
-import React, { useMemo } from 'react'
+import { LPDBDataType, LPDBResponseDataType } from '@app.modules/types/launchConjunctions'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Column, useTable, CellProps } from 'react-table'
+import { Column, useTable } from 'react-table'
 import { Table } from '@app.components/common/Table'
 import { useQueryGetLPDBDetail } from './query/useQueryLPDB'
+import { lpdbDataRefactor } from './module/lpdbDataRefactor'
+import { PPDBDataType } from '@app.modules/types/conjunctions'
+import { useInstance } from './module/useInstance'
 
-const COLUMNS: Column<LPDBResponseDataType>[] = [
+const COLUMNS: Column<LPDBDataType>[] = [
   {
     Header: 'Index',
-    accessor: 'email',
+    accessor: (row) => {
+      return row.index
+    },
+    enableRowSpan: true,
   },
   {
     Header: 'Primary',
-    Cell: <div>LCA</div>,
+    accessor: (row) => {
+      return Object.values(row.primary)
+    },
   },
   {
     Header: 'Secondary',
-    accessor: 'createdAt',
+    accessor: (row) => {
+      return Object.values(row.secondary)
+    },
   },
   {
     Header: 'TCA/DCA',
-    accessor: 'status',
+    accessor: (row) => {
+      return Object.values(row['tca/dca'])
+    },
   },
 ]
 
 type LPDBDetailProps = {
   LPDBId: string
-  // handleNewLaunchClick: () => void
   handleBackButton: () => void
 }
 
 const LPDBDetailTable = ({ LPDBId, handleBackButton }: LPDBDetailProps) => {
   const { isLoading, data: LPDBDetailData, isSuccess } = useQueryGetLPDBDetail(LPDBId)
+  const [tableData, setTableData] = useState<PPDBDataType[]>([] as PPDBDataType[])
+
+  useEffect(() => {
+    if (LPDBDetailData) {
+      const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
+      setTableData(newData)
+    }
+  }, [LPDBDetailData])
 
   const columns = useMemo(() => COLUMNS, [])
-  const data = useMemo(() => [], [])
+  const data = useMemo(() => tableData, [tableData])
 
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
-    columns,
-    data,
-  })
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows, rowSpanHeaders } =
+    useTable(
+      {
+        columns,
+        data,
+      },
+      (hooks) => {
+        hooks.useInstance.push(useInstance)
+      }
+    )
 
   return (
     <>
@@ -62,18 +87,50 @@ const LPDBDetailTable = ({ LPDBId, handleBackButton }: LPDBDetailProps) => {
                 </tr>
               ))}
             </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
-                prepareRow(row)
-                return (
-                  <tr {...row.getRowProps()}>
-                    {row.cells.map((cell) => (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                    ))}
-                  </tr>
-                )
-              })}
-            </tbody>
+            {tableData.length && (
+              <>
+                <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    for (let j = 0; j < row.allCells.length; j++) {
+                      let cell = row.allCells[j]
+                      let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
+
+                      if (rowSpanHeader !== undefined) {
+                        if (i % 2 !== 1) {
+                          cell.rowSpan = 2
+                          cell.isRowSpanned = false
+                        } else {
+                          cell.isRowSpan = 1
+                          cell.isRowSpanned = true
+                        }
+                      }
+                    }
+                    return null
+                  })}
+                  {rows.map((row) => {
+                    return (
+                      <tr {...row.getRowProps()}>
+                        {row.cells.map((cell) => {
+                          if (cell.isRowSpanned) return null
+                          else {
+                            return (
+                              <td
+                                rowSpan={cell.rowSpan}
+                                {...cell.getCellProps()}
+                                style={borderStyle}
+                              >
+                                {cell.render('Cell')}
+                              </td>
+                            )
+                          }
+                        })}
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </>
+            )}
           </Table>
         </div>
       </LPDBTableWrapper>
@@ -82,6 +139,10 @@ const LPDBDetailTable = ({ LPDBId, handleBackButton }: LPDBDetailProps) => {
 }
 
 export default LPDBDetailTable
+
+const borderStyle = {
+  border: '1px solid gray',
+}
 
 const LPDBTableWrapper = styled.div`
   .new-launch-container {
