@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Column, useTable } from 'react-table'
 import { Table } from '@app.components/common/Table'
-import { useQueryGetLPDBDetail } from './query/useQueryLPDB'
+import { useQueryGetLPDBDetail, useQueryGetTrajectory } from './query/useQueryLPDB'
 import { lpdbDataRefactor } from './module/lpdbDataRefactor'
 import { PPDBDataType } from '@app.modules/types/conjunctions'
 import { useInstance } from './module/useInstance'
@@ -41,29 +41,37 @@ type LPDBDetailProps = {
   LPDBId: string
   handleBackButton: () => void
   cesiumModule: CesiumModule
-  trajectory: string
-  predictionEpochTime: string
-  launchEpochTime: string
+  trajectoryPath: string
 }
 
 const LPDBDetailTable = ({
   handleBackButton,
   LPDBId,
   cesiumModule,
-  trajectory,
-  predictionEpochTime,
-  launchEpochTime,
+  trajectoryPath,
 }: LPDBDetailProps) => {
   const { isLoading, data: LPDBDetailData, isSuccess } = useQueryGetLPDBDetail(LPDBId)
+  const { data: downloadData } = useQueryGetTrajectory(trajectoryPath)
   const [tableData, setTableData] = useState<PPDBDataType[]>([] as PPDBDataType[])
-
   useEffect(() => {
-    if (LPDBDetailData) {
+    if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
-      cesiumModule.drawLaunchConjunctions(trajectory, predictionEpochTime, launchEpochTime, newData)
+      // const trajectory = ''
+      cesiumModule.drawLaunchConjunctions(
+        downloadData.data,
+        LPDBDetailData.data.data.predictionEpochTime,
+        LPDBDetailData.data.data.launchEpochTime,
+        newData
+      )
       setTableData(newData)
     }
-  }, [LPDBDetailData])
+  }, [LPDBDetailData, downloadData])
+
+  // useEffect(() => {
+  //   if (downloadData) {
+  //     console.log(`in use effect: ${downloadData}`)
+  //   }
+  // }, [downloadData])
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])

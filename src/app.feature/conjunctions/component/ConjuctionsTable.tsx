@@ -86,7 +86,6 @@ const ConjuctionsTable = ({
             }}
             // onClick={handleVisibility(cesiumModule)}
             onClick={() => {
-              console.log(row)
               cesiumModule.drawConjunctions(row.primary, row.secondary, row.start, row.tca, row.end)
             }}
             // onClick={() => console.log(row)}
