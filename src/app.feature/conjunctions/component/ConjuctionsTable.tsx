@@ -87,7 +87,7 @@ const ConjuctionsTable = ({
             // onClick={handleVisibility(cesiumModule)}
             onClick={() => {
               console.log(row)
-              cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)
+              cesiumModule.drawConjunctions(row.primary, row.secondary, row.start, row.tca, row.end)
             }}
             // onClick={() => console.log(row)}
             src={'/svg/open-eye.svg'}

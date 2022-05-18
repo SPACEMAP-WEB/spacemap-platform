@@ -7,7 +7,7 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { useMutationDeleteLPDB } from './query/useMutationLPDB'
 import LPDBDetailTable from './LPDBDetailTable'
 import { useQueryGetLPDBDownload } from './query/useQueryLPDB'
-
+import CesiumModule from '@app.modules/cesium/cesiumModule'
 const COLUMNS: Column<LPDBResponseDataType>[] = [
   {
     Header: 'ID',
@@ -30,13 +30,18 @@ const COLUMNS: Column<LPDBResponseDataType>[] = [
 type LPDBProps = {
   LPDBData: LPDBResponseDataType[]
   handleNewLaunchClick: () => void
+  cesiumModule: CesiumModule
 }
 
-const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
+const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const [isDoneStatusClicked, setIsDoneStatusClicked] = useState<boolean>(false)
   const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
   const [selectedPath, setSelectedPath] = useState<string>('')
+
+  const [selectedTrajectory, setTrajectory] = useState<string>('')
+  const [selectedPredictionEpochTime, setPredictionEpochTime] = useState<string>('')
+  const [selectedLaunchEpochTime, setLaunchEpochTime] = useState<string>('')
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => LPDBData, [LPDBData])
   const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -54,8 +59,16 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
     }
   }, [isVisible])
 
-  const handleDetailClick = (id: string) => {
+  const handleDetailClick = async (
+    id: string,
+    trajectoryPath,
+    predictionEpochTime,
+    launchEpochTime
+  ) => {
+    await handleTrajectory(trajectoryPath)
     setSelectedLPDBId(id)
+    setPredictionEpochTime(predictionEpochTime)
+    setLaunchEpochTime(launchEpochTime)
     setIsDoneStatusClicked(true)
   }
 
@@ -72,11 +85,21 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
     setIsDoneStatusClicked(false)
   }
 
+  const handleTrajectory = async (filePath: string) => {
+    setSelectedPath(filePath)
+    if (selectedPath) {
+      const response = await refetch()
+      console.log(response.data.data)
+      setTrajectory(response.data.data)
+      console.log(selectedTrajectory)
+      setSelectedPath('')
+    }
+  }
+
   const handleDownload = async (filePath: string) => {
     setSelectedPath(filePath)
     if (selectedPath) {
       const response = await refetch()
-
       const element = document.createElement('a')
       const textFile = new Blob([response.data.data], {
         type: 'text/plain',
@@ -104,7 +127,15 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                 <>
                   {value === 'DONE' ? (
                     <div
-                      onClick={() => handleDetailClick(row.original['_id'])}
+                      onClick={async () => {
+                        await handleDetailClick(
+                          row.original['_id'],
+                          row.original.trajectoryPath,
+                          row.original.predictionEpochTime,
+                          row.original.launchEpochTime
+                        )
+                        console.log(row)
+                      }}
                       style={{ color: '#fccb16', cursor: 'pointer' }}
                     >
                       <span>
@@ -152,7 +183,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                   <img
                     src="/svg/download.svg"
                     style={{ width: '13px', cursor: 'pointer' }}
-                    onClick={() => handleDownload(row.original.trajectoryPath)}
+                    onClick={() => handleDownload(row.original.lpdbFilePath)}
                   />
                 ) : (
                   <div>-</div>
@@ -221,7 +252,14 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
             </div>
           </>
         ) : (
-          <LPDBDetailTable handleBackButton={handleBackButton} LPDBId={selectedLPDBId} />
+          <LPDBDetailTable
+            handleBackButton={handleBackButton}
+            LPDBId={selectedLPDBId}
+            cesiumModule={cesiumModule}
+            trajectory={selectedTrajectory}
+            predictionEpochTime={selectedPredictionEpochTime}
+            launchEpochTime={selectedLaunchEpochTime}
+          />
         )}
       </LPDBTableWrapper>
     </>

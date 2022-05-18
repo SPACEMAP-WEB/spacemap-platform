@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import AssessmentModal from './AssessmentModal'
 import LPDBTable from './LPDBTable'
 
-const LaunchConjunctions = () => {
+const LaunchConjunctions = ({ cesiumModule }) => {
   const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
   const [isAssessmentModalOpen, setIsAssessmentModalOpen] = useState<boolean>(false)
 
@@ -24,7 +24,13 @@ const LaunchConjunctions = () => {
     if (LPDBData.data.length === 0 || isAssessmentModalOpen) {
       return <AssessmentModal handleAssessmentModalClose={handleAssessmentModalClose} />
     } else {
-      return <LPDBTable LPDBData={LPDBData.data} handleNewLaunchClick={handleNewLaunchClick} />
+      return (
+        <LPDBTable
+          LPDBData={LPDBData.data}
+          handleNewLaunchClick={handleNewLaunchClick}
+          cesiumModule={cesiumModule}
+        />
+      )
     }
   }
 

@@ -7,6 +7,7 @@ import { useQueryGetLPDBDetail } from './query/useQueryLPDB'
 import { lpdbDataRefactor } from './module/lpdbDataRefactor'
 import { PPDBDataType } from '@app.modules/types/conjunctions'
 import { useInstance } from './module/useInstance'
+import CesiumModule from '@app.modules/cesium/cesiumModule'
 
 const COLUMNS: Column<LPDBDataType>[] = [
   {
@@ -39,15 +40,27 @@ const COLUMNS: Column<LPDBDataType>[] = [
 type LPDBDetailProps = {
   LPDBId: string
   handleBackButton: () => void
+  cesiumModule: CesiumModule
+  trajectory: string
+  predictionEpochTime: string
+  launchEpochTime: string
 }
 
-const LPDBDetailTable = ({ LPDBId, handleBackButton }: LPDBDetailProps) => {
+const LPDBDetailTable = ({
+  handleBackButton,
+  LPDBId,
+  cesiumModule,
+  trajectory,
+  predictionEpochTime,
+  launchEpochTime,
+}: LPDBDetailProps) => {
   const { isLoading, data: LPDBDetailData, isSuccess } = useQueryGetLPDBDetail(LPDBId)
   const [tableData, setTableData] = useState<PPDBDataType[]>([] as PPDBDataType[])
 
   useEffect(() => {
     if (LPDBDetailData) {
       const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
+      cesiumModule.drawLaunchConjunctions(trajectory, predictionEpochTime, launchEpochTime, newData)
       setTableData(newData)
     }
   }, [LPDBDetailData])

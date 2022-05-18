@@ -28,8 +28,8 @@ export const useQueryGetLPDBDetail = (id: string) => {
 export const useQueryGetLPDBDownload = (filePath: string) => {
   return useQuery(
     [API_LPDB, filePath],
-    () => {
-      return api.GET<string, string>(process.env.SPACEMAP_PLATFORM_API_URI + `/${filePath}`)
+    async () => {
+      return await api.GET<string, string>(process.env.SPACEMAP_PLATFORM_API_URI + `/${filePath}`)
     },
     {
       enabled: false,
