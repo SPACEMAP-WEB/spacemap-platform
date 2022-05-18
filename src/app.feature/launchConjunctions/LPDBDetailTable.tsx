@@ -56,6 +56,7 @@ const LPDBDetailTable = ({
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
+      console.log(LPDBDetailData)
       // const trajectory = ''
       cesiumModule.drawLaunchConjunctions(
         downloadData.data,

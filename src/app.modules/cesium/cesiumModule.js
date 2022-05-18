@@ -49,14 +49,11 @@ class CesiumModule {
   }
 
   async drawConjunctions(pid, sid, from, tca, to) {
-    this.turnOffIcrf()
-    if (this.prevPid !== undefined) {
-      await this.turnOffPathNLabel(this.prevPid, this.prevSid)
-      this.czmlDataSource.entities.removeById(`${this.prevPid}/${this.prevSid}`)
-    }
+    await this.turnOffIcrf()
+    await this.clean()
 
     const primarySat = this.czmlDataSource.entities.getById(pid)
-    console.log(primarySat)
+    console.log(primarySat.position.getValue(Cesium.JulianDate.fromIso8601(from)))
     primarySat.path.material.outlineColor.setValue(this.primarySatColor)
     primarySat.path.show = true
     primarySat.label.outlineColor = this.primarySatColor
@@ -77,35 +74,90 @@ class CesiumModule {
     this.czmlDataSource.process(pairCzml).then(function (ds) {
       viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
       viewer.timeline.updateFromClock()
-      viewer.flyTo(ds.entities.getById(`${pid}/${sid}`), {
-        duration: 2,
-      })
-    })
+      viewer.flyTo(ds.entities.getById(`${pid}/${sid}`))
 
+      // viewer.flyTo(primarySat.position.getValue(viewer.clockViewModel.currentTime), {})
+    })
+    // this.tunrOnIcrf()
     this.prevPid = pid
     this.prevSid = sid
-    this.turnOnIcrf()
   }
 
-  async lpdb2PairInfo(lpdb) {
-    console.log(lpdb)
+  async lpdb2Czml(lpdb) {
+    const czml = []
+    const makePair = this.makePair
+    for (const currRow of lpdb) {
+      const pairCzml = await makePair(
+        currRow.primary,
+        currRow.secondary,
+        currRow.start,
+        currRow.tca,
+        currRow.end
+      )
+      czml.push(pairCzml)
+    }
+    return czml
   }
 
   async drawLaunchConjunctions(trajectory, predictionEpochTime, launchEpochTime, lpdb) {
-    this.turnOnIcrf()
+    await this.clean()
     // console.log(trajectory)
     // console.log(predictionEpochTime)
     // console.log(launchEpochTime)
     // console.log(lpdb)
-    const trajcetoryCzml = await this.trajectory2czml(trajectory, predictionEpochTime)
+    const czmlDataSource = this.czmlDataSource
+    const [trajcetoryCzml, endInterval] = await this.trajectory2czml(
+      trajectory,
+      predictionEpochTime
+    )
     const viewer = this.viewer
-    this.czmlDataSource.process(trajcetoryCzml).then(function (ds) {
-      viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
-      viewer.timeline.updateFromClock()
-    })
+    const lpdb2Czml = this.lpdb2Czml
+    const makePair = this.makePair
+    console.log(predictionEpochTime)
+    const initialTime = moment(predictionEpochTime)
+    const worker = new Worker('/script/tle2czml.js')
+    function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
+      worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
+      worker.onmessage = (e) => {
+        czmlDataSource.load(e.data).then(function (ds) {
+          const clockViewModel = viewer.clockViewModel
+          clockViewModel.startTime = initialTime.toISOString()
+          clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
+          console.log('!!!!')
+          czmlDataSource.process(trajcetoryCzml).then(function (ds) {
+            viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
+            viewer.timeline.updateFromClock()
+            console.log('!!!')
+            for (const currRow of lpdb) {
+              const pairCzml = makePair(
+                currRow.primary,
+                currRow.secondary,
+                currRow.start,
+                currRow.tca,
+                currRow.end
+              )
+              czmlDataSource.process(pairCzml).then(function (ds) {
+                console.log('!!')
+              })
+            }
+          })
+        })
+      }
+    }
+    updateCZML(predictionEpochTime, endInterval, 600, this.tles, this.rsoParams)
 
-    const documentationCzml = ''
+    // this.czmlDataSource.process(trajcetoryCzml).then(function (ds) {
+    //   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
+    //   viewer.timeline.updateFromClock()
+    //   console.log('!!!')
+    //   // viewer.trackedEntity = czmlDataSource.entities.getById(0)
+    //   // viewer.selectedEntity = viewer.trackedEntity
+    // })
+
+    // const documentationCzml = ''
     const pairsCzml = ''
+
+    await this.turnOnIcrf()
   }
 
   async trajectory2czml(trajcetory, predictionEpochTime) {
@@ -197,7 +249,7 @@ class CesiumModule {
     trajectoryCzml.position.epoch = startTime
     trajectoryCzml.availability = `${startTime}/${endTime}`
     console.log(endInterval)
-    return trajectoryCzml
+    return [trajectoryCzml, endInterval]
   }
 
   async turnOffPathNLabel(prevPid, prevSid) {
@@ -333,15 +385,14 @@ class CesiumModule {
         })
       }
     }
-
     updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams)
 
     this.viewer = viewer
-    this.turnOnIcrf()
+    // this.turnOnIcrf()
     return null
   }
 
-  turnOnIcrf() {
+  async turnOnIcrf() {
     const viewer = this.viewer
     const scene = this.viewer.scene
 
@@ -361,7 +412,7 @@ class CesiumModule {
     }
   }
 
-  turnOffIcrf() {
+  async turnOffIcrf() {
     const viewer = this.viewer
     const scene = this.viewer.scene
 
@@ -378,6 +429,13 @@ class CesiumModule {
         const transform = Cesium.Matrix4.fromRotationTranslation(icrfToFixed)
         camera.lookAtTransform(transform, offset)
       }
+    }
+  }
+
+  async clean() {
+    if (this.prevPid !== undefined) {
+      await this.turnOffPathNLabel(this.prevPid, this.prevSid)
+      this.czmlDataSource.entities.removeById(`${this.prevPid}/${this.prevSid}`)
     }
   }
 }
