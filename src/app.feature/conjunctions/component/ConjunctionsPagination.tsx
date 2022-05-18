@@ -48,7 +48,7 @@ const ConjunctionsPagination = ({
             setPageSize(pageSize)
           }}
         >
-          {[5, 10].map((pageSize) => (
+          {[2, 3, 5, 10].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

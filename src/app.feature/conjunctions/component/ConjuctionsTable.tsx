@@ -22,6 +22,7 @@ type TProps = {
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
   cesiumModule
+  size: number
 }
 
 const borderStyle = {
@@ -34,9 +35,10 @@ const ConjuctionsTable = ({
   queryParams,
   setQueryParams,
   cesiumModule,
+  size,
 }: TProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
-  const [customPageSize, setCustomPageSize] = useState(5)
+  const [customPageSize, setCustomPageSize] = useState(size)
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
 
@@ -55,6 +57,7 @@ const ConjuctionsTable = ({
         const page = queryParams.page
         return row.index + page * customPageSize
       },
+      width: 20,
       enableRowSpan: true,
     },
     {
@@ -86,7 +89,6 @@ const ConjuctionsTable = ({
             }}
             // onClick={handleVisibility(cesiumModule)}
             onClick={() => {
-              console.log(row)
               cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)
             }}
             // onClick={() => console.log(row)}
@@ -122,7 +124,7 @@ const ConjuctionsTable = ({
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 5 },
+      initialState: { pageIndex: 0, pageSize: size },
       manualPagination: true,
       pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
@@ -161,6 +163,22 @@ const ConjuctionsTable = ({
   const handlePage = async (callback) => {
     callback()
   }
+
+  const sizeFunction = () => {
+    if (window.innerHeight <= 1000) {
+      setCustomPageSize(2)
+      setQueryParams({ ...queryParams, limit: 2 })
+      setPageSize(2)
+    } else {
+      setCustomPageSize(5)
+      setQueryParams({ ...queryParams, limit: 5 })
+      setPageSize(5)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', sizeFunction)
+  }, [])
 
   const paginationProps = {
     gotoPage,
@@ -241,7 +259,6 @@ const ConjuctionsTable = ({
 export default ConjuctionsTable
 
 const StyledTable = styled.div`
-  width: 650px;
   border-radius: 10px;
   .table {
     font-size: 11px;

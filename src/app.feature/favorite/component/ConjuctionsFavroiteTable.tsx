@@ -31,7 +31,9 @@ const borderStyle = {
 }
 
 const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
+  const size = window.innerHeight <= 1000 ? 2 : 5
   const queryClient = useQueryClient()
+  const [customPageSize, setCustomPageSize] = useState(size)
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
   const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
   const [prevInput, setPrevInput] = useState(inputValue)
@@ -75,6 +77,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     gotoPage,
     nextPage,
     pageCount,
+    setPageSize,
     previousPage,
     state: { selectedRowIds, pageIndex },
   } = useTable(
@@ -89,7 +92,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
           return data
         }, {}),
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: customPageSize,
       },
     },
     usePagination,
@@ -169,6 +172,20 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
       console.error(error)
     }
   }, [selectedRowIds])
+
+  const sizeFunction = () => {
+    if (window.innerHeight <= 1000) {
+      setCustomPageSize(2)
+      setPageSize(2)
+    } else {
+      setCustomPageSize(5)
+      setPageSize(5)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', sizeFunction)
+  }, [])
 
   if (isLoading) return null
 
