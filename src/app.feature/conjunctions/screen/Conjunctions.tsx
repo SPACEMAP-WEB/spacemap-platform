@@ -112,7 +112,7 @@ const Conjunctions = ({ cesiumModule }) => {
           />
         </section>
         <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
-          <h1 className="title bookmark">BookMarking</h1>
+          <h1 className="title bookmark">Favorites</h1>
           <div className="bookmark-table-wrapper">
             <ConjuctionsFavorite login={login} />
           </div>

@@ -111,10 +111,17 @@ class CesiumModule {
       predictionEpochTime
     )
     const viewer = this.viewer
-    const lpdb2Czml = this.lpdb2Czml
+    // const lpdb2Czml = this.lpdb2Czml
     const makePair = this.makePair
     console.log(predictionEpochTime)
     const initialTime = moment(predictionEpochTime)
+    const initialTimeISOString = initialTime.toISOString()
+    const [tles, rsoParams] = await this.updateTlesAndRsos(initialTime)
+    if (duration === undefined) {
+      duration = 172800
+      intervalUnitTime = 600
+    }
+
     const worker = new Worker('/script/tle2czml.js')
     function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
       worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
@@ -144,7 +151,7 @@ class CesiumModule {
         })
       }
     }
-    updateCZML(predictionEpochTime, endInterval, 600, this.tles, this.rsoParams)
+    updateCZML(predictionEpochTime, endInterval, 600, tles, rsoParams)
 
     // this.czmlDataSource.process(trajcetoryCzml).then(function (ds) {
     //   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
@@ -355,24 +362,20 @@ class CesiumModule {
       initialTime = moment(initialTime)
     }
     console.log(initialTime)
-    const originTleDate = initialTime.clone().add(-1, 'd')
-    const year = originTleDate.year()
-    const month = originTleDate.month() + 1
-    const date = originTleDate.date()
-    const hour = originTleDate.hour()
-    const initialTimeISOString = initialTime.toISOString()
+
+    // await this.tles2satrecs(this.tles)
+
     console.log(initialTimeISOString)
     const czmlDataSource = new Cesium.CzmlDataSource()
     viewer.dataSources.add(czmlDataSource)
     this.czmlDataSource = czmlDataSource
 
+    const initialTimeISOString = initialTime.toISOString()
+    const [tles, rsoParams] = await this.updateTlesAndRsos(initialTime)
     if (duration === undefined) {
       duration = 172800
       intervalUnitTime = 600
     }
-    const tles = await this.getTles(year, month, date, hour)
-    const rsoParams = await this.getRsosParams()
-    // await this.tles2satrecs(this.tles)
 
     const worker = new Worker('/script/tle2czml.js')
     function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
@@ -390,6 +393,17 @@ class CesiumModule {
     this.viewer = viewer
     // this.turnOnIcrf()
     return null
+  }
+
+  async updateTlesAndRsos(initialTime) {
+    const originTleDate = initialTime.clone().add(-1, 'd')
+    const year = originTleDate.year()
+    const month = originTleDate.month() + 1
+    const date = originTleDate.date()
+    const hour = originTleDate.hour()
+    const tles = await this.getTles(year, month, date, hour)
+    const rsoParams = await this.getRsosParams()
+    return [tles, rsoParams]
   }
 
   async turnOnIcrf() {

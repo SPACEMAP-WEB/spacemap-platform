@@ -134,7 +134,7 @@ const ConjuctionsTable = ({
   const requestFavoriteData = async () => {
     if (isSuccess)
       setFavoriteData([
-        { label: 'ALL', value: 'ALL' },
+        { label: 'All', value: 'ALL' },
         ...queryFavorite?.interestedArray?.map((sat) => ({
           label: String(sat.id),
           value: String(sat.id),
