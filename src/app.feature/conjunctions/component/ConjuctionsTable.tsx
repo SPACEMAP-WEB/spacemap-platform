@@ -15,6 +15,7 @@ import ConjunctionsPagination from './ConjunctionsPagination'
 import { useInstance } from '../module/useInstance'
 import { FilterSelectType } from '@app.modules/types'
 import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
+import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
 
 type TProps = {
   toggle: number
@@ -57,7 +58,6 @@ const ConjuctionsTable = ({
         const page = queryParams.page
         return row.index + page * customPageSize
       },
-      width: 20,
       enableRowSpan: true,
     },
     {
@@ -165,15 +165,10 @@ const ConjuctionsTable = ({
   }
 
   const sizeFunction = () => {
-    if (window.innerHeight <= 1000) {
-      setCustomPageSize(2)
-      setQueryParams({ ...queryParams, limit: 2 })
-      setPageSize(2)
-    } else {
-      setCustomPageSize(5)
-      setQueryParams({ ...queryParams, limit: 5 })
-      setPageSize(5)
-    }
+    const size = winodwHeightFn(window.innerHeight)
+    setCustomPageSize(size)
+    setPageSize(size)
+    setQueryParams({ ...queryParams, limit: size })
   }
 
   useEffect(() => {
@@ -200,7 +195,7 @@ const ConjuctionsTable = ({
   if (isLoading) return <div>Loading</div>
   return (
     <StyledTable>
-      <Table className="table" {...getTableProps()}>
+      <Table className="table" {...getTableProps()} css={tableWidthStyle}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -275,4 +270,12 @@ const StyledTable = styled.div`
       font-weight: bold;
     }
   }
+`
+
+const tableWidthStyle = `
+th:nth-of-type(1) { width: 50px; padding:10px}
+th:nth-of-type(2) { width: 140px; }
+th:nth-of-type(3) { width: 140px; }
+th:nth-of-type(4) { width: 150px; }
+th:nth-of-type(5) { width: 40px; padding:10px}
 `

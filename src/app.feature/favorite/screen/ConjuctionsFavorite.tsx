@@ -17,18 +17,20 @@ const ConjuctionsFavorite = ({ login }: { login: boolean }) => {
 
   return (
     <StyledWrapper>
-      <form className="favorite-form" onSubmit={handleSubmit(handleFavorite)}>
-        <input
-          className="favorite-form-input"
-          type="text"
-          {...register('favorite')}
-          placeholder="Search Your Satellites"
-        />
-        <button className="favorite-form-btn" type="submit">
-          Search
-        </button>
-        {errors.favorite && <span>Favorite Field is Required</span>}
-      </form>
+      {login && (
+        <form className="favorite-form" onSubmit={handleSubmit(handleFavorite)}>
+          <input
+            className="favorite-form-input"
+            type="text"
+            {...register('favorite')}
+            placeholder="Search Your Satellites"
+          />
+          <button className="favorite-form-btn" type="submit">
+            Search
+          </button>
+          {errors.favorite && <span>Favorite Field is Required</span>}
+        </form>
+      )}
       {login ? (
         <ConjuctionsFavoriteTable inputValue={inputValue} />
       ) : (

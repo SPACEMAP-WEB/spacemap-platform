@@ -9,22 +9,19 @@ export const Table = styled.table<{ css?: string }>`
   border-style: hidden;
   td,
   th {
-    padding: 0.3rem;
-    border-bottom: 1px dashed grey;
+    padding: 0.5rem;
+    border-bottom: 1px solid grey;
     color: white;
     font-weight: 700;
   }
   th {
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
     background-color: #777676;
     backdrop-filter: blur(20px);
     font-weight: 900;
     position: sticky;
     top: 0;
-    :first-child {
-      width: 30px !important;
-    }
     :last-child {
       width: 10px !important;
     }
