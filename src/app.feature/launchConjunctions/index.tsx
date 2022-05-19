@@ -4,12 +4,15 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import AssessmentModal from './AssessmentModal'
 import LPDBTable from './LPDBTable'
+import SuccessModal from './SuccessModal'
 
 const LaunchConjunctions = () => {
   const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
   const [isAssessmentModalOpen, setIsAssessmentModalOpen] = useState<boolean>(false)
+  const [isLPDBTableOpen, setIsLPDBTableOpen] = useState<boolean>(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false)
 
-  const { isLoading, data: LPDBData, isSuccess } = useQueryGetLPDB()
+  const { isLoading, data: LPDBData, isSuccess, refetch: refetchLPDBData } = useQueryGetLPDB()
 
   const handleNewLaunchClick = () => {
     setIsAssessmentModalOpen(true)
@@ -22,8 +25,16 @@ const LaunchConjunctions = () => {
 
   const renderModal = () => {
     if (LPDBData.data.length === 0 || isAssessmentModalOpen) {
-      return <AssessmentModal handleAssessmentModalClose={handleAssessmentModalClose} />
-    } else {
+      return (
+        <AssessmentModal
+          setIsSuccessModalOpen={setIsSuccessModalOpen}
+          setIsLPDBTableOpen={setIsLPDBTableOpen}
+          handleAssessmentModalClose={handleAssessmentModalClose}
+          refetchLPDBData={refetchLPDBData}
+        />
+      )
+    } else if (LPDBData.data.length > 0 || isLPDBTableOpen) {
+      refetchLPDBData()
       return <LPDBTable LPDBData={LPDBData.data} handleNewLaunchClick={handleNewLaunchClick} />
     }
   }
@@ -36,6 +47,7 @@ const LaunchConjunctions = () => {
           {modalType === 'LAUNCHCONJUNCTIONS' && modalVisible && renderModal()}
         </LaunchConjunctionsWrapper>
       )}
+      {isSuccessModalOpen && <SuccessModal />}
     </>
   )
 }

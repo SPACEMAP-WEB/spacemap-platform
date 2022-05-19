@@ -127,21 +127,6 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
           return columnObject
         })
         return [
-          {
-            id: 'visibility',
-            Header: 'view',
-            Cell: () => (
-              <img
-                style={{
-                  width: '15px',
-                  cursor: 'pointer',
-                }}
-                onClick={handleVisibility}
-                src={isVisible ? '/svg/open-eye.svg' : '/svg/close-eye.svg'}
-                alt="view"
-              />
-            ),
-          },
           ...newColumns,
           {
             id: 'download',
@@ -191,11 +176,14 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
       <LPDBTableWrapper ref={tableContainerRef}>
         {!isDoneStatusClicked ? (
           <>
-            <button onClick={handleNewLaunchClick} className="new-launch-container">
-              New Launch
-            </button>
+            <div className="launch-conjunction-header">
+              <h1 className="title">Launch Conjunctions</h1>
+              <button onClick={handleNewLaunchClick} className="new-launch-container">
+                + New Launch
+              </button>
+            </div>
             <div className="table-wrapper">
-              <Table className="table" {...getTableProps()} ref={tableRef}>
+              <Table className="table" {...getTableProps()} ref={tableRef} css={tableWidthStyle}>
                 <thead>
                   {headerGroups.map((headerGroup) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
@@ -231,8 +219,8 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
 export default LPDBTable
 
 const LPDBTableWrapper = styled.div`
-  width: 450px;
-  padding: 1rem 0;
+  width: 480px;
+  padding: 1rem 1.5rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
   position: fixed;
@@ -245,33 +233,63 @@ const LPDBTableWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  .new-launch-container {
-    width: 200px;
-    height: 50px;
-    background-color: rgba(255, 255, 255, 0.13);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(20px);
-    gap: 0.5rem;
+  .launch-conjunction-header {
+    width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    color: white;
-    :hover {
-      background-color: rgba(255, 255, 255, 0.18);
+    justify-content: space-between;
+    .title {
+      color: white;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .new-launch-container {
+      width: 100px;
+      height: 36px;
+      font-size: 12px;
+      background-color: rgba(255, 255, 255, 0.13);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(20px);
+      gap: 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      color: white;
+      :hover {
+        background-color: rgba(255, 255, 255, 0.18);
+      }
     }
   }
   .table-wrapper {
-    width: 400px;
+    width: 450px;
+    max-height: 300px;
+    overflow-y: scroll;
     border-radius: 10px;
-    /* overflow-x: hidden; */
     object-fit: cover;
+    ::-webkit-scrollbar {
+      width: 6.5px;
+      background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #8d8d8d77;
+      border-radius: 50px;
+    }
     .table {
       font-size: 11px;
     }
   }
+`
+
+const tableWidthStyle = `
+th:nth-of-type(1) { width: 40px; }
+th:nth-of-type(2) { width: 20px; }
+th:nth-of-type(3) { width: 40px; }
+th:nth-of-type(4) { min-width: 20px; }
+th:nth-of-type(5) { width: 20px; }
+th:nth-of-type(6) { width: 10px; }
 `
