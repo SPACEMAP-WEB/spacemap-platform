@@ -237,8 +237,8 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
 export default LPDBTable
 
 const LPDBTableWrapper = styled.div`
-  width: 700px;
-  padding: 1rem 0;
+  width: 480px;
+  padding: 1.5rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
   position: fixed;
