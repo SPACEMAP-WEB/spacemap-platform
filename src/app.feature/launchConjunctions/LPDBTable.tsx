@@ -19,7 +19,7 @@ const COLUMNS: Column<LPDBResponseDataType>[] = [
     Cell: <div>LCA</div>,
   },
   {
-    Header: 'Date',
+    Header: 'Upload Date',
     accessor: 'createdAt',
   },
   {
@@ -121,7 +121,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
                       style={{ color: '#fccb16', cursor: 'pointer' }}
                     >
                       <span>
-                        {value}
+                        {'Success'}
                         {'   '}
                         <img
                           src="/svg/right-arrow.svg"
@@ -131,7 +131,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
                       </span>
                     </div>
                   ) : (
-                    <div>{value}</div>
+                    <div>{value === 'PENDING' ? 'Pending' : 'Failed'}</div>
                   )}
                 </>
               ),
