@@ -36,3 +36,9 @@ export const useQueryGetLPDBDownload = (filePath: string) => {
     }
   )
 }
+
+export const useQueryGetTrajectory = (filePath: string) => {
+  return useQuery([API_LPDB, filePath], () => {
+    return api.GET<string, string>(process.env.SPACEMAP_PLATFORM_API_URI + `/${filePath}`)
+  })
+}

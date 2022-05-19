@@ -7,6 +7,7 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { useMutationDeleteLPDB } from './query/useMutationLPDB'
 import LPDBDetailTable from './LPDBDetailTable'
 import { useQueryGetLPDBDownload } from './query/useQueryLPDB'
+import CesiumModule from '@app.modules/cesium/cesiumModule'
 
 const COLUMNS: Column<LPDBResponseDataType>[] = [
   {
@@ -18,7 +19,7 @@ const COLUMNS: Column<LPDBResponseDataType>[] = [
     Cell: <div>LCA</div>,
   },
   {
-    Header: 'Date',
+    Header: 'Upload Date',
     accessor: 'createdAt',
   },
   {
@@ -30,13 +31,18 @@ const COLUMNS: Column<LPDBResponseDataType>[] = [
 type LPDBProps = {
   LPDBData: LPDBResponseDataType[]
   handleNewLaunchClick: () => void
+  cesiumModule: CesiumModule
 }
 
-const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
+const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const [isDoneStatusClicked, setIsDoneStatusClicked] = useState<boolean>(false)
   const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
   const [selectedPath, setSelectedPath] = useState<string>('')
+  const [selectedTrajectoryPath, setTrajectoryPath] = useState<string>('')
+
+  // const [selectedPredictionEpochTime, setPredictionEpochTime] = useState<string>('')
+  // const [selectedLaunchEpochTime, setLaunchEpochTime] = useState<string>('')
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => LPDBData, [LPDBData])
   const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -54,8 +60,9 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
     }
   }, [isVisible])
 
-  const handleDetailClick = (id: string) => {
+  const handleDetailClick = async (id: string, trajectoryPath) => {
     setSelectedLPDBId(id)
+    setTrajectoryPath(trajectoryPath)
     setIsDoneStatusClicked(true)
   }
 
@@ -74,9 +81,11 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
 
   const handleDownload = async (filePath: string) => {
     setSelectedPath(filePath)
+    console.log(filePath)
     if (selectedPath) {
+      console.log(selectedPath)
       const response = await refetch()
-
+      console.log(response)
       const element = document.createElement('a')
       const textFile = new Blob([response.data.data], {
         type: 'text/plain',
@@ -86,6 +95,8 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
       document.body.appendChild(element)
       element.click()
       setSelectedPath('')
+    } else {
+      console.log('Selected path is empty...')
     }
   }
 
@@ -104,11 +115,13 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                 <>
                   {value === 'DONE' ? (
                     <div
-                      onClick={() => handleDetailClick(row.original['_id'])}
+                      onClick={() => {
+                        handleDetailClick(row.original['_id'], row.original.trajectoryPath)
+                      }}
                       style={{ color: '#fccb16', cursor: 'pointer' }}
                     >
                       <span>
-                        {value}
+                        {'Success'}
                         {'   '}
                         <img
                           src="/svg/right-arrow.svg"
@@ -118,7 +131,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                       </span>
                     </div>
                   ) : (
-                    <div>{value}</div>
+                    <div>{value === 'PENDING' ? 'Pending' : 'Failed'}</div>
                   )}
                 </>
               ),
@@ -137,7 +150,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
                   <img
                     src="/svg/download.svg"
                     style={{ width: '13px', cursor: 'pointer' }}
-                    onClick={() => handleDownload(row.original.trajectoryPath)}
+                    onClick={() => handleDownload(row.original.lpdbFilePath)}
                   />
                 ) : (
                   <div>-</div>
@@ -209,7 +222,12 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
             </div>
           </>
         ) : (
-          <LPDBDetailTable handleBackButton={handleBackButton} LPDBId={selectedLPDBId} />
+          <LPDBDetailTable
+            handleBackButton={handleBackButton}
+            LPDBId={selectedLPDBId}
+            cesiumModule={cesiumModule}
+            trajectoryPath={selectedTrajectoryPath}
+          />
         )}
       </LPDBTableWrapper>
     </>
@@ -219,8 +237,8 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
 export default LPDBTable
 
 const LPDBTableWrapper = styled.div`
-  width: 480px;
-  padding: 1rem 1.5rem;
+  width: 700px;
+  padding: 1rem 0;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
   position: fixed;

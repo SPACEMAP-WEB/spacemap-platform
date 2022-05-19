@@ -6,7 +6,7 @@ import AssessmentModal from './AssessmentModal'
 import LPDBTable from './LPDBTable'
 import SuccessModal from './SuccessModal'
 
-const LaunchConjunctions = () => {
+const LaunchConjunctions = ({ cesiumModule }) => {
   const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
   const [isAssessmentModalOpen, setIsAssessmentModalOpen] = useState<boolean>(false)
   const [isLPDBTableOpen, setIsLPDBTableOpen] = useState<boolean>(false)

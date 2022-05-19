@@ -31,7 +31,7 @@ const AppContainer: NextComponentType<AppContext, AppInitialProps, AppProps> = (
   return (
     <>
       <Head>
-        <title> Space-Map Platform</title>
+        <title> SPACEMAP:42</title>
       </Head>
       <GlobalStyle />
       <Provider store={store}>
