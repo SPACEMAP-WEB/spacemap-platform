@@ -35,7 +35,13 @@ const LaunchConjunctions = ({ cesiumModule }) => {
       )
     } else if (LPDBData.data.length > 0 || isLPDBTableOpen) {
       refetchLPDBData()
-      return <LPDBTable LPDBData={LPDBData.data} handleNewLaunchClick={handleNewLaunchClick} />
+      return (
+        <LPDBTable
+          LPDBData={LPDBData.data}
+          handleNewLaunchClick={handleNewLaunchClick}
+          cesiumModule={cesiumModule}
+        />
+      )
     }
   }
 
