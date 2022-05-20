@@ -102,7 +102,7 @@ async function satrec2czml(
     }
     res.push(i, positionEci.x, positionEci.y, positionEci.z)
   }
-  if ('46048' === satID) console.log(res)
+  // if ('46048' === satID) console.log(res)
   let startAvailTime = moment(startTime, 'YYYY-MM-DDTHH:mm:ss.SSSSZ')
     .clone()
     .add(-duration - periodSeconds / 2, 's')

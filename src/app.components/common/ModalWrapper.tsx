@@ -2,10 +2,10 @@ import React, { MouseEvent } from 'react'
 import styled from 'styled-components'
 
 type TProps = {
-  children: JSX.Element
-  visible: boolean
-  modalEl: React.MutableRefObject<HTMLDivElement>
-  handleCloseModal: () => void
+  children?: JSX.Element
+  visible?: boolean
+  modalEl?: React.MutableRefObject<HTMLDivElement>
+  handleCloseModal?: () => void
 }
 
 const ModalWrapper = ({ children, visible, modalEl, handleCloseModal }: TProps) => {

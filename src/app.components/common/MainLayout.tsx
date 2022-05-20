@@ -14,7 +14,7 @@ const MainLayout = ({cesiumModule}) => {
       <SideMenu />
       <Button />
       <Conjunctions cesiumModule = {cesiumModule}/>
-      <LaunchConjunctions />
+      <LaunchConjunctions cesiumModule = {cesiumModule}/>
       <SignInModal />
     </MainLayoutWrapper>
   )

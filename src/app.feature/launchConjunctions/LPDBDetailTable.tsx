@@ -3,10 +3,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Column, useTable } from 'react-table'
 import { Table } from '@app.components/common/Table'
-import { useQueryGetLPDBDetail } from './query/useQueryLPDB'
+import { useQueryGetLPDBDetail, useQueryGetTrajectory } from './query/useQueryLPDB'
 import { lpdbDataRefactor } from './module/lpdbDataRefactor'
 import { PPDBDataType } from '@app.modules/types/conjunctions'
 import { useInstance } from './module/useInstance'
+import CesiumModule from '@app.modules/cesium/cesiumModule'
 
 const COLUMNS: Column<LPDBDataType>[] = [
   {
@@ -39,18 +40,39 @@ const COLUMNS: Column<LPDBDataType>[] = [
 type LPDBDetailProps = {
   LPDBId: string
   handleBackButton: () => void
+  cesiumModule: CesiumModule
+  trajectoryPath: string
 }
 
-const LPDBDetailTable = ({ LPDBId, handleBackButton }: LPDBDetailProps) => {
+const LPDBDetailTable = ({
+  handleBackButton,
+  LPDBId,
+  cesiumModule,
+  trajectoryPath,
+}: LPDBDetailProps) => {
   const { isLoading, data: LPDBDetailData, isSuccess } = useQueryGetLPDBDetail(LPDBId)
+  const { data: downloadData } = useQueryGetTrajectory(trajectoryPath)
   const [tableData, setTableData] = useState<PPDBDataType[]>([] as PPDBDataType[])
-
   useEffect(() => {
-    if (LPDBDetailData) {
+    if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
+      console.log(LPDBDetailData)
+      // const trajectory = ''
+      cesiumModule.drawLaunchConjunctions(
+        downloadData.data,
+        LPDBDetailData.data.data.predictionEpochTime,
+        LPDBDetailData.data.data.launchEpochTime,
+        newData
+      )
       setTableData(newData)
     }
-  }, [LPDBDetailData])
+  }, [LPDBDetailData, downloadData])
+
+  // useEffect(() => {
+  //   if (downloadData) {
+  //     console.log(`in use effect: ${downloadData}`)
+  //   }
+  // }, [downloadData])
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])

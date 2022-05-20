@@ -89,7 +89,7 @@ const ConjuctionsTable = ({
             }}
             // onClick={handleVisibility(cesiumModule)}
             onClick={() => {
-              cesiumModule.drawPairs(row.primary, row.secondary, row.start, row.tca, row.end)
+              cesiumModule.drawConjunctions(row.primary, row.secondary, row.start, row.tca, row.end)
             }}
             // onClick={() => console.log(row)}
             src={'/svg/open-eye.svg'}
@@ -137,7 +137,7 @@ const ConjuctionsTable = ({
   const requestFavoriteData = async () => {
     if (isSuccess)
       setFavoriteData([
-        { label: 'ALL', value: 'ALL' },
+        { label: 'All', value: 'ALL' },
         ...queryFavorite?.interestedArray?.map((sat) => ({
           label: String(sat.id),
           value: String(sat.id),

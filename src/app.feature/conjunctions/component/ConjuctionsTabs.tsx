@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 const ConjuctionsTabs = ({ toggle, onClick, login }) => {
-  const tabs = login ? ['All-on-All', 'Favorite-on-All'] : ['All-on-All']
+  const tabs = login ? ['All-on-All', 'Favorites-on-All'] : ['ALL']
 
   return (
     <StyledTabs>
