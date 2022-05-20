@@ -15,6 +15,7 @@ import ConjunctionsPagination from './ConjunctionsPagination'
 import { useInstance } from '../module/useInstance'
 import { FilterSelectType } from '@app.modules/types'
 import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
+import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
 
 type TProps = {
   toggle: number
@@ -22,6 +23,7 @@ type TProps = {
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
   cesiumModule
+  size: number
 }
 
 const borderStyle = {
@@ -34,9 +36,10 @@ const ConjuctionsTable = ({
   queryParams,
   setQueryParams,
   cesiumModule,
+  size,
 }: TProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
-  const [customPageSize, setCustomPageSize] = useState(5)
+  const [customPageSize, setCustomPageSize] = useState(size)
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
 
@@ -121,7 +124,7 @@ const ConjuctionsTable = ({
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 5 },
+      initialState: { pageIndex: 0, pageSize: size },
       manualPagination: true,
       pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
@@ -161,6 +164,17 @@ const ConjuctionsTable = ({
     callback()
   }
 
+  const sizeFunction = () => {
+    const size = winodwHeightFn(window.innerHeight)
+    setCustomPageSize(size)
+    setPageSize(size)
+    setQueryParams({ ...queryParams, limit: size })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', sizeFunction)
+  }, [])
+
   const paginationProps = {
     gotoPage,
     previousPage,
@@ -181,7 +195,7 @@ const ConjuctionsTable = ({
   if (isLoading) return <div>Loading</div>
   return (
     <StyledTable>
-      <Table className="table" {...getTableProps()}>
+      <Table className="table" {...getTableProps()} css={tableWidthStyle}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -240,7 +254,6 @@ const ConjuctionsTable = ({
 export default ConjuctionsTable
 
 const StyledTable = styled.div`
-  width: 650px;
   border-radius: 10px;
   .table {
     font-size: 11px;
@@ -257,4 +270,12 @@ const StyledTable = styled.div`
       font-weight: bold;
     }
   }
+`
+
+const tableWidthStyle = `
+th:nth-of-type(1) { width: 50px; padding:10px}
+th:nth-of-type(2) { width: 140px; }
+th:nth-of-type(3) { width: 140px; }
+th:nth-of-type(4) { width: 150px; }
+th:nth-of-type(5) { width: 40px; padding:10px}
 `

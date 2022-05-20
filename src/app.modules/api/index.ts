@@ -12,7 +12,6 @@ type ApiData = {
 }
 
 class API {
-  // eslint-disable-next-line prettier/prettier
   private readonly requestApi: AxiosInstance
 
   constructor() {

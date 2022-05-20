@@ -23,10 +23,11 @@ const filterOptions: FilterSelectType[] = [
 ]
 
 const Conjunctions = ({ cesiumModule }) => {
+  const size = window.innerHeight <= 1000 ? 2 : 5
   const conjuctionsRef = useRef<HTMLDivElement>(null)
   const favoriteConjuctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
-    limit: 5,
+    limit: size,
     page: 0,
   })
   const { login } = useSelector((state: RootState) => state.login)
@@ -109,6 +110,7 @@ const Conjunctions = ({ cesiumModule }) => {
             queryParams={queryParams}
             setQueryParams={setQueryParams}
             cesiumModule={cesiumModule}
+            size={size}
           />
         </section>
         <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
@@ -146,10 +148,10 @@ const ConjunctionsWrapper = styled.div`
     margin-bottom: 15px;
   }
   .conjuctions-wrapper {
-    width: 100%;
+    /* width: 100%; */
   }
   .bookmark-wrapper {
-    width: 100%;
+    /* width: 100%; */
     display: flex;
     .bookmark-table-wrapper {
       width: 100%;

@@ -25,13 +25,16 @@ import { API_FAVORITE, API_FAVORITE_CONJUCTIONS } from '@app.modules/keyFactory'
 import ConjunctionsPagination from '../../conjunctions/component/ConjunctionsPagination'
 import styled from 'styled-components'
 import { updateBookmarkData } from '../module/bookmakrDataCompare'
+import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
 
 const borderStyle = {
   border: '1px solid gray',
 }
 
 const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
+  const size = winodwHeightFn(window.innerHeight)
   const queryClient = useQueryClient()
+  const [customPageSize, setCustomPageSize] = useState(size)
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
   const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
   const [prevInput, setPrevInput] = useState(inputValue)
@@ -75,6 +78,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     gotoPage,
     nextPage,
     pageCount,
+    setPageSize,
     previousPage,
     state: { selectedRowIds, pageIndex },
   } = useTable(
@@ -89,7 +93,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
           return data
         }, {}),
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: customPageSize,
       },
     },
     usePagination,
@@ -170,11 +174,21 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     }
   }, [selectedRowIds])
 
+  const sizeFunction = () => {
+    const size = winodwHeightFn(window.innerHeight)
+    setCustomPageSize(size)
+    setPageSize(size)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', sizeFunction)
+  }, [])
+
   if (isLoading) return null
 
   return (
     <StyledWrapper>
-      <Table className="table" {...getTableProps()}>
+      <Table className="table" {...getTableProps()} css={tableWidthStyle}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -209,7 +223,6 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
 export default ConjuctionsFavoriteTable
 
 const StyledWrapper = styled.div`
-  width: 400px;
   margin-top: 10px;
   .table {
     font-size: 11px;
@@ -226,4 +239,10 @@ const StyledWrapper = styled.div`
       font-weight: bold;
     }
   }
+`
+
+const tableWidthStyle = `
+th:nth-of-type(1) { width: 50px; padding:10px}
+th:nth-of-type(2) { width: 120px; }
+th:nth-of-type(3) { width: 50px; }
 `

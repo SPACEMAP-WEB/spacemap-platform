@@ -28,15 +28,12 @@ const StyledTabs = styled.div`
   justify-content: center;
   margin: 20px 0px;
   .conjuctions-tab-menu {
-    width: 320px;
     text-align: center;
     font-size: 20px;
     font-weight: bold;
     color: white;
     cursor: pointer;
-    :first-child {
-      width: 80px;
-    }
+    padding: 0 10px;
   }
   .active {
     color: #fccb16;
