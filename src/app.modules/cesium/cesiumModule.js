@@ -70,7 +70,7 @@ class CesiumModule {
     const pairCzml = await this.makePair(pid, sid, from, tca, to)
 
     const viewer = this.viewer
-
+    console.log(pairCzml)
     this.czmlDataSource.process(pairCzml).then(function (ds) {
       viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
       viewer.timeline.updateFromClock()
@@ -117,6 +117,7 @@ class CesiumModule {
     const initialTime = moment(predictionEpochTime)
     const initialTimeISOString = initialTime.toISOString()
     const [tles, rsoParams] = await this.updateTlesAndRsos(initialTime)
+
     if (duration === undefined) {
       duration = 172800
       intervalUnitTime = 600
