@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import ModalWrapper from '@app.components/common/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
 import { useMutationPostLPDB } from './query/useMutationLPDB'
-import SuccessModal from './SuccessModal'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import { LPDBResponseType } from '@app.modules/types/launchConjunctions'
 

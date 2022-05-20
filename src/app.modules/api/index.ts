@@ -36,6 +36,7 @@ class API {
       return response
     } catch (error) {
       const { response } = error as AxiosError
+      console.log(response.status)
       if (response.status === 401 && url !== API_OAUTH) {
         location.reload()
         return

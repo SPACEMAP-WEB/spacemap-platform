@@ -1,6 +1,9 @@
+import LoginRequestModal from '@app.components/common/LoginRequestModal'
 import { useQueryGetLPDB } from '@app.feature/launchConjunctions/query/useQueryLPDB'
 import { useModal } from '@app.modules/hooks/useModal'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import AssessmentModal from './AssessmentModal'
 import LPDBTable from './LPDBTable'
@@ -8,11 +11,15 @@ import SuccessModal from './SuccessModal'
 
 const LaunchConjunctions = ({ cesiumModule }) => {
   const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
+  const {
+    user: { email },
+    login,
+  } = useSelector((state: RootState) => state.login)
   const [isAssessmentModalOpen, setIsAssessmentModalOpen] = useState<boolean>(false)
   const [isLPDBTableOpen, setIsLPDBTableOpen] = useState<boolean>(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false)
 
-  const { isLoading, data: LPDBData, isSuccess, refetch: refetchLPDBData } = useQueryGetLPDB()
+  const { isLoading, data: LPDBData, isSuccess, refetch: refetchLPDBData } = useQueryGetLPDB(email)
 
   const handleNewLaunchClick = () => {
     setIsAssessmentModalOpen(true)
@@ -44,6 +51,13 @@ const LaunchConjunctions = ({ cesiumModule }) => {
       )
     }
   }
+
+  const handleCloseRequestLoginModal = () => {
+    handleCloseModal()
+  }
+
+  if (!login && modalVisible && modalType === 'LAUNCHCONJUNCTIONS')
+    return <LoginRequestModal handleRequestModalCancel={handleCloseRequestLoginModal} />
 
   return (
     <>
