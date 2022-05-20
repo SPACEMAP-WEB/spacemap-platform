@@ -10,6 +10,7 @@ import ConjuctionsTabs from '../component/ConjuctionsTabs'
 import FilterSelect from '@app.components/common/FilterSelect'
 import { FilterSelectType } from '@app.modules/types'
 import ConjuctionsTable from '../component/ConjuctionsTable'
+import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
 
 const filterOptions: FilterSelectType[] = [
   {
@@ -23,7 +24,7 @@ const filterOptions: FilterSelectType[] = [
 ]
 
 const Conjunctions = ({ cesiumModule }) => {
-  const size = window.innerHeight <= 1000 ? 2 : 5
+  const size = winodwHeightFn(window.innerHeight)
   const conjuctionsRef = useRef<HTMLDivElement>(null)
   const favoriteConjuctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
