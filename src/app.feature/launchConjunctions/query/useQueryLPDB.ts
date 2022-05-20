@@ -7,13 +7,13 @@ export const requestAPiGetLPDB = async () => {
   const response = await api.GET<null, LPDBResponseType>(
     process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB
   )
-
   return response.data
 }
 
-export const useQueryGetLPDB = () => {
+export const useQueryGetLPDB = (email) => {
   return useQuery([API_LPDB], () => requestAPiGetLPDB(), {
     keepPreviousData: true,
+    enabled: !!email,
   })
 }
 
