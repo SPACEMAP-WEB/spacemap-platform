@@ -16,7 +16,6 @@ class CesiumModule {
     this.apartColor = Cesium.Color.GREEN
     this.closeColor = Cesium.Color.RED
 
-    this.isPairMode = true
     this.prevPid
     this.prevSid
     this.rocketBase64 =
@@ -50,64 +49,34 @@ class CesiumModule {
     console.log(pid, sid, from, tca, to)
     await this.turnOffIcrf()
     await this.clean()
-    let tles = this.tles
-    let rsoParams = this.rsoParams
-    if (this.isPairMode === false) {
-      ;[tles, rsoParams] = await this.updateTlesAndRsos(moment(tca))
-      this.isPairMode = true
-    }
+    const primarySat = this.czmlDataSource.entities.getById(pid)
+    console.log(this.czmlDataSource)
+    console.log(primarySat)
+    primarySat.path.material.outlineColor.setValue(this.primarySatColor)
+    primarySat.path.show = true
+    primarySat.label.outlineColor = this.primarySatColor
+    primarySat.label.pixelOffset = new Cesium.Cartesian2(14, 14)
+    primarySat.label.show = true
 
+    const secondarySat = this.czmlDataSource.entities.getById(sid)
+    secondarySat.path.material.outlineColor.setValue(this.secondarySatColor)
+    secondarySat.path.show = true
+    secondarySat.label.outlineColor = this.secondarySatColor
+    secondarySat.label.pixelOffset = new Cesium.Cartesian2(-14, -14)
+    secondarySat.label.show = true
+
+    const pairCzml = await this.makePair(pid, sid, from, tca, to)
+
+    console.log(pairCzml)
     const viewer = this.viewer
-    const czmlDataSource = this.czmlDataSource
-    // const primarySat = this.czmlDataSource.entities.getById(pid)
-    const makePair = this.makePair
-    const primarySatColor = this.primarySatColor
-    const secondarySatColor = this.secondarySatColor
-    const worker = new Worker('/script/tle2czml.js')
-    function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
-      worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
-      worker.onmessage = (e) => {
-        viewer.dataSources.removeAll()
-        czmlDataSource.load(e.data).then(function (ds) {
-          viewer.dataSources.add(ds)
-          // const clockViewModel = viewer.clockViewModel
-          // clockViewModel.startTime = initialTime.toISOString()
-          // clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-          makePair(pid, sid, from, tca, to).then((pairCzml) => {
-            czmlDataSource.process(pairCzml).then(function (ds) {
-              const primarySat = ds.entities.getById(pid)
-              primarySat.path.material.outlineColor.setValue(primarySatColor)
-              primarySat.path.show = true
-              primarySat.label.outlineColor = primarySatColor
-              primarySat.label.pixelOffset = new Cesium.Cartesian2(14, 14)
-              primarySat.label.show = true
-
-              const secondarySat = ds.entities.getById(sid)
-              secondarySat.path.material.outlineColor.setValue(secondarySatColor)
-              secondarySat.path.show = true
-              secondarySat.label.outlineColor = secondarySatColor
-              secondarySat.label.pixelOffset = new Cesium.Cartesian2(-14, -14)
-              secondarySat.label.show = true
-              viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
-              viewer.timeline.updateFromClock()
-              viewer.flyTo(ds.entities.getById(`${pid}/${sid}`))
-            })
-          })
-        })
-        worker.terminate()
-      }
-    }
-    updateCZML(tca, 0, 600, tles, rsoParams)
-
-    // console.log(pairCzml)
-    // this.czmlDataSource.process(pairCzml).then(function (ds) {
-    //   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
-    //   viewer.timeline.updateFromClock()
-    //   viewer.flyTo(ds.entities.getById(`${pid}/${sid}`)).then(() => {})
-    //   // viewer.flyTo(primarySat.position.getValue(viewer.clockViewModel.currentTime), {})
-    // })
-    // // this.turnOnIcrf()
-    // //
+    this.czmlDataSource.process(pairCzml).then(function (ds) {
+      viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
+      viewer.timeline.updateFromClock()
+      viewer.flyTo(ds.entities.getById(`${pid}/${sid}`)).then(() => {})
+      // viewer.flyTo(primarySat.position.getValue(viewer.clockViewModel.currentTime), {})
+    })
+    this.turnOnIcrf()
+    //
     this.prevPid = pid
     this.prevSid = sid
   }
@@ -140,7 +109,6 @@ class CesiumModule {
     // console.log(predictionEpochTime)
     // console.log(launchEpochTime)
     // console.log(lpdb)
-
     const czmlDataSource = this.czmlDataSource
     const [trajcetoryCzml, endInterval] = await this.trajectory2czml(
       trajectory,
@@ -150,48 +118,59 @@ class CesiumModule {
     // const lpdb2Czml = this.lpdb2Czml
     const makePair = this.makePair
     const initialTime = moment(predictionEpochTime).utc()
-    this.isPairMode = false
     const [tles, rsoParams] = await this.updateTlesAndRsos(initialTime)
     const duration = trajectoryLength
     if (duration === undefined) {
       duration = 3600
       intervalUnitTime = 600
     }
-
-    const worker = new Worker('/script/tle2czml.js')
-    function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
-      worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
-      worker.onmessage = (e) => {
-        viewer.dataSources.removeAll()
-        czmlDataSource.load(e.data).then(function (ds) {
-          viewer.dataSources.add(ds)
-          const clockViewModel = viewer.clockViewModel
-          clockViewModel.startTime = initialTime.toISOString()
-          clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-          console.log('!!!!')
-          czmlDataSource.process(trajcetoryCzml).then(function (ds) {
-            viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
-            viewer.timeline.updateFromClock()
-            console.log('!!!')
-            for (const currRow of lpdb) {
-              const pairCzml = makePair(
-                currRow.primary,
-                currRow.secondary,
-                currRow.start,
-                currRow.tca,
-                currRow.end
-              )
-              czmlDataSource.process(pairCzml).then(function (ds) {
-                console.log('!!')
-              })
-            }
-          })
-          worker.terminate()
+    // const worker = new Worker('/script/tle2czml.js')
+    // function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
+    //   worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
+    //   worker.onmessage = (e) => {
+    //     czmlDataSource.load(e.data).then(function (ds) {
+    //       const clockViewModel = viewer.clockViewModel
+    //       clockViewModel.startTime = initialTime.toISOString()
+    //       clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
+    //       console.log('!!!!')
+    //       czmlDataSource.process(trajcetoryCzml).then(function (ds) {
+    //         viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
+    //         viewer.timeline.updateFromClock()
+    //         console.log('!!!')
+    //         for (const currRow of lpdb) {
+    //           const pairCzml = makePair(
+    //             currRow.primary,
+    //             currRow.secondary,
+    //             currRow.start,
+    //             currRow.tca,
+    //             currRow.end
+    //           )
+    //           czmlDataSource.process(pairCzml).then(function (ds) {
+    //             console.log('!!')
+    //           })
+    //         }
+    //       })
+    //     })
+    //   }
+    // }
+    // updateCZML(predictionEpochTime, endInterval, 600, tles, rsoParams)
+    czmlDataSource.process(trajcetoryCzml).then(function (ds) {
+      viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
+      viewer.timeline.updateFromClock()
+      console.log('!!!')
+      for (const currRow of lpdb) {
+        const pairCzml = makePair(
+          currRow.primary,
+          currRow.secondary,
+          currRow.start,
+          currRow.tca,
+          currRow.end
+        )
+        czmlDataSource.process(pairCzml).then(function (ds) {
+          console.log('!!')
         })
       }
-    }
-    updateCZML(predictionEpochTime, endInterval, 600, tles, rsoParams)
-
+    })
     await this.turnOnIcrf()
   }
 
@@ -361,10 +340,10 @@ class CesiumModule {
         },
         allowTextureFilterAnisotropic: false,
       },
-
+      requestRenderMode: true,
       maximumRenderTimeChange: 0.05,
       targetFrameRate: 30,
-
+      requestRenderMode: true,
       automaticallyTrackDataSourceClocks: true,
       skyBox: new Cesium.SkyBox({
         sources: {
@@ -379,10 +358,14 @@ class CesiumModule {
     })
     this.viewer = viewer
     const scene = viewer.scene
-
+    scene.requestRenderMode = true
     scene.globe.enableLighting = true
-    // const currTime = initialTime
-    // initialTime = moment().utc().startOf('day')
+
+    if (initialTime === undefined) {
+      initialTime = moment().utc().startOf('day')
+    } else {
+      initialTime = moment(initialTime)
+    }
     console.log(initialTime)
 
     // await this.tles2satrecs(this.tles)
@@ -407,7 +390,6 @@ class CesiumModule {
           const clockViewModel = viewer.clockViewModel
           clockViewModel.startTime = initialTime.toISOString()
           clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-          worker.terminate()
         })
       }
     }
@@ -418,7 +400,7 @@ class CesiumModule {
   }
 
   async updateTlesAndRsos(initialTime) {
-    const originTleDate = initialTime.clone().add(0, 'd')
+    const originTleDate = initialTime.clone().add(-1, 'd')
     const year = originTleDate.year()
     const month = originTleDate.month() + 1
     const date = originTleDate.date()
