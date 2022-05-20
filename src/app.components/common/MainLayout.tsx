@@ -7,14 +7,14 @@ import Button from './Button'
 import Logo from './Logo'
 import SideMenu from './SideMenu'
 
-const MainLayout = ({cesiumModule}) => {
+const MainLayout = ({ cesiumModule }) => {
   return (
     <MainLayoutWrapper>
       <Logo />
       <SideMenu />
       <Button />
-      <Conjunctions cesiumModule = {cesiumModule}/>
-      <LaunchConjunctions cesiumModule = {cesiumModule}/>
+      <Conjunctions cesiumModule={cesiumModule} />
+      <LaunchConjunctions cesiumModule={cesiumModule} />
       <SignInModal />
     </MainLayoutWrapper>
   )

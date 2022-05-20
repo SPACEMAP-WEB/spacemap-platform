@@ -5,12 +5,12 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 
-const requestApiFavorite = async (email) => {
+const requestApiFavorite = async () => {
   const res = await api.GET<null, FavoriteResponseType>(API_FAVORITE)
   return res.data.data
 }
 
-const requestApiFindFavorite = async (inputValue, email) => {
+const requestApiFindFavorite = async (inputValue) => {
   const res = await api.GET<null, FavoriteFindResponseType>(API_FAVORITE_FIND + `/${inputValue}`)
   return res.data.data
 }
@@ -19,7 +19,7 @@ export const useQueryFavorite = (inputValue) => {
   const {
     user: { email },
   } = useSelector((state: RootState) => state.login)
-  return useQuery([API_FAVORITE], () => requestApiFavorite(inputValue), {
+  return useQuery([API_FAVORITE], () => requestApiFavorite(), {
     enabled: !!email,
     keepPreviousData: true,
   })
@@ -30,12 +30,8 @@ export const useQueryFindFavorite = (inputValue) => {
     user: { email },
   } = useSelector((state: RootState) => state.login)
 
-  return useQuery(
-    [API_FAVORITE_FIND, inputValue],
-    () => requestApiFindFavorite(inputValue, email),
-    {
-      enabled: !!email && !!inputValue.trim(),
-      keepPreviousData: true,
-    }
-  )
+  return useQuery([API_FAVORITE_FIND, inputValue], () => requestApiFindFavorite(inputValue), {
+    enabled: !!email && !!inputValue.trim(),
+    keepPreviousData: true,
+  })
 }
