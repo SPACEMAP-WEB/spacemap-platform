@@ -34,7 +34,7 @@ const ConjuctionsFavorite = ({ login }: { login: boolean }) => {
       {login ? (
         <ConjuctionsFavoriteTable inputValue={inputValue} />
       ) : (
-        <div className="login-required">login and save your favorite satellite!</div>
+        <div className="login-required">Login and save your favorite satellites!</div>
       )}
     </StyledWrapper>
   )

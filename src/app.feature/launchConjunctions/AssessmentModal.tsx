@@ -85,8 +85,8 @@ const AssessmentModal = ({
                 <img src="/svg/file.svg" className="add-file" />
                 <p className="file-input-button">Upload File</p>
               </section>
-              <section className="threshold-container">
-                <p className="threshold-text">Threshold: </p>
+            <section className="threshold-container">
+                <p className="threshold-text">Threshold (km): </p>
                 <input
                   type="number"
                   value={thresholdValue}
@@ -97,7 +97,7 @@ const AssessmentModal = ({
               <section className="example-container">
                 <p className="link-notice-text">
                   Click
-                  <a href="/sample/naro_J2000_converted.txt" className="link-text" download>
+                  <a href="/sample/bocachica_J2000_converted.txt" className="link-text" download>
                     this link
                     <svg viewBox="0 0 70 36">
                       <path d="M6.9739 30.8153H63.0244C65.5269 30.8152 75.5358 -3.68471 35.4998 2.81531C-16.1598 11.2025 0.894099 33.9766 26.9922 34.3153C104.062 35.3153 54.5169 -6.68469 23.489 9.31527" />
@@ -107,7 +107,7 @@ const AssessmentModal = ({
                 </p>
               </section>
               <button className="submit-button" onClick={handleSubmit}>
-                submit
+                Submit
               </button>
             </div>
           </div>
