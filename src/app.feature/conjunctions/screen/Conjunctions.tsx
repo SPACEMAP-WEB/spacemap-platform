@@ -70,7 +70,12 @@ const Conjunctions = ({ cesiumModule }) => {
   }
 
   useEffect(() => {
-    if (!tableContainerRef || !tableContainerRef.current) return
+    if (!tableContainerRef || !tableContainerRef.current) {
+      console.log('not')
+      return
+    }
+
+    console.log(tableContainerRef.current.style.visibility)
 
     tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
     tableContainerRef.current.style.transform = `translateX(${
