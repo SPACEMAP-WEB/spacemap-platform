@@ -11,6 +11,7 @@ import FilterSelect from '@app.components/common/FilterSelect'
 import { FilterSelectType } from '@app.modules/types'
 import ConjuctionsTable from '../component/ConjuctionsTable'
 import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
+import { slideIn, slideOut } from '../module/keyFrames'
 
 const filterOptions: FilterSelectType[] = [
   {
@@ -32,12 +33,12 @@ const Conjunctions = ({ cesiumModule }) => {
     page: 0,
   })
   const { login } = useSelector((state: RootState) => state.login)
+  const [conjuctionsVisible, setConjuctionsVisible] = useState(false)
   const [searchValue, setSearchValue] = useState<string>('')
   const [toggle, setToggle] = useState(0)
   const [close, setClose] = useState(false)
   const [favoriteData, setFavoriteData] = useState<FilterSelectType[]>([])
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
-  const tableContainerRef = useRef<HTMLDivElement>(null)
   const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
 
   const handleToggle = (index: number) => {
@@ -69,70 +70,88 @@ const Conjunctions = ({ cesiumModule }) => {
     })
   }
 
+  const conjuctionsUnmount = () => {
+    !isConjunctionsClicked && setConjuctionsVisible(false)
+  }
+
+  // useEffect(() => {
+  //   if (!tableContainerRef || !tableContainerRef.current) {
+  //     return
+  //   }
+
+  //   tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
+  //   tableContainerRef.current.style.transform = `translateX(${
+  //     isConjunctionsClicked ? '0' : '40rem'
+  //   })`
+  // })
+
   useEffect(() => {
-    if (!tableContainerRef || !tableContainerRef.current) {
-      console.log('not')
-      return
-    }
-
-    console.log(tableContainerRef.current.style.visibility)
-
-    tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
-    tableContainerRef.current.style.transform = `translateX(${
-      isConjunctionsClicked ? '0' : '40rem'
-    })`
-  })
+    isConjunctionsClicked && setConjuctionsVisible(true)
+  }, [isConjunctionsClicked])
 
   useEffect(() => {
+    if (!conjuctionsRef.current || !favoriteConjuctionsRef.current) return
+
     conjuctionsRef.current.style.display = close ? 'none' : 'block'
     favoriteConjuctionsRef.current.style.display = close ? 'none' : 'block'
-  }, [close])
+  }, [close, conjuctionsRef.current])
+
+  console.log(isConjunctionsClicked, conjuctionsVisible)
 
   return (
     <>
-      <ConjunctionsWrapper ref={tableContainerRef}>
-        <button className="btn-close" onClick={() => setClose(!close)}>
-          {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
-        </button>
-        <section className="conjuctions-wrapper" ref={conjuctionsRef}>
-          <h1 className="title conjuctions">Conjuctions</h1>
-          <div className="header-group">
-            <Search
-              handleSearch={handleSearch}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-            />
-            <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
-          </div>
-          {toggle === 1 && (
-            <div className="favorite-filter">
-              <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+      {conjuctionsVisible && (
+        <ConjunctionsWrapper
+          onAnimationEnd={conjuctionsUnmount}
+          isConjuctionsClicked={isConjunctionsClicked}
+        >
+          <button className="btn-close" onClick={() => setClose(!close)}>
+            {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
+          </button>
+          <section className="conjuctions-wrapper" ref={conjuctionsRef}>
+            <h1 className="title conjuctions">Conjuctions</h1>
+            <div className="header-group">
+              <Search
+                handleSearch={handleSearch}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+              />
+              <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
             </div>
-          )}
-          <ConjuctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
-          <ConjuctionsTable
-            toggle={toggle}
-            setFavoriteData={setFavoriteData}
-            queryParams={queryParams}
-            setQueryParams={setQueryParams}
-            cesiumModule={cesiumModule}
-            size={size}
-          />
-        </section>
-        <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
-          <h1 className="title bookmark">Favorites</h1>
-          <div className="bookmark-table-wrapper">
-            <ConjuctionsFavorite login={login} />
-          </div>
-        </section>
-      </ConjunctionsWrapper>
+            {toggle === 1 && (
+              <div className="favorite-filter">
+                <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+              </div>
+            )}
+            <ConjuctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
+            <ConjuctionsTable
+              toggle={toggle}
+              setFavoriteData={setFavoriteData}
+              queryParams={queryParams}
+              setQueryParams={setQueryParams}
+              cesiumModule={cesiumModule}
+              size={size}
+            />
+          </section>
+          <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
+            <h1 className="title bookmark">Favorites</h1>
+            <div className="bookmark-table-wrapper">
+              <ConjuctionsFavorite login={login} />
+            </div>
+          </section>
+        </ConjunctionsWrapper>
+      )}
     </>
   )
 }
 
 export default Conjunctions
 
-const ConjunctionsWrapper = styled.div`
+type TConjuctions = {
+  isConjuctionsClicked: boolean
+}
+
+const ConjunctionsWrapper = styled.div<TConjuctions>`
   width: 740px;
   padding: 1rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
@@ -147,17 +166,14 @@ const ConjunctionsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  animation: ${(props) => (props.isConjuctionsClicked ? slideIn : slideOut)} 1s;
   .title {
     color: white;
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 15px;
   }
-  .conjuctions-wrapper {
-    /* width: 100%; */
-  }
   .bookmark-wrapper {
-    /* width: 100%; */
     display: flex;
     .bookmark-table-wrapper {
       width: 100%;
