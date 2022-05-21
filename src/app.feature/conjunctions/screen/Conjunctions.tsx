@@ -90,42 +90,44 @@ const Conjunctions = ({ cesiumModule }) => {
 
   return (
     <>
-      <ConjunctionsWrapper ref={tableContainerRef}>
-        <button className="btn-close" onClick={() => setClose(!close)}>
-          {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
-        </button>
-        <section className="conjuctions-wrapper" ref={conjuctionsRef}>
-          <h1 className="title conjuctions">Conjuctions</h1>
-          <div className="header-group">
-            <Search
-              handleSearch={handleSearch}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-            />
-            <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
-          </div>
-          {toggle === 1 && (
-            <div className="favorite-filter">
-              <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+      {isConjunctionsClicked && (
+        <ConjunctionsWrapper ref={tableContainerRef}>
+          <button className="btn-close" onClick={() => setClose(!close)}>
+            {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
+          </button>
+          <section className="conjuctions-wrapper" ref={conjuctionsRef}>
+            <h1 className="title conjuctions">Conjuctions</h1>
+            <div className="header-group">
+              <Search
+                handleSearch={handleSearch}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+              />
+              <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
             </div>
-          )}
-          <ConjuctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
-          <ConjuctionsTable
-            toggle={toggle}
-            setFavoriteData={setFavoriteData}
-            queryParams={queryParams}
-            setQueryParams={setQueryParams}
-            cesiumModule={cesiumModule}
-            size={size}
-          />
-        </section>
-        <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
-          <h1 className="title bookmark">Favorites</h1>
-          <div className="bookmark-table-wrapper">
-            <ConjuctionsFavorite login={login} />
-          </div>
-        </section>
-      </ConjunctionsWrapper>
+            {toggle === 1 && (
+              <div className="favorite-filter">
+                <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+              </div>
+            )}
+            <ConjuctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
+            <ConjuctionsTable
+              toggle={toggle}
+              setFavoriteData={setFavoriteData}
+              queryParams={queryParams}
+              setQueryParams={setQueryParams}
+              cesiumModule={cesiumModule}
+              size={size}
+            />
+          </section>
+          <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
+            <h1 className="title bookmark">Favorites</h1>
+            <div className="bookmark-table-wrapper">
+              <ConjuctionsFavorite login={login} />
+            </div>
+          </section>
+        </ConjunctionsWrapper>
+      )}
     </>
   )
 }
@@ -133,6 +135,7 @@ const Conjunctions = ({ cesiumModule }) => {
 export default Conjunctions
 
 const ConjunctionsWrapper = styled.div`
+  visibility: hidden;
   width: 740px;
   padding: 1rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
