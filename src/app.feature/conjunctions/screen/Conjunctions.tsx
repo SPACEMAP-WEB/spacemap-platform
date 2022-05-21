@@ -71,11 +71,8 @@ const Conjunctions = ({ cesiumModule }) => {
 
   useEffect(() => {
     if (!tableContainerRef || !tableContainerRef.current) {
-      console.log('not')
       return
     }
-
-    console.log(tableContainerRef.current.style.visibility)
 
     tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
     tableContainerRef.current.style.transform = `translateX(${
@@ -90,44 +87,42 @@ const Conjunctions = ({ cesiumModule }) => {
 
   return (
     <>
-      {isConjunctionsClicked && (
-        <ConjunctionsWrapper ref={tableContainerRef}>
-          <button className="btn-close" onClick={() => setClose(!close)}>
-            {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
-          </button>
-          <section className="conjuctions-wrapper" ref={conjuctionsRef}>
-            <h1 className="title conjuctions">Conjuctions</h1>
-            <div className="header-group">
-              <Search
-                handleSearch={handleSearch}
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-              />
-              <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
-            </div>
-            {toggle === 1 && (
-              <div className="favorite-filter">
-                <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
-              </div>
-            )}
-            <ConjuctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
-            <ConjuctionsTable
-              toggle={toggle}
-              setFavoriteData={setFavoriteData}
-              queryParams={queryParams}
-              setQueryParams={setQueryParams}
-              cesiumModule={cesiumModule}
-              size={size}
+      <ConjunctionsWrapper ref={tableContainerRef}>
+        <button className="btn-close" onClick={() => setClose(!close)}>
+          {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
+        </button>
+        <section className="conjuctions-wrapper" ref={conjuctionsRef}>
+          <h1 className="title conjuctions">Conjuctions</h1>
+          <div className="header-group">
+            <Search
+              handleSearch={handleSearch}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
             />
-          </section>
-          <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
-            <h1 className="title bookmark">Favorites</h1>
-            <div className="bookmark-table-wrapper">
-              <ConjuctionsFavorite login={login} />
+            <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
+          </div>
+          {toggle === 1 && (
+            <div className="favorite-filter">
+              <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
             </div>
-          </section>
-        </ConjunctionsWrapper>
-      )}
+          )}
+          <ConjuctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
+          <ConjuctionsTable
+            toggle={toggle}
+            setFavoriteData={setFavoriteData}
+            queryParams={queryParams}
+            setQueryParams={setQueryParams}
+            cesiumModule={cesiumModule}
+            size={size}
+          />
+        </section>
+        <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
+          <h1 className="title bookmark">Favorites</h1>
+          <div className="bookmark-table-wrapper">
+            <ConjuctionsFavorite login={login} />
+          </div>
+        </section>
+      </ConjunctionsWrapper>
     </>
   )
 }
