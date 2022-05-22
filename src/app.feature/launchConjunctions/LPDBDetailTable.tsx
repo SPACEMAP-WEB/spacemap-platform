@@ -92,12 +92,12 @@ const LPDBDetailTable = ({
   return (
     <>
       <LPDBTableWrapper>
-        <div style={{ marginBottom: '1rem' }}>
+        <div className="back-container" style={{ marginBottom: '1rem' }} onClick={handleBackButton}>
           <img
             src="svg/left-arrow.svg"
             style={{ width: '11px', cursor: 'pointer', marginLeft: '0.5rem' }}
-            onClick={handleBackButton}
           />
+          Go Back
         </div>
         <div className="table-wrapper">
           <Table className="table" {...getTableProps()}>
@@ -168,6 +168,13 @@ const borderStyle = {
 }
 
 const LPDBTableWrapper = styled.div`
+  .back-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    cursor: pointer;
+  }
   .new-launch-container {
     width: 200px;
     height: 50px;

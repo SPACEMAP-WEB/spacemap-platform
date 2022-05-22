@@ -39,7 +39,7 @@ const ModalWrapper = styled.div<ModalStyleProps>`
   animation-duration: 1.5s;
   animation-name: ${(props) => (props.isTimeFinished ? 'slideout' : 'slidein')};
   .modal-container {
-    width: 24rem;
+    width: 26rem;
     height: 6rem;
     padding: 1.2rem;
     border-radius: 10px;
