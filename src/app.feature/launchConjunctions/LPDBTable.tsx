@@ -1,4 +1,4 @@
-import { LPDBResponseDataType } from '@app.modules/types/launchConjunctions'
+import { LPDBResponseDataType, LPDBResponseType } from '@app.modules/types/launchConjunctions'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Column, useTable, CellProps } from 'react-table'
@@ -8,6 +8,7 @@ import { useMutationDeleteLPDB } from './query/useMutationLPDB'
 import LPDBDetailTable from './LPDBDetailTable'
 import { useQueryGetLPDBDownload } from './query/useQueryLPDB'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 
 const COLUMNS: Column<LPDBResponseDataType>[] = [
   {
@@ -32,10 +33,17 @@ type LPDBProps = {
   LPDBData: LPDBResponseDataType[]
   handleNewLaunchClick: () => void
   cesiumModule: CesiumModule
+  refetchLPDBData: <TPageData>(
+    options?: RefetchOptions & RefetchQueryFilters<TPageData>
+  ) => Promise<QueryObserverResult<LPDBResponseType, unknown>>
 }
 
-const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) => {
-  const [isVisible, setIsVisible] = useState<boolean>(false)
+const LPDBTable = ({
+  LPDBData,
+  handleNewLaunchClick,
+  cesiumModule,
+  refetchLPDBData,
+}: LPDBProps) => {
   const [isDoneStatusClicked, setIsDoneStatusClicked] = useState<boolean>(false)
   const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
   const [selectedPath, setSelectedPath] = useState<string>('')
@@ -53,13 +61,6 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
 
   const { data: downloadData, refetch } = useQueryGetLPDBDownload(selectedPath)
 
-  useEffect(() => {
-    if (isVisible) {
-      // FIXME: implement proper view logic
-      console.log('hi')
-    }
-  }, [isVisible])
-
   const handleDetailClick = async (id: string, trajectoryPath) => {
     setSelectedLPDBId(id)
     setTrajectoryPath(trajectoryPath)
@@ -69,10 +70,6 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
   const handleDelete = (id: string) => {
     mutate(id)
     // FIXME: CORS issue
-  }
-
-  const handleVisibility = () => {
-    setIsVisible(!isVisible)
   }
 
   const handleBackButton = () => {

@@ -15,15 +15,20 @@ type AssessmentModalProps = {
   ) => Promise<QueryObserverResult<LPDBResponseType, unknown>>
 }
 
+type ModalStyleProps = {
+  isSubmitDisabled: boolean
+}
+
 const AssessmentModal = ({
   handleAssessmentModalClose,
   setIsSuccessModalOpen,
   setIsLPDBTableOpen,
-  refetchLPDBData,
 }: AssessmentModalProps) => {
   const { modalVisible, handleCloseModal, handleSetModal } = useModal('LAUNCHCONJUNCTIONS')
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true)
   const [thresholdValue, setThresholdValue] = useState<number>(0)
   const [inputFile, setInputFile] = useState<File>()
+  const [fileName, setFileName] = useState<string>('')
   const { mutate } = useMutationPostLPDB()
 
   const imageInput = useRef<HTMLInputElement>(null)
@@ -39,16 +44,19 @@ const AssessmentModal = ({
 
   const handleFileChange = (e) => {
     setInputFile(e.target.files[0])
+    setFileName(e.target.files[0]?.name)
+    if (!!e.target.files.length) {
+      setIsSubmitDisabled(false)
+    }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = () => {
     try {
+      setIsSuccessModalOpen(true)
       mutate({ threshold: String(thresholdValue), trajectory: inputFile })
+      setIsLPDBTableOpen(true)
       handleAssessmentModalClose()
       handleSetModal()
-      setIsSuccessModalOpen(true)
-      refetchLPDBData()
-      setIsLPDBTableOpen(true)
     } catch (error) {
       console.error(error)
     }
@@ -57,7 +65,7 @@ const AssessmentModal = ({
   return (
     <>
       <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
-        <Modal ref={modalEl}>
+        <Modal ref={modalEl} isSubmitDisabled={isSubmitDisabled}>
           <div className="modal-content-container">
             <header className="modal-header">
               <h1 className="modal-title">Launch Conjunctions Assessment</h1>
@@ -75,16 +83,27 @@ const AssessmentModal = ({
                   file, see below.
                 </p>
               </section>
-              <section className="file-input-container" onClick={onCickImageUpload}>
-                <input
-                  type="file"
-                  style={{ display: 'none' }}
-                  ref={imageInput}
-                  onChange={handleFileChange}
-                />
-                <img src="/svg/file.svg" className="add-file" />
-                <p className="file-input-button">Upload File</p>
-              </section>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
+                  alignItems: 'center',
+                }}
+              >
+                <section className="file-input-container" onClick={onCickImageUpload}>
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    ref={imageInput}
+                    onChange={handleFileChange}
+                    accept="text/plain"
+                  />
+                  <img src="/svg/file.svg" className="add-file" />
+                  <p className="file-input-button">Upload File</p>
+                </section>
+                <p className="file-text">{fileName}</p>
+              </div>
               <section className="threshold-container">
                 <p className="threshold-text">Threshold (km): </p>
                 <input
@@ -108,7 +127,7 @@ const AssessmentModal = ({
                   and from a corresponding ephemeris is straightforward.)
                 </p>
               </section>
-              <button className="submit-button" onClick={handleSubmit}>
+              <button className="submit-button" onClick={handleSubmit} disabled={isSubmitDisabled}>
                 Submit
               </button>
             </div>
@@ -121,7 +140,7 @@ const AssessmentModal = ({
 
 export default AssessmentModal
 
-const Modal = styled.div`
+const Modal = styled.div<ModalStyleProps>`
   position: relative;
   background-color: white;
   width: 45rem;
@@ -192,6 +211,10 @@ const Modal = styled.div`
       }
     }
 
+    .file-text {
+      color: #c9c9c9;
+    }
+
     .example-container {
       .link-notice-text {
         max-width: 500px;
@@ -255,12 +278,13 @@ const Modal = styled.div`
       font-size: 1rem;
       cursor: pointer;
       background-color: rgba(124, 124, 124, 0.4);
-      color: #e2e2e2;
+      color: ${(props) => (props.isSubmitDisabled ? '#7a7a7a' : '#e2e2e2')};
       z-index: 4;
       border-radius: 8px;
       transition: all 0.3s ease-in;
       &:hover {
-        background-color: #fccb16;
+        background-color: ${(props) =>
+          props.isSubmitDisabled ? 'rgba(124, 124, 124, 0.4)' : '#fccb16'};
         color: #7a7a7a;
       }
     }

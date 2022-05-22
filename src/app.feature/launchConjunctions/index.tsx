@@ -1,7 +1,7 @@
 import LoginRequestModal from '@app.components/common/LoginRequestModal'
 import { useQueryGetLPDB } from '@app.feature/launchConjunctions/query/useQueryLPDB'
 import { useModal } from '@app.modules/hooks/useModal'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
@@ -30,6 +30,10 @@ const LaunchConjunctions = ({ cesiumModule }) => {
     setIsAssessmentModalOpen(false)
   }
 
+  useEffect(() => {
+    refetchLPDBData
+  }, [isAssessmentModalOpen, isSuccessModalOpen])
+
   const renderModal = () => {
     if (LPDBData.data.length === 0 || isAssessmentModalOpen) {
       return (
@@ -47,6 +51,7 @@ const LaunchConjunctions = ({ cesiumModule }) => {
           LPDBData={LPDBData.data}
           handleNewLaunchClick={handleNewLaunchClick}
           cesiumModule={cesiumModule}
+          refetchLPDBData={refetchLPDBData}
         />
       )
     }
@@ -67,7 +72,7 @@ const LaunchConjunctions = ({ cesiumModule }) => {
           {modalType === 'LAUNCHCONJUNCTIONS' && modalVisible && renderModal()}
         </LaunchConjunctionsWrapper>
       )}
-      {isSuccessModalOpen && <SuccessModal />}
+      {isSuccessModalOpen && <SuccessModal setIsSuccessModalOpen={setIsSuccessModalOpen} />}
     </>
   )
 }

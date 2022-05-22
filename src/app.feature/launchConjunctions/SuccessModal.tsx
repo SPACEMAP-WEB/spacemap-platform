@@ -1,10 +1,14 @@
 import AlertModal from '@app.components/common/AlertModal'
 import React from 'react'
 
-const SuccessModal = () => {
+type Props = {
+  setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const SuccessModal = ({ setIsSuccessModalOpen }: Props) => {
   return (
     <>
-      <AlertModal />
+      <AlertModal setIsSuccessModalOpen={setIsSuccessModalOpen} />
     </>
   )
 }

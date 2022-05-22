@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+type ModalProps = {
+  setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
 type ModalStyleProps = {
   isTimeFinished: boolean
 }
 
-const AlertModal = () => {
+const AlertModal = ({ setIsSuccessModalOpen }: ModalProps) => {
   const [isTimeFinished, setIsTimeFinished] = useState<boolean>(false)
 
   useEffect(() => {
     setTimeout(() => {
       setIsTimeFinished(true)
+      setIsSuccessModalOpen(false)
     }, 4000)
   }, [])
 

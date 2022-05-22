@@ -2,22 +2,39 @@ import api from '@app.modules/api'
 import { API_LPDB } from '@app.modules/keyFactory'
 import { useMutation } from 'react-query'
 import { LPDBRequestType, LPDBResponseType } from '@app.modules/types/launchConjunctions'
+import { useQueryClient } from 'react-query'
 
 export const useMutationPostLPDB = () => {
-  return useMutation((requestForm: LPDBRequestType) => {
-    const formData = new FormData()
-    const { threshold, trajectory } = requestForm
-    formData.append('threshold', threshold)
-    formData.append('trajectory', trajectory)
-    return api.POST({
-      url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB,
-      data: formData,
-    })
-  })
+  const queryClient = useQueryClient()
+  return useMutation(
+    (requestForm: LPDBRequestType) => {
+      const formData = new FormData()
+      const { threshold, trajectory } = requestForm
+      formData.append('threshold', threshold)
+      formData.append('trajectory', trajectory)
+      return api.POST({
+        url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB,
+        data: formData,
+      })
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([API_LPDB])
+      },
+    }
+  )
 }
 
 export const useMutationDeleteLPDB = () => {
-  return useMutation((id: string) => {
-    return api.DELETE({ url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB + `/${id}` })
-  })
+  const queryClient = useQueryClient()
+  return useMutation(
+    (id: string) => {
+      return api.DELETE({ url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB + `/${id}` })
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([API_LPDB])
+      },
+    }
+  )
 }

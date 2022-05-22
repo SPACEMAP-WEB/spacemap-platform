@@ -14,6 +14,8 @@ export const useQueryGetLPDB = (email) => {
   return useQuery([API_LPDB], () => requestAPiGetLPDB(), {
     keepPreviousData: true,
     enabled: !!email,
+    refetchInterval: 60000,
+    refetchOnMount: 'always',
   })
 }
 
