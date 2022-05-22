@@ -5,6 +5,8 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { useMutationPostLPDB } from './query/useMutationLPDB'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import { LPDBResponseType } from '@app.modules/types/launchConjunctions'
+import LcaAlertModal from './LcaAlertModal'
+import { isCalculatableDate } from './module/dateHandle'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -25,6 +27,7 @@ const AssessmentModal = ({
   const [thresholdValue, setThresholdValue] = useState<number>(0)
   const [inputFile, setInputFile] = useState<File>()
   const { mutate } = useMutationPostLPDB()
+  const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
 
   const imageInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
@@ -43,6 +46,10 @@ const AssessmentModal = ({
 
   const handleSubmit = (e) => {
     try {
+      if (isCalculatableDate()) {
+        setIsLcaModalVisible(true)
+        return
+      }
       mutate({ threshold: String(thresholdValue), trajectory: inputFile })
       handleAssessmentModalClose()
       handleSetModal()
@@ -52,6 +59,10 @@ const AssessmentModal = ({
     } catch (error) {
       console.error(error)
     }
+  }
+
+  const handleClose = () => {
+    setIsLcaModalVisible(false)
   }
 
   return (
@@ -115,6 +126,7 @@ const AssessmentModal = ({
           </div>
         </Modal>
       </ModalWrapper>
+      {isLcaModalVisible && <LcaAlertModal handleRequestModalCancel={handleClose} />}
     </>
   )
 }
