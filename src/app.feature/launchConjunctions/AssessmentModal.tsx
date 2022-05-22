@@ -46,7 +46,7 @@ const AssessmentModal = ({
 
   const handleSubmit = (e) => {
     try {
-      if (isCalculatableDate()) {
+      if (!isCalculatableDate()) {
         setIsLcaModalVisible(true)
         return
       }
