@@ -47,5 +47,8 @@ export const SearchWrapper = styled.div`
     background-color: rgba(124, 124, 124, 0.4);
     color: #e2e2e2;
     border-radius: 5px;
+    :hover {
+      cursor: pointer;
+    }
   }
 `

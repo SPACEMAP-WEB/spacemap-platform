@@ -29,7 +29,7 @@ const StyledTabs = styled.div`
   margin: 20px 0px;
   .conjuctions-tab-menu {
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     color: white;
     cursor: pointer;

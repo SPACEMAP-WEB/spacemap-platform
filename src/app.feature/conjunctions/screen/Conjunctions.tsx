@@ -96,8 +96,6 @@ const Conjunctions = ({ cesiumModule }) => {
     favoriteConjuctionsRef.current.style.display = close ? 'none' : 'block'
   }, [close, conjuctionsRef.current])
 
-  console.log(isConjunctionsClicked, conjuctionsVisible)
-
   return (
     <>
       {conjuctionsVisible && (
@@ -109,7 +107,7 @@ const Conjunctions = ({ cesiumModule }) => {
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
           <section className="conjuctions-wrapper" ref={conjuctionsRef}>
-            <h1 className="title conjuctions">Conjuctions</h1>
+            <h1 className="title conjuctions">Conjunctions</h1>
             <div className="header-group">
               <Search
                 handleSearch={handleSearch}
@@ -152,7 +150,7 @@ type TConjuctions = {
 }
 
 const ConjunctionsWrapper = styled.div<TConjuctions>`
-  width: 740px;
+  width: 480px;
   padding: 1rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
@@ -169,17 +167,14 @@ const ConjunctionsWrapper = styled.div<TConjuctions>`
   animation: ${(props) => (props.isConjuctionsClicked ? slideIn : slideOut)} 1s;
   .title {
     color: white;
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 20px;
     margin-bottom: 15px;
   }
   .bookmark-wrapper {
+    width: 100%;
     display: flex;
-    .bookmark-table-wrapper {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
+    flex-direction: column;
+    justify-content: left;
   }
   .btn-close {
     position: absolute;
