@@ -178,8 +178,8 @@ const ConjunctionsWrapper = styled.div<TConjuctions>`
   }
   .btn-close {
     position: absolute;
-    right: 10px;
-    top: 8px;
+    right: 1rem;
+    top: 1rem;
     height: 18px;
     background-color: rgba(149, 149, 149, 0.4);
     border-radius: 3px;

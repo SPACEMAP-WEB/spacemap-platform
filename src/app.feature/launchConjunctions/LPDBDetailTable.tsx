@@ -95,7 +95,7 @@ const LPDBDetailTable = ({
         <div style={{ marginBottom: '1rem' }}>
           <img
             src="svg/left-arrow.svg"
-            style={{ width: '11px', cursor: 'pointer' }}
+            style={{ width: '11px', cursor: 'pointer', marginLeft: '0.5rem' }}
             onClick={handleBackButton}
           />
         </div>
