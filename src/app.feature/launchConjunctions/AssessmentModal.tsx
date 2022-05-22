@@ -154,7 +154,6 @@ export default AssessmentModal
 
 const Modal = styled.div<ModalStyleProps>`
   position: relative;
-  background-color: white;
   width: 45rem;
   height: 40rem;
   padding: 1rem;

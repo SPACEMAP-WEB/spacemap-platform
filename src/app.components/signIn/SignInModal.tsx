@@ -22,7 +22,7 @@ const SignInModal = () => {
       {modalType === 'LOGIN' && modalVisible && (
         <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
           <Modal ref={modalEl}>
-            <img src="/svg/close-black.svg" className="modal-close" onClick={handleClose} />
+            <img src="/svg/close-white.svg" className="modal-close" onClick={handleClose} />
             <button className="google-login" onClick={() => handleClickLogin('google')}>
               <img src="/image/icon/ico-google.png" />
               <p>Sign In with Google</p>
@@ -38,7 +38,9 @@ export default SignInModal
 
 const Modal = styled.div`
   position: relative;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
   width: 26rem;
   height: 10rem;
   border-radius: 0.5rem;
@@ -55,13 +57,18 @@ const Modal = styled.div`
   .google-login {
     width: 300px;
     padding: 5px 20px;
-    background-color: white;
-    border: 3px solid black;
+    background-color: rgba(255, 255, 255, 0.13);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(20px);
     border-radius: 7px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    color: #c9c9c9;
+    :hover {
+      background-color: rgba(255, 255, 255, 0.18);
+    }
     img {
       width: 40px;
       height: 40px;
@@ -69,7 +76,6 @@ const Modal = styled.div`
     }
     p {
       font-size: 18px;
-      font-weight: bold;
       padding-right: 5px;
     }
   }
