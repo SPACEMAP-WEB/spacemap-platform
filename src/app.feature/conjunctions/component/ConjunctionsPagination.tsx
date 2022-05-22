@@ -72,6 +72,9 @@ const PaginationWrapper = styled.div`
     border: none;
     border-radius: 5px;
     color: #e2e2e2;
+    :hover {
+      cursor: pointer;
+    }
   }
   .page-text {
     color: white;

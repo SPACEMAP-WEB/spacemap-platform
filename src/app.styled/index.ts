@@ -7,6 +7,8 @@ export const GlobalStyle = createGlobalStyle`
   
   ${resetCSS}
 
+  * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+
   .count {
     background: rgb(255, 0, 0);
     color: rgb(255, 255, 255);

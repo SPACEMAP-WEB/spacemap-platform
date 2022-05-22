@@ -32,6 +32,11 @@ class _AppDocument extends Document {
     return (
       <Html lang="ko">
         <Head>
+          <link
+            href="//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css"
+            rel="stylesheet"
+            type="text/css"
+          />
           <meta name="robots" content="noindex, nofollow" />
 
           <meta name="msapplication-TileColor" content="#ffffff" />
