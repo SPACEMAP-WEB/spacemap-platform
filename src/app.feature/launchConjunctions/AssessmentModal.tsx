@@ -70,9 +70,9 @@ const AssessmentModal = ({
             <div className="body-container">
               <section className="description-container">
                 <p className="description-text">
-                  Reports all RSOs within a "Threshold" distance from a launch vehicle which follows
-                  a "Launch Trajectory" uploaded from a file that can be selected using the button.
-                  For an example of a launch trajectory file, see "Sample Launch Trajectory".
+                  Reports all RSOs within the "Threshold" from the launch vehicle which follows the
+                  "Launch Trajectory.“ Choose a file using the Upload File button. For an example
+                  file, see below.
                 </p>
               </section>
               <section className="file-input-container" onClick={onCickImageUpload}>
@@ -85,7 +85,7 @@ const AssessmentModal = ({
                 <img src="/svg/file.svg" className="add-file" />
                 <p className="file-input-button">Upload File</p>
               </section>
-            <section className="threshold-container">
+              <section className="threshold-container">
                 <p className="threshold-text">Threshold (km): </p>
                 <input
                   type="number"
@@ -103,7 +103,9 @@ const AssessmentModal = ({
                       <path d="M6.9739 30.8153H63.0244C65.5269 30.8152 75.5358 -3.68471 35.4998 2.81531C-16.1598 11.2025 0.894099 33.9766 26.9922 34.3153C104.062 35.3153 54.5169 -6.68469 23.489 9.31527" />
                     </svg>
                   </a>
-                  to download Sample Trajectory!
+                  to download a sample file containing launch trajectory. (Note: The trajectory is
+                  currently a time-ordered coordinates sampled at 1 Hz frequency. The conversion to
+                  and from a corresponding ephemeris is straightforward.)
                 </p>
               </section>
               <button className="submit-button" onClick={handleSubmit}>
@@ -192,6 +194,7 @@ const Modal = styled.div`
 
     .example-container {
       .link-notice-text {
+        max-width: 500px;
         font-size: 18px;
         margin: 0;
         color: #c9c9c9;
