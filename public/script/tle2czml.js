@@ -12,6 +12,7 @@ self.addEventListener('message', async function (e) {
   const intervalUnitTime = e.data[2]
   const tles = e.data[3]
   const rsoParams = e.data[4]
+  console.log(e.data)
   // const tle = await drawTLEs(initialTimeWindow, duration, intervalUnitTime)
   let tleCZML = await tle2czml(initialTimeWindow, duration, intervalUnitTime, tles, rsoParams)
   postMessage(tleCZML)
@@ -27,7 +28,7 @@ async function document2czml(startTime, duration) {
     // name: 'CZML Point - Time Dynamic',
     version: '1.0',
     clock: {
-      currentTime: moment().utc().toISOString(),
+      currentTime: `${startTime}`,
       interval: `${startTime}/${endTime}`,
       multiplier: 1,
       range: 'UNBOUNDED',
@@ -84,7 +85,7 @@ async function satrec2czml(
   let interval = periodSeconds / 12
 
   initTime.setSeconds(initTime.getSeconds() - periodSeconds / 2)
-  let satID = satrec.satnum.split(' ').join('')
+  let satID = Number(satrec.satnum.split(' ').join(''))
   // console.log(satID)
   // console.log((duration + periodSeconds) / interval)
   for (let i = -periodSeconds / 2; i <= duration + periodSeconds / 2; i += interval) {

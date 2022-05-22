@@ -141,23 +141,23 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
         })
         return [
           ...newColumns,
-          {
-            id: 'download',
-            Header: 'download',
-            Cell: ({ row }) => (
-              <>
-                {row.original.status === 'DONE' ? (
-                  <img
-                    src="/svg/download.svg"
-                    style={{ width: '13px', cursor: 'pointer' }}
-                    onClick={() => handleDownload(row.original.lpdbFilePath)}
-                  />
-                ) : (
-                  <div>-</div>
-                )}
-              </>
-            ),
-          },
+          // {
+          //   id: 'download',
+          //   Header: 'download',
+          //   Cell: ({ row }) => (
+          //     <>
+          //       {row.original.status === 'DONE' ? (
+          //         <img
+          //           src="/svg/download.svg"
+          //           style={{ width: '13px', cursor: 'pointer' }}
+          //           onClick={() => handleDownload(row.original.lpdbFilePath)}
+          //         />
+          //       ) : (
+          //         <div>-</div>
+          //       )}
+          //     </>
+          //   ),
+          // },
           {
             id: 'delete',
             Header: '',
@@ -237,7 +237,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
 export default LPDBTable
 
 const LPDBTableWrapper = styled.div`
-  width: 480px;
+  width: 500px;
   padding: 1.5rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
@@ -284,7 +284,7 @@ const LPDBTableWrapper = styled.div`
     }
   }
   .table-wrapper {
-    width: 450px;
+    width: 480px;
     max-height: 300px;
     overflow-y: scroll;
     border-radius: 10px;

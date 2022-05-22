@@ -32,6 +32,7 @@ export type LPDBDetailResponseDataType = {
     trajectoryFilePath: string
     predictionEpochTime: string
     launchEpochTime: string
+    trajectoryLength: number
     lpdb: LPDBDataType[]
   }
 }
