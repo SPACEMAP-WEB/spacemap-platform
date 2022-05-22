@@ -150,7 +150,7 @@ type TConjuctions = {
 }
 
 const ConjunctionsWrapper = styled.div<TConjuctions>`
-  width: 480px;
+  width: 500px;
   padding: 1rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;

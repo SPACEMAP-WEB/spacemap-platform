@@ -92,7 +92,7 @@ const LPDBDetailTable = ({
   return (
     <>
       <LPDBTableWrapper>
-        <div>
+        <div style={{ marginBottom: '1rem' }}>
           <img
             src="svg/left-arrow.svg"
             style={{ width: '11px', cursor: 'pointer' }}

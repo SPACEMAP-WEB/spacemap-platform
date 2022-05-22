@@ -9,6 +9,7 @@ import LPDBDetailTable from './LPDBDetailTable'
 import { useQueryGetLPDBDownload } from './query/useQueryLPDB'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
+import moment from 'moment'
 
 const COLUMNS: Column<LPDBResponseDataType>[] = [
   {
@@ -131,6 +132,14 @@ const LPDBTable = ({
                     <div>{value === 'PENDING' ? 'Pending' : 'Failed'}</div>
                   )}
                 </>
+              ),
+            }
+          }
+          if (columnObject.id === 'createdAt') {
+            return {
+              ...columnObject,
+              Cell: ({ value }: CellProps<any>) => (
+                <>{moment.utc(value).format('MMM DD, YY HH:mm:ss')}</>
               ),
             }
           }
