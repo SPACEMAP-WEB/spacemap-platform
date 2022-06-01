@@ -74,17 +74,6 @@ const Conjunctions = ({ cesiumModule }) => {
     !isConjunctionsClicked && setConjuctionsVisible(false)
   }
 
-  // useEffect(() => {
-  //   if (!tableContainerRef || !tableContainerRef.current) {
-  //     return
-  //   }
-
-  //   tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
-  //   tableContainerRef.current.style.transform = `translateX(${
-  //     isConjunctionsClicked ? '0' : '40rem'
-  //   })`
-  // })
-
   useEffect(() => {
     isConjunctionsClicked && setConjuctionsVisible(true)
   }, [isConjunctionsClicked])

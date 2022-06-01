@@ -5,8 +5,8 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { useMutationPostLPDB } from './query/useMutationLPDB'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import { LPDBResponseType } from '@app.modules/types/launchConjunctions'
-import LcaAlertModal from './LcaAlertModal'
 import { isCalculatableDate } from './module/dateHandle'
+import WarningModal from '@app.components/common/WarningModal'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -145,7 +145,12 @@ const AssessmentModal = ({
           </div>
         </Modal>
       </ModalWrapper>
-      {isLcaModalVisible && <LcaAlertModal handleRequestModalCancel={handleClose} />}
+      {isLcaModalVisible && (
+        <WarningModal
+          handleRequestModalCancel={handleClose}
+          message={"It isn't open from 4:00 to 10:00."}
+        />
+      )}
     </>
   )
 }
