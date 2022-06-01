@@ -1,6 +1,6 @@
-import LaunchConjunctions from '@app.feature/launchConjunctions'
 import SignInModal from '@app.components/signIn/SignInModal'
 import Conjunctions from '@app.feature/conjunctions/screen/Conjunctions'
+import LaunchConjunctions from '@app.feature/launchConjunctions/screen/LaunchConjunctions'
 import React from 'react'
 import styled from 'styled-components'
 import Button from './Button'

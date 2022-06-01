@@ -5,9 +5,9 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
-import AssessmentModal from './AssessmentModal'
-import LPDBTable from './LPDBTable'
-import SuccessModal from './SuccessModal'
+import AssessmentModal from '../components/AssessmentModal'
+import LPDBTable from '../components/LPDBTable'
+import SuccessModal from '../components/SuccessModal'
 
 const LaunchConjunctions = ({ cesiumModule }) => {
   const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')

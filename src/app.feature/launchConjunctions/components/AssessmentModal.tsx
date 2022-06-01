@@ -2,11 +2,12 @@ import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import ModalWrapper from '@app.components/common/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
-import { useMutationPostLPDB } from './query/useMutationLPDB'
+
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import { LPDBResponseType } from '@app.modules/types/launchConjunctions'
+import { useMutationPostLPDB } from '../query/useMutationLPDB'
+import { isCalculatableDate } from '../module/dateHandle'
 import LcaAlertModal from './LcaAlertModal'
-import { isCalculatableDate } from './module/dateHandle'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -34,14 +35,14 @@ const AssessmentModal = ({
   const { mutate } = useMutationPostLPDB()
   const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
 
-  const imageInput = useRef<HTMLInputElement>(null)
+  const fileInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
 
-  const onCickImageUpload = () => {
-    imageInput?.current.click()
+  const onCickFileUpload = () => {
+    fileInput?.current.click()
   }
 
-  const handleInputChange = (e) => {
+  const handleThresholdInputChange = (e) => {
     setThresholdValue(e.target.value)
   }
 
@@ -102,11 +103,11 @@ const AssessmentModal = ({
                   alignItems: 'center',
                 }}
               >
-                <section className="file-input-container" onClick={onCickImageUpload}>
+                <section className="file-input-container" onClick={onCickFileUpload}>
                   <input
                     type="file"
                     style={{ display: 'none' }}
-                    ref={imageInput}
+                    ref={fileInput}
                     onChange={handleFileChange}
                     accept="text/plain"
                   />
@@ -120,7 +121,7 @@ const AssessmentModal = ({
                 <input
                   type="number"
                   value={thresholdValue}
-                  onChange={handleInputChange}
+                  onChange={handleThresholdInputChange}
                   className="threshold-input"
                 ></input>
               </section>
