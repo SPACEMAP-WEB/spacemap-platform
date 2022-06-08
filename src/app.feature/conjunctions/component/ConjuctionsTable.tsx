@@ -168,7 +168,6 @@ const ConjuctionsTable = ({
   const sizeFunction = () => {
     if (timer) clearTimeout(timer)
     const newTimer = setTimeout(() => {
-      console.log('size')
       const size = winodwHeightFn(window.innerHeight)
       setCustomPageSize(size)
       setPageSize(size)

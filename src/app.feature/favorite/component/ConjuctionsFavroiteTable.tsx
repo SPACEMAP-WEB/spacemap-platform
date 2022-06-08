@@ -35,6 +35,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const size = winodwHeightFn(window.innerHeight)
   const queryClient = useQueryClient()
   const [customPageSize, setCustomPageSize] = useState(size)
+  const [timer, setTimer] = useState(null)
   const [tableData, setTableData] = useState<FavoriteColumnType[]>([])
   const [bookmarkData, setBookmarkData] = useState<FavoriteColumnType[]>([])
   const [prevInput, setPrevInput] = useState(inputValue)
@@ -175,9 +176,13 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   }, [selectedRowIds])
 
   const sizeFunction = () => {
-    const size = winodwHeightFn(window.innerHeight)
-    setCustomPageSize(size)
-    setPageSize(size)
+    if (timer) clearTimeout(timer)
+    const newTimer = setTimeout(() => {
+      const size = winodwHeightFn(window.innerHeight)
+      setCustomPageSize(size)
+      setPageSize(size)
+    }, 800)
+    setTimer(newTimer)
   }
 
   useEffect(() => {
