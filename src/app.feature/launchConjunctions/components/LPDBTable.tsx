@@ -4,12 +4,12 @@ import styled from 'styled-components'
 import { Column, useTable, CellProps } from 'react-table'
 import { Table } from '@app.components/common/Table'
 import { useModal } from '@app.modules/hooks/useModal'
-import { useMutationDeleteLPDB } from './query/useMutationLPDB'
-import LPDBDetailTable from './LPDBDetailTable'
-import { useQueryGetLPDBDownload } from './query/useQueryLPDB'
+import { useMutationDeleteLPDB } from '../query/useMutationLPDB'
+import { useQueryGetLPDBDownload } from '../query/useQueryLPDB'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import moment from 'moment'
+import LPDBDetailTable from './LPDBDetailTable'
 
 const COLUMNS: Column<LPDBResponseDataType>[] = [
   {
@@ -48,10 +48,7 @@ const LPDBTable = ({
   const [isDoneStatusClicked, setIsDoneStatusClicked] = useState<boolean>(false)
   const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
   const [selectedPath, setSelectedPath] = useState<string>('')
-  const [selectedTrajectoryPath, setTrajectoryPath] = useState<string>('')
-
-  // const [selectedPredictionEpochTime, setPredictionEpochTime] = useState<string>('')
-  // const [selectedLaunchEpochTime, setLaunchEpochTime] = useState<string>('')
+  const [trajectoryPath, setTrajectoryPath] = useState<string>('')
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => LPDBData, [LPDBData])
   const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -70,7 +67,6 @@ const LPDBTable = ({
 
   const handleDelete = (id: string) => {
     mutate(id)
-    // FIXME: CORS issue
   }
 
   const handleBackButton = () => {
@@ -79,11 +75,8 @@ const LPDBTable = ({
 
   const handleDownload = async (filePath: string) => {
     setSelectedPath(filePath)
-    console.log(filePath)
     if (selectedPath) {
-      console.log(selectedPath)
       const response = await refetch()
-      console.log(response)
       const element = document.createElement('a')
       const textFile = new Blob([response.data.data], {
         type: 'text/plain',
@@ -147,23 +140,6 @@ const LPDBTable = ({
         })
         return [
           ...newColumns,
-          // {
-          //   id: 'download',
-          //   Header: 'download',
-          //   Cell: ({ row }) => (
-          //     <>
-          //       {row.original.status === 'DONE' ? (
-          //         <img
-          //           src="/svg/download.svg"
-          //           style={{ width: '13px', cursor: 'pointer' }}
-          //           onClick={() => handleDownload(row.original.lpdbFilePath)}
-          //         />
-          //       ) : (
-          //         <div>-</div>
-          //       )}
-          //     </>
-          //   ),
-          // },
           {
             id: 'delete',
             Header: '',
@@ -232,7 +208,7 @@ const LPDBTable = ({
             handleBackButton={handleBackButton}
             LPDBId={selectedLPDBId}
             cesiumModule={cesiumModule}
-            trajectoryPath={selectedTrajectoryPath}
+            trajectoryPath={trajectoryPath}
           />
         )}
       </LPDBTableWrapper>

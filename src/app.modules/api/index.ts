@@ -1,5 +1,7 @@
 import { API_OAUTH } from '@app.modules/keyFactory'
 import axios, { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse } from 'axios'
+import { store } from 'src/app.store/config/configureStore'
+import { setAutoLogout } from 'src/app.store/loginStore/store.loginApp'
 
 axios.defaults.withCredentials = true
 
@@ -36,10 +38,11 @@ class API {
       return response
     } catch (error) {
       const { response } = error as AxiosError
-      console.log(response.status)
       if (response.status === 401 && url !== API_OAUTH) {
-        location.reload()
-        return
+        console.log('logout')
+        store.dispatch({
+          type: setAutoLogout,
+        })
       }
       throw error
     }
