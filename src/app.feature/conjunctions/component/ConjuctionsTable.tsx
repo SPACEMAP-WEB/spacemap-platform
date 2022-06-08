@@ -40,6 +40,7 @@ const ConjuctionsTable = ({
 }: TProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
+  const [timer, setTimer] = useState(null)
   const { modalType, modalVisible } = useModal('CONJUNCTIONS')
   const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
 
@@ -165,10 +166,14 @@ const ConjuctionsTable = ({
   }
 
   const sizeFunction = () => {
-    const size = winodwHeightFn(window.innerHeight)
-    setCustomPageSize(size)
-    setPageSize(size)
-    setQueryParams({ ...queryParams, limit: size })
+    if (timer) clearTimeout(timer)
+    const newTimer = setTimeout(() => {
+      const size = winodwHeightFn(window.innerHeight)
+      setCustomPageSize(size)
+      setPageSize(size)
+      setQueryParams({ ...queryParams, limit: size })
+    }, 800)
+    setTimer(newTimer)
   }
 
   useEffect(() => {

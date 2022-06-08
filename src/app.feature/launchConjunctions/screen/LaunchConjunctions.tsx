@@ -4,16 +4,10 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
-<<<<<<< HEAD:src/app.feature/launchConjunctions/index.tsx
-import AssessmentModal from './AssessmentModal'
-import LPDBTable from './LPDBTable'
-import SuccessModal from './SuccessModal'
 import WarningModal from '@app.components/common/WarningModal'
-=======
 import AssessmentModal from '../components/AssessmentModal'
 import LPDBTable from '../components/LPDBTable'
 import SuccessModal from '../components/SuccessModal'
->>>>>>> main:src/app.feature/launchConjunctions/screen/LaunchConjunctions.tsx
 
 const LaunchConjunctions = ({ cesiumModule }) => {
   const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
