@@ -28,7 +28,11 @@ const initialState: userType = {
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setAutoLogout: (state) => {
+      state.login = false
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(requestCheckLogin.fulfilled, (state, { payload }) => {
       return { ...state, login: true, isLoading: false, error: false, user: { ...payload } }
@@ -50,3 +54,5 @@ export const userSlice = createSlice({
     })
   },
 })
+
+export const { setAutoLogout } = userSlice.actions
