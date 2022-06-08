@@ -1,15 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import MenuIcon from './MenuIcon'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setModal } from 'src/app.store/modalStore/store.modalApp'
 import { useModal } from '@app.modules/hooks/useModal'
+import { requestCheckLogin } from 'src/app.store/loginStore/loginUser'
+import { RootState } from 'src/app.store/config/configureStore'
 
 const conjunctionsPath = '/sideMenu/conjunction.svg'
 const launchConjunctionPath = '/sideMenu/launch-conjunction.svg'
 
 const SideMenu = () => {
   const dispatch = useDispatch()
+  const { login } = useSelector((state: RootState) => state.login)
+  const [isLoading, setIsLoading] = useState(false)
   const { modalVisible, modalType, handleCloseModal } = useModal(null)
 
   const handleConjunctionClick = () => {
@@ -19,7 +23,10 @@ const SideMenu = () => {
   }
 
   const handleLaunchConjunctionClick = () => {
-    modalVisible && modalType === 'LAUNCHCONJUNCTIONS'
+    setIsLoading(true)
+    dispatch(requestCheckLogin())
+    setIsLoading(false)
+    !isLoading && login && modalVisible && modalType === 'LAUNCHCONJUNCTIONS'
       ? handleCloseModal()
       : dispatch(setModal({ type: 'LAUNCHCONJUNCTIONS' }))
   }
