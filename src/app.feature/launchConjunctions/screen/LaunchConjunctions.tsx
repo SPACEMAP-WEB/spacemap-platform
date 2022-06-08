@@ -1,13 +1,19 @@
-import LoginRequestModal from '@app.components/common/LoginRequestModal'
 import { useQueryGetLPDB } from '@app.feature/launchConjunctions/query/useQueryLPDB'
 import { useModal } from '@app.modules/hooks/useModal'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
+<<<<<<< HEAD:src/app.feature/launchConjunctions/index.tsx
+import AssessmentModal from './AssessmentModal'
+import LPDBTable from './LPDBTable'
+import SuccessModal from './SuccessModal'
+import WarningModal from '@app.components/common/WarningModal'
+=======
 import AssessmentModal from '../components/AssessmentModal'
 import LPDBTable from '../components/LPDBTable'
 import SuccessModal from '../components/SuccessModal'
+>>>>>>> main:src/app.feature/launchConjunctions/screen/LaunchConjunctions.tsx
 
 const LaunchConjunctions = ({ cesiumModule }) => {
   const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
@@ -62,7 +68,12 @@ const LaunchConjunctions = ({ cesiumModule }) => {
   }
 
   if (!login && modalVisible && modalType === 'LAUNCHCONJUNCTIONS')
-    return <LoginRequestModal handleRequestModalCancel={handleCloseRequestLoginModal} />
+    return (
+      <WarningModal
+        handleRequestModalCancel={handleCloseRequestLoginModal}
+        message={'Login first to use our service'}
+      />
+    )
 
   return (
     <>

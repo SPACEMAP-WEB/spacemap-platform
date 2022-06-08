@@ -4,16 +4,17 @@ import ModalWrapper from '@app.components/common/ModalWrapper'
 
 type ModalProps = {
   handleRequestModalCancel: () => void
+  message: string
 }
 
-const LcaAlertModal = ({ handleRequestModalCancel }: ModalProps) => {
+const WarningModal = ({ handleRequestModalCancel, message }: ModalProps) => {
   return (
     <>
       <ModalWrapper>
         <Modal>
           <div className="modal-content-container">
             <img className="alert-sign" src="/svg/alert.svg" alt="alert" />
-            <p>It isn't open from 4:00 to 10:00.</p>
+            <p>{message}</p>
             <button className="confirm-button" onClick={handleRequestModalCancel}>
               ok
             </button>
@@ -24,7 +25,7 @@ const LcaAlertModal = ({ handleRequestModalCancel }: ModalProps) => {
   )
 }
 
-export default LcaAlertModal
+export default WarningModal
 
 const Modal = styled.div`
   position: relative;
