@@ -53,8 +53,8 @@ const LPDBTable = ({
   const data = useMemo(() => LPDBData, [LPDBData])
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
-  const { modalType, modalVisible } = useModal('LAUNCHCONJUNCTIONS')
-  const isLaunchConjunctionsClicked = modalType === 'LAUNCHCONJUNCTIONS' && modalVisible
+  const { isVisible } = useModal('LAUNCHCONJUNCTIONS')
+  const isLaunchConjunctionsClicked = isVisible
   const { mutate } = useMutationDeleteLPDB()
 
   const { data: downloadData, refetch } = useQueryGetLPDBDownload(selectedPath)

@@ -38,8 +38,8 @@ const ConjuctionsTable = ({
 }: TProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
-  const { modalType, modalVisible } = useModal('CONJUNCTIONS')
-  const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
+  const { isVisible } = useModal('CONJUNCTIONS')
+  const isConjunctionsClicked = isVisible
   const debounceFn = useDebounce(() => {
     const size = winodwHeightFn(window.innerHeight)
     setCustomPageSize(size)

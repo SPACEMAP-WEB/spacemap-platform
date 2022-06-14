@@ -22,11 +22,9 @@ const SideMenu = () => {
       : dispatch(setModal({ type: 'CONJUNCTIONS' }))
   }
 
-  const handleLaunchConjunctionClick = () => {
-    setIsLoading(true)
+  const handleLaunchConjunctionClick = async () => {
     dispatch(requestCheckLogin())
-    setIsLoading(false)
-    !isLoading && login && modalVisible && modalType === 'LAUNCHCONJUNCTIONS'
+    login && modalVisible && modalType === 'LAUNCHCONJUNCTIONS'
       ? handleCloseModal()
       : dispatch(setModal({ type: 'LAUNCHCONJUNCTIONS' }))
   }
