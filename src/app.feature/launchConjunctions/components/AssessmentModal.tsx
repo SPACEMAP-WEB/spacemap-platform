@@ -27,7 +27,7 @@ const AssessmentModal = ({
   setIsSuccessModalOpen,
   setIsLPDBTableOpen,
 }: AssessmentModalProps) => {
-  const { modalVisible, handleCloseModal, handleSetModal } = useModal('LAUNCHCONJUNCTIONS')
+  const { isVisible, handleCloseModal, handleSetModal } = useModal('LAUNCHCONJUNCTIONS')
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true)
   const [thresholdValue, setThresholdValue] = useState<number>(0)
   const [inputFile, setInputFile] = useState<File>()
@@ -76,7 +76,7 @@ const AssessmentModal = ({
 
   return (
     <>
-      <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
+      <ModalWrapper visible={isVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
         <Modal ref={modalEl} isSubmitDisabled={isSubmitDisabled}>
           <div className="modal-content-container">
             <header className="modal-header">

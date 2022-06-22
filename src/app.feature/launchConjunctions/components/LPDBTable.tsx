@@ -24,9 +24,10 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
   const data = useMemo(() => LPDBData, [LPDBData])
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
+  const { isVisible } = useModal('LAUNCHCONJUNCTIONS')
+  const isLaunchConjunctionsClicked = isVisible
+  const { mutate } = useMutationDeleteLPDB()
 
-  const { modalType, modalVisible } = useModal('LAUNCHCONJUNCTIONS')
-  const isLaunchConjunctionsClicked = modalType === 'LAUNCHCONJUNCTIONS' && modalVisible
 
   const { mutate } = useMutationDeleteLPDB()
 
