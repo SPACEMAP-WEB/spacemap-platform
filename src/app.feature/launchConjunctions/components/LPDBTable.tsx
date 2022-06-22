@@ -28,9 +28,6 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
   const isLaunchConjunctionsClicked = isVisible
   const { mutate } = useMutationDeleteLPDB()
 
-
-  const { mutate } = useMutationDeleteLPDB()
-
   const handleDetailClick = async (id: string, trajectoryPath) => {
     setSelectedLPDBId(id)
     setTrajectoryPath(trajectoryPath)
