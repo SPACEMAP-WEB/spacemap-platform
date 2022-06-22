@@ -28,25 +28,32 @@ const initialState: userType = {
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setAutoLogout: (state) => {
+      state.login = false
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(requestCheckLogin.fulfilled, (state, { payload }) => {
-      return { ...state, login: true, isLoading: false, error: false, user: { ...payload } }
-    })
-    builder.addCase(requestCheckLogin.rejected, (state) => {
-      return {
-        ...state,
-        login: false,
-        isLoading: false,
-        error: true,
-        user: { email: null, provider: null, nickname: null },
-      }
-    })
-    builder.addCase(requestLogout.fulfilled, (state) => {
-      return { ...state, login: false }
-    })
-    builder.addCase(requestLogout.rejected, (state) => {
-      return { ...state, login: true, error: true }
-    })
+    builder
+      .addCase(requestCheckLogin.fulfilled, (state, { payload }) => {
+        return { ...state, login: true, isLoading: false, error: false, user: { ...payload } }
+      })
+      .addCase(requestCheckLogin.rejected, (state) => {
+        return {
+          ...state,
+          login: false,
+          isLoading: false,
+          error: true,
+          user: { email: null, provider: null, nickname: null },
+        }
+      })
+      .addCase(requestLogout.fulfilled, (state) => {
+        return { ...state, login: false }
+      })
+      .addCase(requestLogout.rejected, (state) => {
+        return { ...state, login: true, error: true }
+      })
   },
 })
+
+export const { setAutoLogout } = userSlice.actions

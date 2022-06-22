@@ -3,11 +3,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Column, useTable } from 'react-table'
 import { Table } from '@app.components/common/Table'
-import { useQueryGetLPDBDetail, useQueryGetTrajectory } from './query/useQueryLPDB'
-import { lpdbDataRefactor } from './module/lpdbDataRefactor'
 import { PPDBDataType } from '@app.modules/types/conjunctions'
-import { useInstance } from './module/useInstance'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
+import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
+import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
+import { useInstance } from '../module/useInstance'
 
 const COLUMNS: Column<LPDBDataType>[] = [
   {
@@ -53,11 +53,11 @@ const LPDBDetailTable = ({
   const { isLoading, data: LPDBDetailData, isSuccess } = useQueryGetLPDBDetail(LPDBId)
   const { data: downloadData } = useQueryGetTrajectory(trajectoryPath)
   const [tableData, setTableData] = useState<PPDBDataType[]>([] as PPDBDataType[])
+
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
-      // const trajectory = ''
-      console.log(LPDBDetailData.data.data)
+      console.log(LPDBDetailData)
       cesiumModule.drawLaunchConjunctions(
         downloadData.data,
         LPDBDetailData.data.data.predictionEpochTime,
@@ -68,12 +68,6 @@ const LPDBDetailTable = ({
       setTableData(newData)
     }
   }, [LPDBDetailData, downloadData])
-
-  // useEffect(() => {
-  //   if (downloadData) {
-  //     console.log(`in use effect: ${downloadData}`)
-  //   }
-  // }, [downloadData])
 
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])

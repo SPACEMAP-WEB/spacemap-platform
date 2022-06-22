@@ -2,11 +2,12 @@ import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import ModalWrapper from '@app.components/common/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
-import { useMutationPostLPDB } from './query/useMutationLPDB'
+
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import { LPDBResponseType } from '@app.modules/types/launchConjunctions'
-import LcaAlertModal from './LcaAlertModal'
-import { isCalculatableDate } from './module/dateHandle'
+import { useMutationPostLPDB } from '../query/useMutationLPDB'
+import { isCalculatableDate } from '../module/dateHandle'
+import WarningModal from '@app.components/common/WarningModal'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -26,7 +27,7 @@ const AssessmentModal = ({
   setIsSuccessModalOpen,
   setIsLPDBTableOpen,
 }: AssessmentModalProps) => {
-  const { modalVisible, handleCloseModal, handleSetModal } = useModal('LAUNCHCONJUNCTIONS')
+  const { isVisible, handleCloseModal, handleSetModal } = useModal('LAUNCHCONJUNCTIONS')
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true)
   const [thresholdValue, setThresholdValue] = useState<number>(0)
   const [inputFile, setInputFile] = useState<File>()
@@ -34,14 +35,14 @@ const AssessmentModal = ({
   const { mutate } = useMutationPostLPDB()
   const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
 
-  const imageInput = useRef<HTMLInputElement>(null)
+  const fileInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
 
-  const onCickImageUpload = () => {
-    imageInput?.current.click()
+  const onCickFileUpload = () => {
+    fileInput?.current.click()
   }
 
-  const handleInputChange = (e) => {
+  const handleThresholdInputChange = (e) => {
     setThresholdValue(e.target.value)
   }
 
@@ -75,7 +76,7 @@ const AssessmentModal = ({
 
   return (
     <>
-      <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
+      <ModalWrapper visible={isVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
         <Modal ref={modalEl} isSubmitDisabled={isSubmitDisabled}>
           <div className="modal-content-container">
             <header className="modal-header">
@@ -102,11 +103,11 @@ const AssessmentModal = ({
                   alignItems: 'center',
                 }}
               >
-                <section className="file-input-container" onClick={onCickImageUpload}>
+                <section className="file-input-container" onClick={onCickFileUpload}>
                   <input
                     type="file"
                     style={{ display: 'none' }}
-                    ref={imageInput}
+                    ref={fileInput}
                     onChange={handleFileChange}
                     accept="text/plain"
                   />
@@ -120,7 +121,7 @@ const AssessmentModal = ({
                 <input
                   type="number"
                   value={thresholdValue}
-                  onChange={handleInputChange}
+                  onChange={handleThresholdInputChange}
                   className="threshold-input"
                 ></input>
               </section>
@@ -145,7 +146,12 @@ const AssessmentModal = ({
           </div>
         </Modal>
       </ModalWrapper>
-      {isLcaModalVisible && <LcaAlertModal handleRequestModalCancel={handleClose} />}
+      {isLcaModalVisible && (
+        <WarningModal
+          handleRequestModalCancel={handleClose}
+          message={"It isn't open from 4:00 to 10:00."}
+        />
+      )}
     </>
   )
 }

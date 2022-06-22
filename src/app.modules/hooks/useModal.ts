@@ -15,5 +15,7 @@ export const useModal = (type: modalType) => {
     dispatch(setModal({ type }))
   }
 
-  return { modalType, modalVisible, handleCloseModal, handleSetModal }
+  const isVisible = modalType === type && modalVisible
+
+  return { modalType, modalVisible, handleCloseModal, handleSetModal, isVisible }
 }

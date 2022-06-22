@@ -1,12 +1,7 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Column, useTable, usePagination } from 'react-table'
-import {
-  PPDBDataType,
-  PPDBSearchParamsType,
-  // eslint-disable-next-line @typescript-eslint/comma-dangle
-  PPDBTableColumnType,
-} from '@app.modules/types/conjunctions'
+import { useTable, usePagination } from 'react-table'
+import { PPDBDataType, PPDBSearchParamsType } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
 import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
@@ -16,6 +11,9 @@ import { useInstance } from '../module/useInstance'
 import { FilterSelectType } from '@app.modules/types'
 import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
 import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
+import { tableWidthStyle } from '../style/tableStyle'
+import { COLUMNS } from './TableColumns'
+import { useDebounce } from '@app.modules/hooks/useDebounce'
 
 type TProps = {
   toggle: number
@@ -40,8 +38,14 @@ const ConjuctionsTable = ({
 }: TProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
-  const { modalType, modalVisible } = useModal('CONJUNCTIONS')
-  const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
+  const { isVisible } = useModal('CONJUNCTIONS')
+  const isConjunctionsClicked = isVisible
+  const debounceFn = useDebounce(() => {
+    const size = winodwHeightFn(window.innerHeight)
+    setCustomPageSize(size)
+    setPageSize(size)
+    setQueryParams({ ...queryParams, limit: size })
+  }, 800)
 
   const { data: fetchedPPDBData, isLoading } = useQueryGetPPDB({
     query: queryParams,
@@ -51,57 +55,10 @@ const ConjuctionsTable = ({
 
   const { data: queryFavorite, isSuccess } = useQueryFavorite('')
 
-  const COLUMNS: Column<PPDBTableColumnType>[] = [
-    {
-      Header: 'Index',
-      accessor: (row) => {
-        const page = queryParams.page
-        return row.index + page * customPageSize
-      },
-      enableRowSpan: true,
-    },
-    {
-      Header: 'Primary',
-      accessor: (row) => {
-        return Object.values(row.primary)
-      },
-    },
-    {
-      Header: 'Secondary',
-      accessor: (row) => {
-        return Object.values(row.secondary)
-      },
-    },
-    {
-      Header: 'TCA/DCA',
-      accessor: (row) => {
-        return Object.values(row['tca/dca'])
-      },
-    },
-    {
-      Header: 'View',
-      accessor: (row) => {
-        return (
-          <img
-            style={{
-              width: '15px',
-              cursor: 'pointer',
-            }}
-            // onClick={handleVisibility(cesiumModule)}
-            onClick={() => {
-              cesiumModule.drawConjunctions(row.primary, row.secondary, row.start, row.tca, row.end)
-            }}
-            // onClick={() => console.log(row)}
-            src={'/svg/open-eye.svg'}
-            alt="View"
-          />
-        )
-      },
-      enableRowSpan: true,
-    },
-  ]
-
-  const columns = useMemo(() => COLUMNS, [queryParams])
+  const columns = useMemo(
+    () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
+    [queryParams]
+  )
   const data = useMemo(() => tableData, [tableData])
 
   const {
@@ -164,15 +121,8 @@ const ConjuctionsTable = ({
     callback()
   }
 
-  const sizeFunction = () => {
-    const size = winodwHeightFn(window.innerHeight)
-    setCustomPageSize(size)
-    setPageSize(size)
-    setQueryParams({ ...queryParams, limit: size })
-  }
-
   useEffect(() => {
-    window.addEventListener('resize', sizeFunction)
+    window.addEventListener('resize', debounceFn)
   }, [])
 
   const paginationProps = {
@@ -270,19 +220,4 @@ const StyledTable = styled.div`
       font-weight: bold;
     }
   }
-`
-
-const tableWidthStyle = `
-th:nth-of-type(1) { width: 50px; padding:10px}
-th:nth-of-type(2) { width: 140px; }
-th:nth-of-type(3) { width: 140px; }
-th:nth-of-type(4) { width: 150px; }
-th:nth-of-type(5) { width: 40px; padding:10px}
-@media screen and (min-width: 1920px) {
-  th:nth-of-type(1) { width: 60px; padding:10px}
-  th:nth-of-type(2) { width: 280px; }
-  th:nth-of-type(3) { width: 280px; }
-  th:nth-of-type(4) { width: 160px; }
-  th:nth-of-type(5) { width: 50px; padding:10px}
-}
 `

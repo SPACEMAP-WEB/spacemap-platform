@@ -38,8 +38,8 @@ const Conjunctions = ({ cesiumModule }) => {
   const [toggle, setToggle] = useState(0)
   const [close, setClose] = useState(false)
   const [favoriteData, setFavoriteData] = useState<FilterSelectType[]>([])
-  const { modalType, modalVisible } = useModal('CONJUNCTIONS')
-  const isConjunctionsClicked = modalType === 'CONJUNCTIONS' && modalVisible
+  const { isVisible } = useModal('CONJUNCTIONS')
+  const isConjunctionsClicked = isVisible
 
   const handleToggle = (index: number) => {
     setToggle(index)
@@ -73,17 +73,6 @@ const Conjunctions = ({ cesiumModule }) => {
   const conjuctionsUnmount = () => {
     !isConjunctionsClicked && setConjuctionsVisible(false)
   }
-
-  // useEffect(() => {
-  //   if (!tableContainerRef || !tableContainerRef.current) {
-  //     return
-  //   }
-
-  //   tableContainerRef.current.style.visibility = isConjunctionsClicked ? 'visible' : 'hidden'
-  //   tableContainerRef.current.style.transform = `translateX(${
-  //     isConjunctionsClicked ? '0' : '40rem'
-  //   })`
-  // })
 
   useEffect(() => {
     isConjunctionsClicked && setConjuctionsVisible(true)

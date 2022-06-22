@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 const SignInModal = () => {
   const router = useRouter()
-  const { modalType, modalVisible, handleCloseModal } = useModal('LOGIN')
+  const { isVisible, handleCloseModal } = useModal('LOGIN')
   const modalEl = useRef<HTMLDivElement>(null)
 
   const handleClose = () => {
@@ -19,8 +19,8 @@ const SignInModal = () => {
 
   return (
     <>
-      {modalType === 'LOGIN' && modalVisible && (
-        <ModalWrapper visible={modalVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
+      {isVisible && (
+        <ModalWrapper visible={isVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
           <Modal ref={modalEl}>
             <img src="/svg/close-white.svg" className="modal-close" onClick={handleClose} />
             <button className="google-login" onClick={() => handleClickLogin('google')}>
