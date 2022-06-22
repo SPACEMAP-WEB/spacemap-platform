@@ -2,8 +2,7 @@ import * as Cesium from 'cesium'
 import moment from 'moment'
 import api from '@app.modules/api'
 import { API_TLES, API_RSOS } from '@app.modules/keyFactory'
-import { sgp4, twoline2satrec } from 'satellite.js'
-import { resolve } from 'path'
+import { twoline2satrec } from 'satellite.js'
 class CesiumModule {
   constructor() {
     this.viewer

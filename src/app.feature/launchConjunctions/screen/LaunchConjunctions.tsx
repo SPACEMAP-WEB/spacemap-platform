@@ -10,7 +10,7 @@ import LPDBTable from '../components/LPDBTable'
 import SuccessModal from '../components/SuccessModal'
 
 const LaunchConjunctions = ({ cesiumModule }) => {
-  const { modalVisible, modalType, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
+  const { isVisible, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
   const {
     user: { email },
     login,
@@ -61,7 +61,7 @@ const LaunchConjunctions = ({ cesiumModule }) => {
     handleCloseModal()
   }
 
-  if (!login && modalVisible && modalType === 'LAUNCHCONJUNCTIONS')
+  if (!login && isVisible)
     return (
       <WarningModal
         handleRequestModalCancel={handleCloseRequestLoginModal}
@@ -73,9 +73,7 @@ const LaunchConjunctions = ({ cesiumModule }) => {
     <>
       {isLoading && <div>loading...</div>}
       {isSuccess && (
-        <LaunchConjunctionsWrapper>
-          {modalType === 'LAUNCHCONJUNCTIONS' && modalVisible && renderModal()}
-        </LaunchConjunctionsWrapper>
+        <LaunchConjunctionsWrapper>{isVisible && renderModal()}</LaunchConjunctionsWrapper>
       )}
       {isSuccessModalOpen && <SuccessModal setIsSuccessModalOpen={setIsSuccessModalOpen} />}
     </>
