@@ -8,6 +8,7 @@ const nextConfig = {
   reactStrictMode: false,
   env: {
     SPACEMAP_PLATFORM_API_URI: env.SPACEMAP_PLATFORM_API_URI,
+    SPACEMAP_PLATFORM_NODE_ENV: process.env.NODE_ENV,
   },
   webpack: (config) => {
     config.plugins.push(
