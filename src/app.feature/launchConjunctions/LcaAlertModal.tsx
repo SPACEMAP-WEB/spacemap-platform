@@ -13,7 +13,7 @@ const LcaAlertModal = ({ handleRequestModalCancel }: ModalProps) => {
         <Modal>
           <div className="modal-content-container">
             <img className="alert-sign" src="/svg/alert.svg" alt="alert" />
-            <p>It isn't open from 4:00 to 10:00.</p>
+            <p>It isn't open from 12:00 (UTC) to 18:00 (UTC).</p>
             <button className="confirm-button" onClick={handleRequestModalCancel}>
               ok
             </button>
