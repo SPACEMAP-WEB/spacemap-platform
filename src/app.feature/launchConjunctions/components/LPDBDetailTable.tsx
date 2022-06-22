@@ -50,14 +50,13 @@ const LPDBDetailTable = ({
   cesiumModule,
   trajectoryPath,
 }: LPDBDetailProps) => {
-  const { isLoading, data: LPDBDetailData, isSuccess } = useQueryGetLPDBDetail(LPDBId)
+  const { data: LPDBDetailData } = useQueryGetLPDBDetail(LPDBId)
   const { data: downloadData } = useQueryGetTrajectory(trajectoryPath)
   const [tableData, setTableData] = useState<PPDBDataType[]>([] as PPDBDataType[])
 
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
-      console.log(LPDBDetailData)
       cesiumModule.drawLaunchConjunctions(
         downloadData.data,
         LPDBDetailData.data.data.predictionEpochTime,

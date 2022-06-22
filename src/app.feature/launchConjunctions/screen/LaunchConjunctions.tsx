@@ -51,7 +51,6 @@ const LaunchConjunctions = ({ cesiumModule }) => {
           LPDBData={LPDBData.data}
           handleNewLaunchClick={handleNewLaunchClick}
           cesiumModule={cesiumModule}
-          refetchLPDBData={refetchLPDBData}
         />
       )
     }
