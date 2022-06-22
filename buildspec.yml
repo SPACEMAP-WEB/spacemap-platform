@@ -21,7 +21,7 @@ phases:
     #런타임 버전을 지정하는 경우 Ubuntu 표준 이미지 2.0 이외의 이미지를 사용하면 빌드에 실패합니다.
     runtime-versions:
       # name: version
-      nodejs: 12
+      nodejs: 16
       # name: version
     commands:
       - npm install
