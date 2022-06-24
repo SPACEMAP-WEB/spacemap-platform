@@ -149,7 +149,7 @@ const AssessmentModal = ({
       {isLcaModalVisible && (
         <WarningModal
           handleRequestModalCancel={handleClose}
-          message={"It isn't open from 4:00 to 10:00."}
+          message={"It isn't open from 12:00 to 18:00."}
         />
       )}
     </>
