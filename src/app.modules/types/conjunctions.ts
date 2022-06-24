@@ -42,10 +42,13 @@ export type PPDBResponseType = ResponseType & {
 }
 
 export type PPDBTableColumnType = {
+  index: number
   primary: number
   secondary: number
   dca: number
   tca: string
+  start: string
+  end: string
 }
 
 export type PPDBQueryKeyType = 'sort' | 'dec' | 'satellite'

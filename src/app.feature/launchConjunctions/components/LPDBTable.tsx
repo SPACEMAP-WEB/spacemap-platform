@@ -1,13 +1,13 @@
-import { LPDBResponseDataType, LPDBResponseType } from '@app.modules/types/launchConjunctions'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { LPDBResponseDataType } from '@app.modules/types/launchConjunctions'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useTable, CellProps } from 'react-table'
+import { useTable, CellProps, Column } from 'react-table'
 import { Table } from '@app.components/common/Table'
 import { useModal } from '@app.modules/hooks/useModal'
 import { useMutationDeleteLPDB } from '../query/useMutationLPDB'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
-import moment from 'moment'
 import LPDBDetailTable from './LPDBDetailTable'
+import useLPDBTableData from '../hooks/useLPDBTableData'
 
 type LPDBProps = {
   LPDBData: LPDBResponseDataType[]
@@ -16,22 +16,17 @@ type LPDBProps = {
 }
 
 const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) => {
-  const [isDoneStatusClicked, setIsDoneStatusClicked] = useState<boolean>(false)
+  const [isDetailClicked, setIsDetailClicked] = useState<boolean>(false)
   const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
-  const [trajectoryPath, setTrajectoryPath] = useState<string>('')
-  // const { columns, data } = useTableData() -> useQuery로 이 안에서  해결
-
-  const data = useMemo(() => LPDBData, [LPDBData])
+  const { columns, data } = useLPDBTableData(LPDBData)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
-  const { isVisible } = useModal('LAUNCHCONJUNCTIONS')
-  const isLaunchConjunctionsClicked = isVisible
+  const { isVisible: isLaunchConjunctionsClicked } = useModal('LAUNCHCONJUNCTIONS')
   const { mutate } = useMutationDeleteLPDB()
 
-  const handleDetailClick = async (id: string, trajectoryPath) => {
+  const handleDetailClick = async (id: string) => {
     setSelectedLPDBId(id)
-    setTrajectoryPath(trajectoryPath)
-    setIsDoneStatusClicked(true)
+    setIsDetailClicked(true)
   }
 
   const handleDelete = (id: string) => {
@@ -39,67 +34,55 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
   }
 
   const handleBackButton = () => {
-    setIsDoneStatusClicked(false)
+    setIsDetailClicked(false)
   }
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'ID',
-        accessor: 'email',
-      },
-      {
-        Header: 'Type',
-        Cell: <div>LCA</div>,
-      },
-      {
-        Header: 'Upload Date',
-        accessor: 'createdAt',
-        Cell: ({ value }: CellProps<any>) => <>{moment.utc(value).format('MMM DD, YY HH:mm:ss')}</>,
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-        Cell: ({ row, value }: CellProps<any>) => (
-          <>
-            {value === 'DONE' ? (
-              <div
-                onClick={() => {
-                  handleDetailClick(row.original['_id'], row.original.trajectoryPath)
-                }}
-                style={{ color: '#fccb16', cursor: 'pointer' }}
-              >
-                <span>
-                  {'Success'}
-                  {'   '}
-                  <img src="/svg/right-arrow.svg" style={{ width: '5px', cursor: 'pointer' }} />
-                </span>
-              </div>
-            ) : (
-              <div>{value === 'PENDING' ? 'Pending' : 'Failed'}</div>
-            )}
-          </>
-        ),
-      },
-      {
-        id: 'delete',
-        Header: '',
-        Cell: ({ row }) => (
-          <img
-            src="/svg/trashbin.svg"
-            style={{ width: '14px', cursor: 'pointer' }}
-            onClick={() => handleDelete(row.original._id)}
-          />
-        ),
-      },
-    ],
-    []
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
+    {
+      columns,
+      data,
+    },
+    (hooks) => {
+      hooks.visibleColumns.push((columns: Column<LPDBResponseDataType>[]) => {
+        columns[3] = {
+          Header: 'Status',
+          accessor: 'status',
+          Cell: ({ row, value }: CellProps<any>) => (
+            <>
+              {value === 'DONE' ? (
+                <div
+                  onClick={() => {
+                    handleDetailClick(row.original['_id'])
+                  }}
+                  style={{ color: '#fccb16', cursor: 'pointer' }}
+                >
+                  <span>
+                    {'Success'}
+                    {'   '}
+                    <img src="/svg/right-arrow.svg" style={{ width: '5px', cursor: 'pointer' }} />
+                  </span>
+                </div>
+              ) : (
+                <div>{value === 'PENDING' ? 'Pending' : 'Failed'}</div>
+              )}
+            </>
+          ),
+        }
+        columns[4] = {
+          id: 'delete',
+          Header: '',
+          Cell: ({ row }) => (
+            <img
+              src="/svg/trashbin.svg"
+              style={{ width: '14px', cursor: 'pointer' }}
+              onClick={() => handleDelete(row.original._id)}
+            />
+          ),
+        }
+        return columns
+      })
+    }
   )
-
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
-    columns,
-    data,
-  })
 
   useEffect(() => {
     if (!tableContainerRef || !tableContainerRef.current) return
@@ -114,7 +97,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
   return (
     <>
       <LPDBTableWrapper ref={tableContainerRef}>
-        {!isDoneStatusClicked ? (
+        {!isDetailClicked ? (
           <>
             <div className="launch-conjunction-header">
               <h1 className="title">Launch Conjunctions</h1>
@@ -153,7 +136,6 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
             handleBackButton={handleBackButton}
             LPDBId={selectedLPDBId}
             cesiumModule={cesiumModule}
-            trajectoryPath={trajectoryPath}
           />
         )}
       </LPDBTableWrapper>

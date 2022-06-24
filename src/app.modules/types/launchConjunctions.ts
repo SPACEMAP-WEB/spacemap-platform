@@ -10,31 +10,46 @@ export type LPDBResponseDataType = {
 }
 
 export type LPDBDataType = {
-  createdAt: string
+  index: number
+  id: string
+  primary: number | string
+  secondary: number | string
   dca: number
-  pName: string
-  pid: number
-  sName: string
-  sid: number
-  standardTime: string
-  tcaEndTime: string
-  tcaStartTime: string
-  tcaTime: string
-  __v: number
-  _id: string
-  placeId: string
+  start: string
+  tca: string
+  end: string
+  probability: string
+  'tca/dca': string
 }
 
+// export type LPDBDataType = {
+//   createdAt: string
+//   dca: number
+//   pName: string
+//   pid: number
+//   sName: string
+//   sid: number
+//   standardTime: string
+//   tcaEndTime: string
+//   tcaStartTime: string
+//   tcaTime: string
+//   __v: number
+//   _id: string
+//   placeId: string
+// }
+
 export type LPDBDetailResponseDataType = {
-  success: boolean
+  trajectoryPath: string
+  predictionEpochTime: string
+  launchEpochTime: string
+  trajectoryLength: number
+  lpdb: LPDBDataType[]
+}
+
+export type LPDBDetailResponseType = {
   message: string
-  data: {
-    trajectoryFilePath: string
-    predictionEpochTime: string
-    launchEpochTime: string
-    trajectoryLength: number
-    lpdb: LPDBDataType[]
-  }
+  success: boolean
+  data: LPDBDetailResponseDataType
 }
 
 export type LPDBResponseType = {

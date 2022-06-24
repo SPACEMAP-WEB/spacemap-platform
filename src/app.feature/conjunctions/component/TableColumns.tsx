@@ -1,18 +1,27 @@
 import { Column } from 'react-table'
-import { PPDBTableColumnType } from '@app.modules/types/conjunctions'
+import {
+  PPDBDataType,
+  PPDBSearchParamsType,
+  PPDBTableColumnType,
+} from '@app.modules/types/conjunctions'
+
+type ColumnProps = {
+  queryParams: PPDBSearchParamsType
+  customPageSize: number
+  cesiumModule
+}
 
 export const COLUMNS = ({
   queryParams,
   customPageSize,
   cesiumModule,
-}): Column<PPDBTableColumnType>[] => [
+}: ColumnProps): Column<PPDBDataType>[] => [
   {
     Header: 'Index',
     accessor: (row) => {
       const page = queryParams.page
       return row.index + page * customPageSize
     },
-    enableRowSpan: true,
   },
   {
     Header: 'Primary',
@@ -51,6 +60,5 @@ export const COLUMNS = ({
         />
       )
     },
-    enableRowSpan: true,
   },
 ]
