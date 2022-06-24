@@ -22,21 +22,21 @@ export type LPDBDataType = {
   'tca/dca': string
 }
 
-// export type LPDBDataType = {
-//   createdAt: string
-//   dca: number
-//   pName: string
-//   pid: number
-//   sName: string
-//   sid: number
-//   standardTime: string
-//   tcaEndTime: string
-//   tcaStartTime: string
-//   tcaTime: string
-//   __v: number
-//   _id: string
-//   placeId: string
-// }
+export type LPDBTempDataType = {
+  createdAt: string
+  dca: number
+  pName: string
+  pid: number
+  sName: string
+  sid: number
+  standardTime: string
+  tcaEndTime: string
+  tcaStartTime: string
+  tcaTime: string
+  __v: number
+  _id: string
+  placeId: string
+}
 
 export type LPDBDetailResponseDataType = {
   trajectoryPath: string

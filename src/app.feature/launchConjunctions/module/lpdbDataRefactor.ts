@@ -1,8 +1,8 @@
 import { PPDBDataType } from '@app.modules/types/conjunctions'
-import { LPDBDataType } from '@app.modules/types/launchConjunctions'
+import { LPDBDataType, LPDBTempDataType } from '@app.modules/types/launchConjunctions'
 import moment from 'moment'
 
-export const lpdbDataRefactor = (lpdbData: LPDBDataType[]): PPDBDataType[] => {
+export const lpdbDataRefactor = (lpdbData: LPDBTempDataType[]): LPDBDataType[] => {
   let newData = []
   lpdbData.forEach((item, index) => {
     const { _id, pid, pName, sid, sName, dca, tcaStartTime, tcaEndTime, tcaTime } = item
