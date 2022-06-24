@@ -1,6 +1,6 @@
 import { Table } from '@app.components/common/Table'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useTable, usePagination } from 'react-table'
+import { useTable, usePagination, Column } from 'react-table'
 import { PPDBDataType, PPDBSearchParamsType } from '@app.modules/types/conjunctions'
 import styled from 'styled-components'
 import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
@@ -15,17 +15,13 @@ import { tableWidthStyle } from '../style/tableStyle'
 import { COLUMNS } from './TableColumns'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 
-type TProps = {
+type TableProps = {
   toggle: number
   setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
   cesiumModule
   size: number
-}
-
-const borderStyle = {
-  border: '1px solid gray',
 }
 
 const ConjuctionsTable = ({
@@ -35,7 +31,7 @@ const ConjuctionsTable = ({
   setQueryParams,
   cesiumModule,
   size,
-}: TProps) => {
+}: TableProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
   const { isVisible } = useModal('CONJUNCTIONS')
@@ -74,10 +70,9 @@ const ConjuctionsTable = ({
     nextPage,
     pageCount,
     previousPage,
-    rowSpanHeaders,
     setPageSize,
     state: { pageIndex, pageSize },
-  } = useTable(
+  } = useTable<PPDBDataType>(
     {
       columns,
       data,
@@ -157,37 +152,24 @@ const ConjuctionsTable = ({
         </thead>
         {!!tableData.length && (
           <>
-            <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-              {page.map((row, i) => {
+            <tbody {...getTableBodyProps()}>
+              {page.map((row, index) => {
+                console.log(row)
                 prepareRow(row)
-                for (let j = 0; j < row.allCells.length; j++) {
-                  let cell = row.allCells[j]
-                  let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
-
-                  if (rowSpanHeader !== undefined) {
-                    if (i % 2 !== 1) {
-                      cell.rowSpan = 2
-                      cell.isRowSpanned = false
-                    } else {
-                      cell.isRowSpan = 1
-                      cell.isRowSpanned = true
-                    }
-                  }
-                }
-                return null
-              })}
-              {page.map((row) => {
                 return (
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
-                      if (cell.isRowSpanned) return null
-                      else {
-                        return (
-                          <td rowSpan={cell.rowSpan} {...cell.getCellProps()} style={borderStyle}>
-                            {cell.render('Cell')}
-                          </td>
-                        )
-                      }
+                      return (
+                        <td
+                          rowSpan={cell.column.id === 'Index' && index % 2 === 0 ? 2 : 1}
+                          style={{
+                            display: cell.column.id === 'Index' && index % 2 === 1 ? 'none' : null,
+                          }}
+                          {...cell.getCellProps()}
+                        >
+                          {cell.render('Cell')}
+                        </td>
+                      )
                     })}
                   </tr>
                 )
