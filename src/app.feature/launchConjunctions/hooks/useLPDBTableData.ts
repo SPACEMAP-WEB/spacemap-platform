@@ -13,7 +13,7 @@ const useLPDBTableData = (LPDBData: LPDBResponseDataType[]) => {
       },
       {
         Header: 'Type',
-        accessor: () => 'LCA',
+        accessor: (row) => 'LCA',
       },
       {
         Header: 'Upload Date',

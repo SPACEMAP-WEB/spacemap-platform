@@ -18,7 +18,7 @@ type LPDBDetailProps = {
 
 const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailProps) => {
   const { data: LPDBDetailData } = useQueryGetLPDBDetail(LPDBId)
-  const { columns, data } = useLPDBDetailTableData(LPDBDetailData.lpdb)
+  const { columns, data } = useLPDBDetailTableData(lpdbDataRefactor(LPDBDetailData.lpdb))
   const { data: downloadData } = useQueryGetTrajectory(LPDBDetailData?.trajectoryPath)
 
   useEffect(() => {
