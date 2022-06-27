@@ -1,7 +1,10 @@
 import api from '@app.modules/api'
 import { API_FAVORITE_CONJUNCTIONS, API_PPDB } from '@app.modules/keyFactory'
 import { objectToURL } from '@app.modules/util'
-import { PPDBResponseType, PPDBSearchParamsType } from '@app.modules/types/conjunctions'
+import {
+  PPDBResponseType,
+  PPDBSearchParamsType,
+} from '@app.feature/conjunctions/types/conjunctions'
 import { useQuery } from 'react-query'
 
 export const requestAPiGetPPDB = async (query: PPDBSearchParamsType) => {

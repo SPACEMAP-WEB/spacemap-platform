@@ -1,4 +1,4 @@
-import { LPDBResponseDataType } from '@app.modules/types/launchConjunctions'
+import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import moment from 'moment'
 import { useMemo } from 'react'
 import { CellProps, Column } from 'react-table'

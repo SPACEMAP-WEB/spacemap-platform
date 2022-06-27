@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import ModalWrapper from '@app.components/common/ModalWrapper'
+import ModalWrapper from '@app.components/modal/ModalWrapper'
 
 type ModalProps = {
   handleRequestModalCancel: () => void

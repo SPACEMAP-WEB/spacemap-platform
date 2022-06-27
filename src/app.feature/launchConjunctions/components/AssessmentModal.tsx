@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-import ModalWrapper from '@app.components/common/ModalWrapper'
+import ModalWrapper from '@app.components/modal/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
 
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
-import { LPDBResponseType } from '@app.modules/types/launchConjunctions'
+import { LPDBResponseType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMutationPostLPDB } from '../query/useMutationLPDB'
 import { isCalculatableDate } from '../module/dateHandle'
-import WarningModal from '@app.components/common/WarningModal'
+import WarningModal from '@app.components/modal/WarningModal'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void

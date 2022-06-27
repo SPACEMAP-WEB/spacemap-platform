@@ -1,4 +1,4 @@
-import ModalWrapper from '@app.components/common/ModalWrapper'
+import ModalWrapper from '@app.components/modal/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
 import { useRouter } from 'next/router'
 import React, { useRef } from 'react'

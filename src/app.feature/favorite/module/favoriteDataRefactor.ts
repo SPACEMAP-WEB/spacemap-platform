@@ -3,7 +3,7 @@ import {
   FavoriteColumnType,
   FavoriteDataType,
   FavoriteFindDataType,
-} from '@app.modules/types/conjunctions'
+} from '@app.feature/conjunctions/types/conjunctions'
 
 export const favoriteDataRefactor = (data: FavoriteDataType): FavoriteColumnType[] => {
   if (!data) return []

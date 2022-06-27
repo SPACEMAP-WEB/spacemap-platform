@@ -1,4 +1,4 @@
-import { FavoriteColumnType } from '@app.modules/types/conjunctions'
+import { FavoriteColumnType } from '@app.feature/conjunctions/types/conjunctions'
 import { arrToMap } from './arrToMap'
 
 const compareData = ({

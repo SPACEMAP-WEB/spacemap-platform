@@ -1,4 +1,4 @@
-import { LPDBDataType } from '@app.modules/types/launchConjunctions'
+import { LPDBDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 

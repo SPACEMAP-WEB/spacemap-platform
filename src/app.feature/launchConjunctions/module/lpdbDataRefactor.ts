@@ -1,4 +1,7 @@
-import { LPDBDataType, LPDBTempDataType } from '@app.modules/types/launchConjunctions'
+import {
+  LPDBDataType,
+  LPDBTempDataType,
+} from '@app.feature/launchConjunctions/types/launchConjunctions'
 import moment from 'moment'
 
 export const lpdbDataRefactor = (lpdbData: LPDBTempDataType[]): LPDBDataType[] => {
