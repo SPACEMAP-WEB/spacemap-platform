@@ -1,5 +1,5 @@
 import { Column } from 'react-table'
-import { PPDBDataType, PPDBSearchParamsType } from '@app.modules/types/conjunctions'
+import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 
 type ColumnProps = {
   queryParams: PPDBSearchParamsType

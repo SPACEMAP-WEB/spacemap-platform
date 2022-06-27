@@ -3,14 +3,18 @@ import {
   FavoriteColumnType,
   FavoriteDataType,
   FavoriteFindDataType,
-} from '@app.modules/types/conjunctions'
+} from '@app.feature/conjunctions/types/conjunctions'
 
 export const favoriteDataRefactor = (data: FavoriteDataType): FavoriteColumnType[] => {
   if (!Object.keys(data).length) return []
   const { interestedArray } = data
   let refactorArr = []
   for (let i = 0; i < interestedArray.length; i++) {
-    refactorArr.push({ noradId: interestedArray[i].id, satName: interestedArray[i].name, isInterested: true })
+    refactorArr.push({
+      noradId: interestedArray[i].id,
+      satName: interestedArray[i].name,
+      isInterested: true,
+    })
   }
   return refactorArr
 }

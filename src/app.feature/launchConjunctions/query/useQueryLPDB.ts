@@ -5,7 +5,7 @@ import {
   LPDBDetailResponseDataType,
   LPDBDetailResponseType,
   LPDBResponseType,
-} from '@app.modules/types/launchConjunctions'
+} from '@app.feature/launchConjunctions/types/launchConjunctions'
 
 export const requestAPiGetLPDB = async () => {
   const response = await api.GET<null, LPDBResponseType>(

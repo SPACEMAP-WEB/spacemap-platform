@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
+import IndeterminateCheckbox from '@app.components/IndeterminateCheckbox'
+import { Table } from '@app.components/Table'
 import {
   FavoriteColumnType,
   FavoriteDataType,
   FavoriteFindDataType,
-} from '@app.modules/types/conjunctions'
-import { Table } from '@app.components/common/Table'
-import { Column, useTable, CellProps, useRowSelect, usePagination } from 'react-table'
-import React, { useEffect, useMemo, useState } from 'react'
-import {
-  useQueryFavorite,
-  useQueryFindFavorite,
-} from '@app.feature/favorite/query/useQueryFavorite'
+} from '@app.feature/conjunctions/types/conjunctions'
 import {
   favoriteDataRefactor,
   favoriteFindDataRefactor,
 } from '@app.feature/favorite/module/favoriteDataRefactor'
-import IndeterminateCheckbox from '@app.components/common/IndeterminateCheckbox'
 import {
   useDeleteMutationFavorite,
   usePostMutationFavorite,
 } from '@app.feature/favorite/query/useMutationFavorite'
-import { useQueryClient } from 'react-query'
+import {
+  useQueryFavorite,
+  useQueryFindFavorite,
+} from '@app.feature/favorite/query/useQueryFavorite'
 import { API_FAVORITE, API_FAVORITE_CONJUNCTIONS } from '@app.modules/keyFactory'
-import ConjunctionsPagination from '../../conjunctions/component/ConjunctionsPagination'
-import styled from 'styled-components'
-import { updateBookmarkData } from '../module/bookmarkDataCompare'
 import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useQueryClient } from 'react-query'
+import { CellProps, Column, usePagination, useRowSelect, useTable } from 'react-table'
+import styled from 'styled-components'
+import ConjunctionsPagination from '../../conjunctions/component/ConjunctionsPagination'
+import { updateBookmarkData } from '../module/bookmarkDataCompare'
 
 const borderStyle = {
   border: '1px solid gray',

@@ -1,6 +1,9 @@
 import api from '@app.modules/api'
 import { API_FAVORITE, API_FAVORITE_FIND } from '@app.modules/keyFactory'
-import { FavoriteFindResponseType, FavoriteResponseType } from '@app.modules/types/conjunctions'
+import {
+  FavoriteFindResponseType,
+  FavoriteResponseType,
+} from '@app.feature/conjunctions/types/conjunctions'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'

@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import { useTable } from 'react-table'
-import { Table } from '@app.components/common/Table'
+import { Table } from '@app.components/Table'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
-import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
+import React, { useEffect } from 'react'
+import { useTable } from 'react-table'
+import styled from 'styled-components'
+import useLPDBDetailTableData from '../hooks/useLPDBDetailTableData'
 import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
 import { useInstance } from '../module/useInstance'
-import useLPDBDetailTableData from '../hooks/useLPDBDetailTableData'
+import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
 
 type LPDBDetailProps = {
   LPDBId: string

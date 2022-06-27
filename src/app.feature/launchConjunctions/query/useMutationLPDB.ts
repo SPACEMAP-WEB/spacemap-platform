@@ -1,7 +1,10 @@
 import api from '@app.modules/api'
 import { API_LPDB } from '@app.modules/keyFactory'
 import { useMutation } from 'react-query'
-import { LPDBRequestType, LPDBResponseType } from '@app.modules/types/launchConjunctions'
+import {
+  LPDBRequestType,
+  LPDBResponseType,
+} from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useQueryClient } from 'react-query'
 
 export const useMutationPostLPDB = () => {

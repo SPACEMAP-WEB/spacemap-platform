@@ -1,9 +1,9 @@
-import SignInModal from '@app.components/signIn/SignInModal'
+import SignInModal from '@app.components/modal/SignInModal'
 import Conjunctions from '@app.feature/conjunctions/screen/Conjunctions'
 import LaunchConjunctions from '@app.feature/launchConjunctions/screen/LaunchConjunctions'
 import React from 'react'
 import styled from 'styled-components'
-import Button from './Button'
+import Button from './button/Button'
 import Logo from './Logo'
 import SideMenu from './SideMenu'
 

@@ -1,13 +1,13 @@
-import { LPDBResponseDataType } from '@app.modules/types/launchConjunctions'
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import { useTable, CellProps, Column } from 'react-table'
-import { Table } from '@app.components/common/Table'
-import { useModal } from '@app.modules/hooks/useModal'
-import { useMutationDeleteLPDB } from '../query/useMutationLPDB'
+import { Table } from '@app.components/Table'
+import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
-import LPDBDetailTable from './LPDBDetailTable'
+import { useModal } from '@app.modules/hooks/useModal'
+import React, { useEffect, useRef, useState } from 'react'
+import { CellProps, Column, useTable } from 'react-table'
+import styled from 'styled-components'
 import useLPDBTableData from '../hooks/useLPDBTableData'
+import { useMutationDeleteLPDB } from '../query/useMutationLPDB'
+import LPDBDetailTable from './LPDBDetailTable'
 
 type LPDBProps = {
   LPDBData: LPDBResponseDataType[]
