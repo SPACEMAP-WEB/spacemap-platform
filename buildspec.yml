@@ -58,6 +58,6 @@ artifacts:
   #name: $(date +%Y-%m-%d)
   #discard-paths: yes
   #base-directory: './'
-cache:
-  paths:
-    - 'node_modules/**/*'
+# cache:
+#   paths:
+#     - 'node_modules/**/*'
