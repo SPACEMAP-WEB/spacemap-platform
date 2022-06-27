@@ -17,7 +17,7 @@ const useLPDBTableData = (LPDBData: LPDBResponseDataType[]) => {
       },
       {
         Header: 'Upload Date',
-        accessor: (row) => moment.utc(row['createdAt']).format('MMM DD, YY HH:mm:ss'),
+        accessor: (row) => moment.utc(row['createdAt']).format('MMM DD, YYYY HH:mm:ss'),
       },
       {
         Header: 'Status',

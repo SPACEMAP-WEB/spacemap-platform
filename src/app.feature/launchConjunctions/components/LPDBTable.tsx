@@ -213,10 +213,9 @@ const LPDBTableWrapper = styled.div`
 `
 
 const tableWidthStyle = `
-th:nth-of-type(1) { width: 40px; }
+th:nth-of-type(1) { width: 150px; }
 th:nth-of-type(2) { width: 20px; }
-th:nth-of-type(3) { width: 40px; }
-th:nth-of-type(4) { min-width: 20px; }
-th:nth-of-type(5) { width: 20px; }
-th:nth-of-type(6) { width: 10px; }
+th:nth-of-type(3) { width: 100px; }
+th:nth-of-type(4) { width: 20px; }
+th:nth-of-type(5) { width: 10px; }
 `
