@@ -82,7 +82,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     setPageSize,
     previousPage,
     state: { selectedRowIds, pageIndex },
-  } = useTable(
+  } = useTable<FavoriteColumnType>(
     {
       columns,
       data,

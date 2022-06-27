@@ -34,7 +34,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app.modules/cesium/cesiumModule.js"  ],
+, "src/app.modules/cesium/cesiumModule.js", "node_modules/@types/react-table-config.d.ts"  ],
   "exclude": [
     "node_modules"
   ]

@@ -8,88 +8,47 @@ import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
 import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
 import { useInstance } from '../module/useInstance'
-
-const COLUMNS: Column<LPDBDataType>[] = [
-  {
-    Header: 'Index',
-    accessor: (row) => {
-      return row.index
-    },
-    enableRowSpan: true,
-  },
-  {
-    Header: 'Primary',
-    accessor: (row) => {
-      return Object.values(row.primary)
-    },
-  },
-  {
-    Header: 'Secondary',
-    accessor: (row) => {
-      return Object.values(row.secondary)
-    },
-  },
-  {
-    Header: 'TCA/DCA',
-    accessor: (row) => {
-      return Object.values(row['tca/dca'])
-    },
-  },
-]
+import useLPDBDetailTableData from '../hooks/useLPDBDetailTableData'
 
 type LPDBDetailProps = {
   LPDBId: string
   handleBackButton: () => void
   cesiumModule: CesiumModule
-  trajectoryPath: string
 }
 
-const LPDBDetailTable = ({
-  handleBackButton,
-  LPDBId,
-  cesiumModule,
-  trajectoryPath,
-}: LPDBDetailProps) => {
+const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailProps) => {
   const { data: LPDBDetailData } = useQueryGetLPDBDetail(LPDBId)
-  const { data: downloadData } = useQueryGetTrajectory(trajectoryPath)
-  const [tableData, setTableData] = useState<PPDBDataType[]>([] as PPDBDataType[])
+  const { columns, data } = useLPDBDetailTableData(lpdbDataRefactor(LPDBDetailData.lpdb))
+  const { data: downloadData } = useQueryGetTrajectory(LPDBDetailData?.trajectoryPath)
 
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
-      const newData = lpdbDataRefactor(LPDBDetailData.data.data.lpdb)
+      const newData = lpdbDataRefactor(LPDBDetailData.lpdb)
       cesiumModule.drawLaunchConjunctions(
         downloadData.data,
-        LPDBDetailData.data.data.predictionEpochTime,
-        LPDBDetailData.data.data.launchEpochTime,
-        LPDBDetailData.data.data.trajectoryLength,
+        LPDBDetailData.predictionEpochTime,
+        LPDBDetailData.launchEpochTime,
+        LPDBDetailData.trajectoryLength,
         newData
       )
-      setTableData(newData)
     }
   }, [LPDBDetailData, downloadData])
 
-  const columns = useMemo(() => COLUMNS, [])
-  const data = useMemo(() => tableData, [tableData])
-
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows, rowSpanHeaders } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      (hooks) => {
-        hooks.useInstance.push(useInstance)
-      }
-    )
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
+    {
+      columns,
+      data,
+    },
+    (hooks) => {
+      hooks.useInstance.push(useInstance)
+    }
+  )
 
   return (
     <>
       <LPDBTableWrapper>
-        <div className="back-container" style={{ marginBottom: '1rem' }} onClick={handleBackButton}>
-          <img
-            src="svg/left-arrow.svg"
-            style={{ width: '11px', cursor: 'pointer', marginLeft: '0.5rem' }}
-          />
+        <div className="back-container" onClick={handleBackButton}>
+          <img src="svg/left-arrow.svg" />
           Go Back
         </div>
         <div className="table-wrapper">
@@ -103,43 +62,26 @@ const LPDBDetailTable = ({
                 </tr>
               ))}
             </thead>
-            {tableData.length && (
+            {data.length && (
               <>
-                <tbody {...getTableBodyProps()} style={{ overflowY: 'scroll' }}>
-                  {rows.map((row, i) => {
+                <tbody {...getTableBodyProps()}>
+                  {rows.map((row, index) => {
                     prepareRow(row)
-                    for (let j = 0; j < row.allCells.length; j++) {
-                      let cell = row.allCells[j]
-                      let rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id)
-
-                      if (rowSpanHeader !== undefined) {
-                        if (i % 2 !== 1) {
-                          cell.rowSpan = 2
-                          cell.isRowSpanned = false
-                        } else {
-                          cell.isRowSpan = 1
-                          cell.isRowSpanned = true
-                        }
-                      }
-                    }
-                    return null
-                  })}
-                  {rows.map((row) => {
                     return (
                       <tr {...row.getRowProps()}>
                         {row.cells.map((cell) => {
-                          if (cell.isRowSpanned) return null
-                          else {
-                            return (
-                              <td
-                                rowSpan={cell.rowSpan}
-                                {...cell.getCellProps()}
-                                style={borderStyle}
-                              >
-                                {cell.render('Cell')}
-                              </td>
-                            )
-                          }
+                          return (
+                            <td
+                              rowSpan={cell.column.id === 'Index' && index % 2 === 0 ? 2 : 1}
+                              style={{
+                                display:
+                                  cell.column.id === 'Index' && index % 2 === 1 ? 'none' : null,
+                              }}
+                              {...cell.getCellProps()}
+                            >
+                              {cell.render('Cell')}
+                            </td>
+                          )
                         })}
                       </tr>
                     )
@@ -162,11 +104,17 @@ const borderStyle = {
 
 const LPDBTableWrapper = styled.div`
   .back-container {
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     color: white;
     cursor: pointer;
+    img {
+      width: 11px;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
   }
   .new-launch-container {
     width: 200px;
@@ -195,6 +143,9 @@ const LPDBTableWrapper = styled.div`
     object-fit: cover;
     .table {
       font-size: 11px;
+      tbody {
+        overflow-y: scroll;
+      }
     }
   }
 `

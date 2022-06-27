@@ -60,16 +60,14 @@ const LaunchConjunctions = ({ cesiumModule }) => {
     handleCloseModal()
   }
 
-  if (!login && isVisible)
-    return (
-      <WarningModal
-        handleRequestModalCancel={handleCloseRequestLoginModal}
-        message={'Login first to use our service'}
-      />
-    )
-
   return (
     <>
+      {!login && isVisible && (
+        <WarningModal
+          handleRequestModalCancel={handleCloseRequestLoginModal}
+          message={'Login first to use our service'}
+        />
+      )}
       {isLoading && <div>loading...</div>}
       {isSuccess && (
         <LaunchConjunctionsWrapper>{isVisible && renderModal()}</LaunchConjunctionsWrapper>

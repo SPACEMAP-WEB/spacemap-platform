@@ -10,6 +10,19 @@ export type LPDBResponseDataType = {
 }
 
 export type LPDBDataType = {
+  index: number
+  id: string
+  primary: number | string
+  secondary: number | string
+  dca: number
+  start: string
+  tca: string
+  end: string
+  probability: string
+  'tca/dca': string
+}
+
+export type LPDBTempDataType = {
   createdAt: string
   dca: number
   pName: string
@@ -26,15 +39,17 @@ export type LPDBDataType = {
 }
 
 export type LPDBDetailResponseDataType = {
-  success: boolean
+  trajectoryPath: string
+  predictionEpochTime: string
+  launchEpochTime: string
+  trajectoryLength: number
+  lpdb: LPDBTempDataType[]
+}
+
+export type LPDBDetailResponseType = {
   message: string
-  data: {
-    trajectoryFilePath: string
-    predictionEpochTime: string
-    launchEpochTime: string
-    trajectoryLength: number
-    lpdb: LPDBDataType[]
-  }
+  success: boolean
+  data: LPDBDetailResponseDataType
 }
 
 export type LPDBResponseType = {

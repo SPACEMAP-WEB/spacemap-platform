@@ -1,10 +1,9 @@
 import React, { useEffect, forwardRef } from 'react'
 
 interface IndeterminateCheckboxProps {
-  row: any
   indeterminate?: boolean
   disabled?: boolean
-  onClick: any
+  onClick?: React.MouseEventHandler<HTMLInputElement>
 }
 
 const useCombinedRefs = (...refs: any[]): React.MutableRefObject<any> => {
