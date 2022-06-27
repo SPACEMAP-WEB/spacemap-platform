@@ -1,12 +1,12 @@
-import MainLayout from '@app.components/common/MainLayout'
 import dynamic from 'next/dynamic'
 import styled from 'styled-components'
 import Head from 'next/head'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
-import { requestCheckLogin } from 'src/app.store/loginStore/loginUser'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
+import MainLayout from '@app.components/MainLayout'
+import { requestCheckLogin } from 'src/app.store/loginStore/loginUser'
 
 const CesiumComponent = dynamic(() => import('@app.components/Cesium'), {
   ssr: false,
