@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const ConjuctionsTabs = ({ toggle, onClick, login }) => {
+const ConjunctionsTabs = ({ toggle, onClick, login }) => {
   const tabs = login ? ['All-on-All', 'Favorites-on-All'] : ['All-on-All']
 
   return (
@@ -10,7 +10,7 @@ const ConjuctionsTabs = ({ toggle, onClick, login }) => {
         return (
           <div
             key={index}
-            className={`conjuctions-tab-menu ${index} ${toggle === index ? 'active' : ''}`}
+            className={`conjunctions-tab-menu ${index} ${toggle === index ? 'active' : ''}`}
             onClick={() => onClick(index)}
           >
             {tab}
@@ -21,13 +21,13 @@ const ConjuctionsTabs = ({ toggle, onClick, login }) => {
   )
 }
 
-export default ConjuctionsTabs
+export default ConjunctionsTabs
 
 const StyledTabs = styled.div`
   display: flex;
   justify-content: center;
   margin: 20px 0px;
-  .conjuctions-tab-menu {
+  .conjunctions-tab-menu {
     text-align: center;
     font-size: 18px;
     font-weight: bold;

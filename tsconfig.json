@@ -24,7 +24,6 @@
       "@app.layout/*": ["src/app.layout/*"],
       "@app.feature/*": ["src/app.feature/*"],
       "@app.modules/*": ["src/app.modules/*"],
-      // "@app.store/*":["src/app.store/*"],
       "@pages/*": ["src/pages/*"],
       "@public/*": ["public/*"],
       "@types/*": ["types/*"]

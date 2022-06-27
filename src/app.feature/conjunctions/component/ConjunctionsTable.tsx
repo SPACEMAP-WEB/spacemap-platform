@@ -24,7 +24,7 @@ type TableProps = {
   size: number
 }
 
-const ConjuctionsTable = ({
+const ConjunctionsTable = ({
   toggle,
   setFavoriteData,
   queryParams,
@@ -183,7 +183,7 @@ const ConjuctionsTable = ({
   )
 }
 
-export default ConjuctionsTable
+export default ConjunctionsTable
 
 const StyledTable = styled.div`
   border-radius: 10px;

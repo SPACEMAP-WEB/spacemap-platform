@@ -1,9 +1,5 @@
 import { Column } from 'react-table'
-import {
-  PPDBDataType,
-  PPDBSearchParamsType,
-  PPDBTableColumnType,
-} from '@app.modules/types/conjunctions'
+import { PPDBDataType, PPDBSearchParamsType } from '@app.modules/types/conjunctions'
 
 type ColumnProps = {
   queryParams: PPDBSearchParamsType
@@ -50,11 +46,9 @@ export const COLUMNS = ({
             width: '15px',
             cursor: 'pointer',
           }}
-          // onClick={handleVisibility(cesiumModule)}
           onClick={() => {
             cesiumModule.drawConjunctions(row.primary, row.secondary, row.start, row.tca, row.end)
           }}
-          // onClick={() => console.log(row)}
           src={'/svg/open-eye.svg'}
           alt="View"
         />

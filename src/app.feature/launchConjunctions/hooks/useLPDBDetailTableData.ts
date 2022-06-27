@@ -9,9 +9,7 @@ const useLPDBDetailTableData = (LPDBDetailData: LPDBDataType[] | undefined) => {
     () => [
       {
         Header: 'Index',
-        accessor: (row) => {
-          return row.index
-        },
+        accessor: 'index',
       },
       {
         Header: 'Primary',

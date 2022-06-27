@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
-import ConjuctionsFavoriteTable from '../component/ConjuctionsFavroiteTable'
+import ConjunctionsFavoriteTable from '../component/ConjunctionsFavoriteTable'
 
-const ConjuctionsFavorite = ({ login }: { login: boolean }) => {
+const ConjunctionsFavorite = ({ login }: { login: boolean }) => {
   const [inputValue, setInputValue] = useState('')
   const {
     handleSubmit,
@@ -32,7 +32,7 @@ const ConjuctionsFavorite = ({ login }: { login: boolean }) => {
         </form>
       )}
       {login ? (
-        <ConjuctionsFavoriteTable inputValue={inputValue} />
+        <ConjunctionsFavoriteTable inputValue={inputValue} />
       ) : (
         <div className="login-required">Login and save your favorite satellites!</div>
       )}
@@ -40,7 +40,7 @@ const ConjuctionsFavorite = ({ login }: { login: boolean }) => {
   )
 }
 
-export default ConjuctionsFavorite
+export default ConjunctionsFavorite
 
 const StyledWrapper = styled.div`
   text-align: center;

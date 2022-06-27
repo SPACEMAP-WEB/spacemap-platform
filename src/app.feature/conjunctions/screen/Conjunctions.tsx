@@ -5,11 +5,11 @@ import { useModal } from '@app.modules/hooks/useModal'
 import Search from '@app.components/common/Search'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
-import ConjuctionsFavorite from '../../favorite/screen/ConjuctionsFavorite'
-import ConjuctionsTabs from '../component/ConjuctionsTabs'
+import ConjunctionsFavorite from '../../favorite/screen/ConjunctionsFavorite'
+import ConjunctionsTabs from '../component/ConjunctionsTabs'
 import FilterSelect from '@app.components/common/FilterSelect'
 import { FilterSelectType } from '@app.modules/types'
-import ConjuctionsTable from '../component/ConjuctionsTable'
+import ConjunctionsTable from '../component/ConjunctionsTable'
 import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
 import { slideIn, slideOut } from '../module/keyFrames'
 
@@ -26,14 +26,14 @@ const filterOptions: FilterSelectType[] = [
 
 const Conjunctions = ({ cesiumModule }) => {
   const size = winodwHeightFn(window.innerHeight)
-  const conjuctionsRef = useRef<HTMLDivElement>(null)
-  const favoriteConjuctionsRef = useRef<HTMLDivElement>(null)
+  const conjunctionsRef = useRef<HTMLDivElement>(null)
+  const favoriteConjunctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: size,
     page: 0,
   })
   const { login } = useSelector((state: RootState) => state.login)
-  const [conjuctionsVisible, setConjuctionsVisible] = useState(false)
+  const [conjunctionsVisible, setConjunctionsVisible] = useState(false)
   const [searchValue, setSearchValue] = useState<string>('')
   const [toggle, setToggle] = useState(0)
   const [close, setClose] = useState(false)
@@ -70,33 +70,33 @@ const Conjunctions = ({ cesiumModule }) => {
     })
   }
 
-  const conjuctionsUnmount = () => {
-    !isConjunctionsClicked && setConjuctionsVisible(false)
+  const conjunctionsUnmount = () => {
+    !isConjunctionsClicked && setConjunctionsVisible(false)
   }
 
   useEffect(() => {
-    isConjunctionsClicked && setConjuctionsVisible(true)
+    isConjunctionsClicked && setConjunctionsVisible(true)
   }, [isConjunctionsClicked])
 
   useEffect(() => {
-    if (!conjuctionsRef.current || !favoriteConjuctionsRef.current) return
+    if (!conjunctionsRef.current || !favoriteConjunctionsRef.current) return
 
-    conjuctionsRef.current.style.display = close ? 'none' : 'block'
-    favoriteConjuctionsRef.current.style.display = close ? 'none' : 'block'
-  }, [close, conjuctionsRef.current])
+    conjunctionsRef.current.style.display = close ? 'none' : 'block'
+    favoriteConjunctionsRef.current.style.display = close ? 'none' : 'block'
+  }, [close, conjunctionsRef.current])
 
   return (
     <>
-      {conjuctionsVisible && (
+      {conjunctionsVisible && (
         <ConjunctionsWrapper
-          onAnimationEnd={conjuctionsUnmount}
-          isConjuctionsClicked={isConjunctionsClicked}
+          onAnimationEnd={conjunctionsUnmount}
+          isConjunctionsClicked={isConjunctionsClicked}
         >
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
-          <section className="conjuctions-wrapper" ref={conjuctionsRef}>
-            <h1 className="title conjuctions">Conjunctions</h1>
+          <section className="conjunctions-wrapper" ref={conjunctionsRef}>
+            <h1 className="title conjunctions">Conjunctions</h1>
             <div className="header-group">
               <Search
                 handleSearch={handleSearch}
@@ -110,8 +110,8 @@ const Conjunctions = ({ cesiumModule }) => {
                 <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
               </div>
             )}
-            <ConjuctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
-            <ConjuctionsTable
+            <ConjunctionsTabs toggle={toggle} onClick={handleToggle} login={login} />
+            <ConjunctionsTable
               toggle={toggle}
               setFavoriteData={setFavoriteData}
               queryParams={queryParams}
@@ -120,10 +120,10 @@ const Conjunctions = ({ cesiumModule }) => {
               size={size}
             />
           </section>
-          <section className="bookmark-wrapper" ref={favoriteConjuctionsRef}>
+          <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
             <h1 className="title bookmark">Favorites</h1>
             <div className="bookmark-table-wrapper">
-              <ConjuctionsFavorite login={login} />
+              <ConjunctionsFavorite login={login} />
             </div>
           </section>
         </ConjunctionsWrapper>
@@ -134,11 +134,11 @@ const Conjunctions = ({ cesiumModule }) => {
 
 export default Conjunctions
 
-type TConjuctions = {
-  isConjuctionsClicked: boolean
+type TConjunctions = {
+  isConjunctionsClicked: boolean
 }
 
-const ConjunctionsWrapper = styled.div<TConjuctions>`
+const ConjunctionsWrapper = styled.div<TConjunctions>`
   width: 500px;
   padding: 1rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
@@ -153,7 +153,7 @@ const ConjunctionsWrapper = styled.div<TConjuctions>`
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  animation: ${(props) => (props.isConjuctionsClicked ? slideIn : slideOut)} 1s;
+  animation: ${(props) => (props.isConjunctionsClicked ? slideIn : slideOut)} 1s;
   .title {
     color: white;
     font-size: 20px;

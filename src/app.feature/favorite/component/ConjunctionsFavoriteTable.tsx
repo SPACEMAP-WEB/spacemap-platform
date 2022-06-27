@@ -21,17 +21,17 @@ import {
   usePostMutationFavorite,
 } from '@app.feature/favorite/query/useMutationFavorite'
 import { useQueryClient } from 'react-query'
-import { API_FAVORITE, API_FAVORITE_CONJUCTIONS } from '@app.modules/keyFactory'
+import { API_FAVORITE, API_FAVORITE_CONJUNCTIONS } from '@app.modules/keyFactory'
 import ConjunctionsPagination from '../../conjunctions/component/ConjunctionsPagination'
 import styled from 'styled-components'
-import { updateBookmarkData } from '../module/bookmakrDataCompare'
+import { updateBookmarkData } from '../module/bookmarkDataCompare'
 import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
 
 const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
+const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const size = winodwHeightFn(window.innerHeight)
   const queryClient = useQueryClient()
   const [customPageSize, setCustomPageSize] = useState(size)
@@ -145,7 +145,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     const mutation = state === 'delete' ? favoriteDeleteMutation : favoritePostMutation
     await Promise.all(bookmarks.map(async (boomark) => await mutation.mutateAsync(boomark.noradId)))
     setBookmarkData(originData)
-    queryClient.invalidateQueries([API_FAVORITE_CONJUCTIONS])
+    queryClient.invalidateQueries([API_FAVORITE_CONJUNCTIONS])
     queryClient.invalidateQueries([API_FAVORITE])
   }
 
@@ -225,7 +225,7 @@ const ConjuctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   )
 }
 
-export default ConjuctionsFavoriteTable
+export default ConjunctionsFavoriteTable
 
 const StyledWrapper = styled.div`
   margin-top: 10px;

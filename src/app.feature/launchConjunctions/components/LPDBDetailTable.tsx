@@ -1,9 +1,7 @@
-import { LPDBDataType, LPDBResponseDataType } from '@app.modules/types/launchConjunctions'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { Column, useTable } from 'react-table'
+import { useTable } from 'react-table'
 import { Table } from '@app.components/common/Table'
-import { PPDBDataType } from '@app.modules/types/conjunctions'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
 import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
@@ -98,10 +96,6 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
 
 export default LPDBDetailTable
 
-const borderStyle = {
-  border: '1px solid gray',
-}
-
 const LPDBTableWrapper = styled.div`
   .back-container {
     margin-bottom: 1rem;
@@ -139,7 +133,6 @@ const LPDBTableWrapper = styled.div`
   .table-wrapper {
     width: 400px;
     border-radius: 10px;
-    /* overflow-x: hidden; */
     object-fit: cover;
     .table {
       font-size: 11px;

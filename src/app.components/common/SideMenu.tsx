@@ -20,7 +20,7 @@ const SideMenu = () => {
   const checkModalVisible = (type) =>
     modalVisible && modalType === type ? handleCloseModal() : dispatch(setModal({ type }))
 
-  const handleConjunctionClick = () => checkModalVisible(modalTypeData.CONJUCTIONS)
+  const handleConjunctionClick = () => checkModalVisible(modalTypeData.CONJUNCTIONS)
 
   const handleLaunchConjunctionClick = () => {
     dispatch(requestCheckLogin())

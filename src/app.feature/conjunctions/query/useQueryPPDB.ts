@@ -1,5 +1,5 @@
 import api from '@app.modules/api'
-import { API_FAVORITE_CONJUCTIONS, API_PPDB } from '@app.modules/keyFactory'
+import { API_FAVORITE_CONJUNCTIONS, API_PPDB } from '@app.modules/keyFactory'
 import { objectToURL } from '@app.modules/util'
 import { PPDBResponseType, PPDBSearchParamsType } from '@app.modules/types/conjunctions'
 import { useQuery } from 'react-query'
@@ -15,7 +15,7 @@ export const requestAPiGetPPDB = async (query: PPDBSearchParamsType) => {
 
 export const requestApiGetFavorite = async (query) => {
   const response = await api.GET<null, PPDBResponseType>(
-    API_FAVORITE_CONJUCTIONS + objectToURL(query)
+    API_FAVORITE_CONJUNCTIONS + objectToURL(query)
   )
   const result = response.data.data
   return {
@@ -25,7 +25,7 @@ export const requestApiGetFavorite = async (query) => {
 }
 
 export const useQueryGetPPDB = ({ query, isConjunctionsClicked, toggle }) => {
-  const queryKey = toggle === 0 ? API_PPDB : API_FAVORITE_CONJUCTIONS
+  const queryKey = toggle === 0 ? API_PPDB : API_FAVORITE_CONJUNCTIONS
   const apiMethod = toggle === 0 ? requestAPiGetPPDB : requestApiGetFavorite
   return useQuery([queryKey, query], () => apiMethod(query), {
     keepPreviousData: true,
