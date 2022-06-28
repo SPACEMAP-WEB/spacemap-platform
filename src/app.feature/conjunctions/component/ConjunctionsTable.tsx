@@ -6,13 +6,13 @@ import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
-import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
+import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
 import styled from 'styled-components'
 import { useInstance } from '../module/useInstance'
 import { tableWidthStyle } from '../style/tableStyle'
-import ConjunctionsPagination from './ConjunctionsPagination'
+import Pagination from '../../../app.components/Pagination'
 import { COLUMNS } from './TableColumns'
 
 type TableProps = {
@@ -37,7 +37,7 @@ const ConjunctionsTable = ({
   const { isVisible } = useModal('CONJUNCTIONS')
   const isConjunctionsClicked = isVisible
   const debounceFn = useDebounce(() => {
-    const size = winodwHeightFn(window.innerHeight)
+    const size = responsiveCellSizeHandler(window.innerHeight)
     setCustomPageSize(size)
     setPageSize(size)
     setQueryParams({ ...queryParams, limit: size })
@@ -178,7 +178,7 @@ const ConjunctionsTable = ({
           </>
         )}
       </Table>
-      <ConjunctionsPagination {...paginationProps} />
+      <Pagination {...paginationProps} />
     </StyledTable>
   )
 }

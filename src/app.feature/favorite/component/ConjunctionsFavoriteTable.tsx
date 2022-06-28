@@ -2,11 +2,6 @@
 import IndeterminateCheckbox from '@app.components/IndeterminateCheckbox'
 import { Table } from '@app.components/Table'
 import {
-  FavoriteColumnType,
-  FavoriteDataType,
-  FavoriteFindDataType,
-} from '@app.feature/conjunctions/types/conjunctions'
-import {
   favoriteDataRefactor,
   favoriteFindDataRefactor,
 } from '@app.feature/favorite/module/favoriteDataRefactor'
@@ -16,23 +11,25 @@ import {
 } from '@app.feature/favorite/query/useMutationFavorite'
 import {
   useQueryFavorite,
-  useQueryFindFavorite,
+  useQuerySearchFavorite,
 } from '@app.feature/favorite/query/useQueryFavorite'
 import { API_FAVORITE, API_FAVORITE_CONJUNCTIONS } from '@app.modules/keyFactory'
-import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
+import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { CellProps, Column, usePagination, useRowSelect, useTable } from 'react-table'
 import styled from 'styled-components'
-import ConjunctionsPagination from '../../conjunctions/component/ConjunctionsPagination'
+import Pagination from '../../../app.components/Pagination'
+import useFavoriteTableData from '../hooks/useFavoriteTableData'
 import { updateBookmarkData } from '../module/bookmarkDataCompare'
+import { FavoriteColumnType, FavoriteDataType, FavoriteFindDataType } from '../types/favorite'
 
 const borderStyle = {
   border: '1px solid gray',
 }
 
 const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
-  const size = winodwHeightFn(window.innerHeight)
+  const size = responsiveCellSizeHandler(window.innerHeight)
   const queryClient = useQueryClient()
   const [customPageSize, setCustomPageSize] = useState(size)
   const [timer, setTimer] = useState(null)
@@ -45,11 +42,13 @@ const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
     isLoading: initialIsLoading,
     isSuccess: initialIsSuccess,
   } = useQueryFavorite(inputValue)
+  const { columns, data } = useFavoriteTableData(tableData)
+
   const {
     data: favoriteFindData,
     isLoading: findIsLoading,
     isSuccess: findIsSuccess,
-  } = useQueryFindFavorite(inputValue)
+  } = useQuerySearchFavorite(inputValue)
 
   const favoriteData = inputValue ? favoriteFindData : favoriteInitialData
   const isLoading = inputValue ? findIsLoading : initialIsLoading
@@ -58,13 +57,15 @@ const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const favoritePostMutation = usePostMutationFavorite()
   const favoriteDeleteMutation = useDeleteMutationFavorite()
 
-  const COLUMNS: Column<FavoriteColumnType>[] = [
-    { Header: 'Norad ID', accessor: 'noradId' },
-    { Header: 'Sat. Name', accessor: 'satName' },
-  ]
-
-  const columns = useMemo(() => COLUMNS, [])
-  const data = useMemo(() => tableData, [tableData])
+  useEffect(() => {
+    if (isSuccess) {
+      const newData = inputValue
+        ? favoriteFindDataRefactor(favoriteData as FavoriteFindDataType[])
+        : favoriteDataRefactor(favoriteData as FavoriteDataType)
+      setTableData(newData)
+      if (!inputValue) setBookmarkData(newData)
+    }
+  }, [isSuccess, favoriteData])
 
   const {
     getTableProps,
@@ -150,16 +151,6 @@ const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   }
 
   useEffect(() => {
-    if (isSuccess) {
-      const newData = inputValue
-        ? favoriteFindDataRefactor(favoriteData as FavoriteFindDataType[])
-        : favoriteDataRefactor(favoriteData as FavoriteDataType)
-      setTableData(newData)
-      if (!inputValue) setBookmarkData(newData)
-    }
-  }, [isSuccess, favoriteData])
-
-  useEffect(() => {
     try {
       if (inputValue === '' && selectedFlatRows.length === 0 && bookmarkData.length === 0) return
       const originData = selectedFlatRows.map((row) => row.original)
@@ -178,7 +169,7 @@ const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   const sizeFunction = () => {
     if (timer) clearTimeout(timer)
     const newTimer = setTimeout(() => {
-      const size = winodwHeightFn(window.innerHeight)
+      const size = responsiveCellSizeHandler(window.innerHeight)
       setCustomPageSize(size)
       setPageSize(size)
     }, 800)
@@ -220,7 +211,7 @@ const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
           })}
         </tbody>
       </Table>
-      <ConjunctionsPagination {...paginationProps} />
+      <Pagination {...paginationProps} />
     </StyledWrapper>
   )
 }

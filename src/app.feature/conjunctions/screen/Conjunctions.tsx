@@ -3,7 +3,7 @@ import Search from '@app.components/Search'
 import { PPDBSearchParamsType, SortType } from '@app.feature/conjunctions/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
-import { winodwHeightFn } from '@app.modules/util/windowHeightFn'
+import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
@@ -25,7 +25,7 @@ const filterOptions: FilterSelectType[] = [
 ]
 
 const Conjunctions = ({ cesiumModule }) => {
-  const size = winodwHeightFn(window.innerHeight)
+  const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const favoriteConjunctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
@@ -38,8 +38,7 @@ const Conjunctions = ({ cesiumModule }) => {
   const [toggle, setToggle] = useState(0)
   const [close, setClose] = useState(false)
   const [favoriteData, setFavoriteData] = useState<FilterSelectType[]>([])
-  const { isVisible } = useModal('CONJUNCTIONS')
-  const isConjunctionsClicked = isVisible
+  const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
 
   const handleToggle = (index: number) => {
     setToggle(index)
