@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import MenuIcon from './MenuIcon'
 import { useSelector } from 'react-redux'
-import { setModal } from 'src/app.store/modalStore/store.modalApp'
 import { useModal } from '@app.modules/hooks/useModal'
 import { RootState, useAppDispatch } from 'src/app.store/config/configureStore'
 import { modalTypeData } from '@app.modules/types/modal'
@@ -15,10 +14,10 @@ const launchConjunctionPath = '/sideMenu/launch-conjunction.svg'
 const SideMenu = () => {
   const dispatch = useAppDispatch()
   const { login } = useSelector((state: RootState) => state.login)
-  const { modalVisible, modalType, handleCloseModal } = useModal(null)
+  const { modalVisible, modalType, handleCloseModal, handleSetModal } = useModal(null)
 
   const checkModalVisible = (type) =>
-    modalVisible && modalType === type ? handleCloseModal() : dispatch(setModal({ type }))
+    modalVisible && modalType === type ? handleCloseModal() : handleSetModal()
 
   const handleConjunctionClick = () => checkModalVisible(modalTypeData.CONJUNCTIONS)
 
@@ -27,6 +26,13 @@ const SideMenu = () => {
       .then(unwrapResult)
       .then(() => login && checkModalVisible(modalTypeData.LAUNCHCONJUNCTIONS))
       .catch(() => checkModalVisible(modalTypeData.LAUNCHCONJUNCTIONS))
+  }
+
+  const handleWatcherCatcher = () => {
+    dispatch(requestCheckLogin())
+      .then(unwrapResult)
+      .then(() => login && checkModalVisible(modalTypeData.WATCHERCATCHER))
+      .catch(() => checkModalVisible(modalTypeData.WATCHERCATCHER))
   }
 
   return (
@@ -44,6 +50,12 @@ const SideMenu = () => {
         height={35}
         menuDescription={'Launch Conjunctions'}
         onClick={handleLaunchConjunctionClick}
+      />
+      <MenuIcon
+        path={conjunctionsPath}
+        alt={'watcher-catcher'}
+        menuDescription={'Watcher Catcher'}
+        onClick={handleWatcherCatcher}
       />
     </SideMenuWrapper>
   )
