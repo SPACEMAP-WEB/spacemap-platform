@@ -359,6 +359,7 @@ class CesiumModule {
           failIfMajorPerformanceCaveat: false,
         },
         allowTextureFilterAnisotropic: false,
+        requestRenderMode: true,
       },
 
       maximumRenderTimeChange: 0.05,
