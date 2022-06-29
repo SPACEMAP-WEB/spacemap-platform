@@ -54,6 +54,7 @@ artifacts:
     - '.next/**/*'
     - '.ebextensions/**/*'
     - '.npmrc'
+    - 'next.config.js'
     #- 'node_modules/**/*'
   #name: $(date +%Y-%m-%d)
   #discard-paths: yes
