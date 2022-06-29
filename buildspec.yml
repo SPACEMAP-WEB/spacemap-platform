@@ -25,7 +25,6 @@ phases:
       # name: version
     commands:
       - n 16
-      - npm i copy-webpack-plugin
       - npm install
       # - command
   pre_build:
@@ -40,6 +39,7 @@ phases:
   post_build:
     commands:
       - ls -al
+      - ls -al public
 #reports:
 #report-name-or-arn:
 #files:
