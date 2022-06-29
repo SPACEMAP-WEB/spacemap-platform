@@ -25,7 +25,7 @@ phases:
       # name: version
     commands:
       - n 16
-      - npm install -g --unsafe-perm=true --allow-root
+      - npm install
       - npm shrinkwrap
       # - command
   pre_build:
