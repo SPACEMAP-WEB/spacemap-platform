@@ -26,6 +26,7 @@ phases:
     commands:
       - n 16
       - npm install
+      - npm shrinkwrap
       # - command
   pre_build:
     commands:
@@ -56,6 +57,7 @@ artifacts:
     - '.ebextensions/**/*'
     - '.npmrc'
     - 'next.config.js'
+    - 'Procfile'
     #- 'node_modules/**/*'
   #name: $(date +%Y-%m-%d)
   #discard-paths: yes
