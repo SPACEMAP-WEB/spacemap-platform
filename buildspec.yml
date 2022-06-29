@@ -25,8 +25,7 @@ phases:
       # name: version
     commands:
       - n 16
-      - npm install
-      - npm install webpack
+      - npm install -g --unsafe-perm=true --allow-root
       - npm shrinkwrap
       # - command
   pre_build:
