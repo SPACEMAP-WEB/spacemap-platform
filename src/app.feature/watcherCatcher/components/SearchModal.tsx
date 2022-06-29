@@ -6,6 +6,7 @@ import React, { useRef, useState } from 'react'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import styled from 'styled-components'
 import { isCalculatableDate } from '../module/dateHandle'
+import { useMutationPostWCDB } from '../query/useMutationWCDB'
 import { WCDBResponseType } from '../types/watcherCatcher'
 
 type SearchModalProps = {
@@ -17,22 +18,20 @@ type SearchModalProps = {
   ) => Promise<QueryObserverResult<WCDBResponseType, unknown>>
 }
 
-type ModalStyleProps = {
-  isSubmitDisabled: boolean
-}
-
 const SearchModal = ({
   handleSearchModalClose,
   setIsSuccessModalOpen,
   setIsWCDBTableOpen,
 }: SearchModalProps) => {
   const { isVisible, handleCloseModal, handleSetModal } = useModal('WATCHERCATCHER')
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true)
   const [latitudeValue, setLatitudeValue] = useState<number>(0)
   const [longitudeValue, setLongitudeValue] = useState<number>(0)
-  const [epochtimeValue, setEpochtimeValue] = useState()
+  const [epochtimeValue, setEpochtimeValue] = useState<string>(
+    new Date().toISOString().substring(0, 16)
+  )
   const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
   const modalEl = useRef<HTMLDivElement>(null)
+  const { mutate } = useMutationPostWCDB()
 
   const handleInputValueChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -46,7 +45,7 @@ const SearchModal = ({
         setLatitudeValue(+e.target.value)
         break
       case 'epochtime':
-        // setEpochtimeValue(e.target.value)
+        setEpochtimeValue(e.target.value)
         console.log(e.target.value)
         break
     }
@@ -59,6 +58,11 @@ const SearchModal = ({
         return
       }
       setIsSuccessModalOpen(true)
+      mutate({
+        longitude: longitudeValue,
+        latitude: latitudeValue,
+        epochTime: new Date(epochtimeValue),
+      })
       setIsWCDBTableOpen(true)
       handleSearchModalClose()
       handleSetModal()
@@ -74,7 +78,7 @@ const SearchModal = ({
   return (
     <>
       <ModalWrapper visible={isVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
-        <Modal ref={modalEl} isSubmitDisabled={isSubmitDisabled}>
+        <Modal ref={modalEl}>
           <div className="modal-content-container">
             <header className="modal-header">
               <h1 className="modal-title">Watcher Catcher</h1>
@@ -119,7 +123,7 @@ const SearchModal = ({
                   className="threshold-input"
                 ></Input>
               </section>
-              <button className="submit-button" onClick={handleSubmit} disabled={isSubmitDisabled}>
+              <button className="submit-button" onClick={handleSubmit}>
                 Submit
               </button>
             </div>
@@ -138,10 +142,10 @@ const SearchModal = ({
 
 export default SearchModal
 
-const Modal = styled.div<ModalStyleProps>`
+const Modal = styled.div`
   position: relative;
   width: 32rem;
-  height: 40rem;
+  height: 32rem;
   padding: 2rem;
   border-radius: 0.5rem;
   background-color: rgba(255, 255, 255, 0.1);
@@ -167,7 +171,7 @@ const Modal = styled.div<ModalStyleProps>`
   .body-container {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
     justify-content: center;
     align-items: center;
     height: 70%;
@@ -277,18 +281,18 @@ const Modal = styled.div<ModalStyleProps>`
     }
 
     .submit-button {
+      margin-top: 2rem;
       width: 120px;
       height: 40px;
       font-size: 1rem;
       cursor: pointer;
       background-color: rgba(124, 124, 124, 0.4);
-      color: ${(props) => (props.isSubmitDisabled ? '#7a7a7a' : '#e2e2e2')};
+      color: white;
       z-index: 4;
       border-radius: 8px;
       transition: all 0.3s ease-in;
       &:hover {
-        background-color: ${(props) =>
-          props.isSubmitDisabled ? 'rgba(124, 124, 124, 0.4)' : '#fccb16'};
+        background-color: rgb(252, 203, 22);
         color: #7a7a7a;
       }
     }

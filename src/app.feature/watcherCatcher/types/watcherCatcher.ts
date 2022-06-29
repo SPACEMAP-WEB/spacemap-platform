@@ -39,10 +39,10 @@ export type WCDBTempDataType = {
 }
 
 export type WCDBDetailResponseDataType = {
-  trajectoryPath: string
+  latitude: string
+  longitude: string
+  epochTime: string
   predictionEpochTime: string
-  launchEpochTime: string
-  trajectoryLength: number
   wcdb: WCDBTempDataType[]
 }
 
@@ -59,6 +59,7 @@ export type WCDBResponseType = {
 }
 
 export type WCDBRequestType = {
-  threshold: string
-  trajectory: File
+  latitude: number
+  longitude: number
+  epochTime: Date
 }

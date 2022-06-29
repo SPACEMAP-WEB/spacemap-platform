@@ -47,9 +47,9 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
         columns[3] = {
           Header: 'Status',
           accessor: 'status',
-          Cell: ({ row, value }: CellProps<any>) => (
+          Cell: ({ row, value }: CellProps<LPDBResponseDataType>) => (
             <>
-              {value === 'DONE' ? (
+              {row.original.status === 'DONE' ? (
                 <div
                   onClick={() => {
                     handleDetailClick(row.original['_id'])
@@ -63,7 +63,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
                   </span>
                 </div>
               ) : (
-                <div>{value === 'PENDING' ? 'Pending' : 'Failed'}</div>
+                <div>{row.original.status === 'PENDING' ? 'Pending' : 'Failed'}</div>
               )}
             </>
           ),

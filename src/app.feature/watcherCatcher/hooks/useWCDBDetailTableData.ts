@@ -2,9 +2,10 @@ import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { WCDBDataType } from '../types/watcherCatcher'
 
-const useWCDBDetailTableData = (LPDBDetailData: WCDBDataType[] | undefined) => {
-  if (!!LPDBDetailData) return
-  const data = useMemo(() => LPDBDetailData, [LPDBDetailData])
+const useWCDBDetailTableData = (WCDBDetailData: WCDBDataType[]) => {
+  console.log(WCDBDetailData)
+  if (WCDBDetailData === undefined) return
+  const data = useMemo(() => Object.values(WCDBDetailData), [WCDBDetailData])
   const columns: Column<WCDBDataType>[] = useMemo(
     () => [
       {

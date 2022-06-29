@@ -1,12 +1,13 @@
 import { Table } from '@app.components/Table'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
-import React, { useEffect } from 'react'
-import { useTable } from 'react-table'
+import React, { useState } from 'react'
+import { Column, useTable } from 'react-table'
 import styled from 'styled-components'
 import useWCDBDetailTableData from '../hooks/useWCDBDetailTableData'
-import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
 import { useInstance } from '../module/useInstance'
-import { useQueryGetTrajectory, useQueryGetWCDBDetail } from '../query/useQueryWCDB'
+import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
+import { useQueryGetWCDBDetail } from '../query/useQueryWCDB'
+import { WCDBDataType } from '../types/watcherCatcher'
 
 type WCDBDetailProps = {
   WCDBId: string
@@ -16,21 +17,16 @@ type WCDBDetailProps = {
 
 const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailProps) => {
   const { data: WCDBDetailData } = useQueryGetWCDBDetail(WCDBId)
-  const { columns, data } = useWCDBDetailTableData(wcdbDataRefactor(WCDBDetailData.wcdb))
-  const { data: downloadData } = useQueryGetTrajectory(WCDBDetailData?.trajectoryPath)
+  const [columns, setColumns] = useState<Column<WCDBDataType>[]>([] as Column<WCDBDataType>[])
+  const [data, setData] = useState<WCDBDataType[]>([] as WCDBDataType[])
 
-  useEffect(() => {
-    if (WCDBDetailData && downloadData) {
-      const newData = wcdbDataRefactor(WCDBDetailData.wcdb)
-      cesiumModule.drawLaunchConjunctions(
-        downloadData.data,
-        WCDBDetailData.predictionEpochTime,
-        WCDBDetailData.launchEpochTime,
-        WCDBDetailData.trajectoryLength,
-        newData
-      )
-    }
-  }, [WCDBDetailData, downloadData])
+  if (!!WCDBDetailData) {
+    const { columns: tempColumns, data: tempData } = useWCDBDetailTableData(
+      wcdbDataRefactor(WCDBDetailData.wcdb.slice(1, 3))
+    )
+    setColumns(tempColumns)
+    setData(tempData)
+  }
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {

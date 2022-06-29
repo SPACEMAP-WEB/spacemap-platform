@@ -37,6 +37,8 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
     setIsDetailClicked(false)
   }
 
+  console.log(WCDBData)
+
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
       columns,
@@ -47,9 +49,9 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
         columns[3] = {
           Header: 'Status',
           accessor: 'status',
-          Cell: ({ row, value }: CellProps<any>) => (
+          Cell: ({ row }: CellProps<WCDBResponseDataType>) => (
             <>
-              {value === 'DONE' ? (
+              {row.original.status === 'DONE' ? (
                 <div
                   onClick={() => {
                     handleDetailClick(row.original['_id'])
@@ -63,7 +65,9 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
                   </span>
                 </div>
               ) : (
-                <div>{value === 'PENDING' ? 'Pending' : 'Failed'}</div>
+                <>
+                  <div>{row.original.status === 'PENDING' ? 'Pending' : 'Failed'}</div>
+                </>
               )}
             </>
           ),
@@ -100,9 +104,9 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
         {!isDetailClicked ? (
           <>
             <div className="watcher-catcher-header">
-              <h1 className="title">Launch Conjunctions</h1>
+              <h1 className="title">Watcher Catcher</h1>
               <button onClick={handleNewLaunchClick} className="new-watcher-catcher-container">
-                + New Launch
+                + New Watch
               </button>
             </div>
             <div className="table-wrapper">
