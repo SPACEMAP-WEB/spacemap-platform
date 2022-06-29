@@ -1,16 +1,13 @@
 import api from '@app.modules/api'
 import { API_LPDB } from '@app.modules/keyFactory'
 import { useMutation } from 'react-query'
-import {
-  LPDBRequestType,
-  LPDBResponseType,
-} from '@app.feature/launchConjunctions/types/launchConjunctions'
+import { WCDBRequestType } from '../types/watcherCatcher'
 import { useQueryClient } from 'react-query'
 
-export const useMutationPostLPDB = () => {
+export const useMutationPostWCDB = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    (requestForm: LPDBRequestType) => {
+    (requestForm: WCDBRequestType) => {
       const formData = new FormData()
       const { threshold, trajectory } = requestForm
       formData.append('threshold', threshold)
@@ -28,7 +25,7 @@ export const useMutationPostLPDB = () => {
   )
 }
 
-export const useMutationDeleteLPDB = () => {
+export const useMutationDeleteWCDB = () => {
   const queryClient = useQueryClient()
   return useMutation(
     (id: string) => {

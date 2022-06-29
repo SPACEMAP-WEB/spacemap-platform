@@ -3,34 +3,34 @@ import CesiumModule from '@app.modules/cesium/cesiumModule'
 import React, { useEffect } from 'react'
 import { useTable } from 'react-table'
 import styled from 'styled-components'
-import useLPDBDetailTableData from '../hooks/useLPDBDetailTableData'
-import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
+import useWCDBDetailTableData from '../hooks/useWCDBDetailTableData'
+import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
 import { useInstance } from '../module/useInstance'
-import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
+import { useQueryGetTrajectory, useQueryGetWCDBDetail } from '../query/useQueryWCDB'
 
-type LPDBDetailProps = {
-  LPDBId: string
+type WCDBDetailProps = {
+  WCDBId: string
   handleBackButton: () => void
   cesiumModule: CesiumModule
 }
 
-const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailProps) => {
-  const { data: LPDBDetailData } = useQueryGetLPDBDetail(LPDBId)
-  const { columns, data } = useLPDBDetailTableData(lpdbDataRefactor(LPDBDetailData.lpdb))
-  const { data: downloadData } = useQueryGetTrajectory(LPDBDetailData?.trajectoryPath)
+const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailProps) => {
+  const { data: WCDBDetailData } = useQueryGetWCDBDetail(WCDBId)
+  const { columns, data } = useWCDBDetailTableData(wcdbDataRefactor(WCDBDetailData.wcdb))
+  const { data: downloadData } = useQueryGetTrajectory(WCDBDetailData?.trajectoryPath)
 
   useEffect(() => {
-    if (LPDBDetailData && downloadData) {
-      const newData = lpdbDataRefactor(LPDBDetailData.lpdb)
+    if (WCDBDetailData && downloadData) {
+      const newData = wcdbDataRefactor(WCDBDetailData.wcdb)
       cesiumModule.drawLaunchConjunctions(
         downloadData.data,
-        LPDBDetailData.predictionEpochTime,
-        LPDBDetailData.launchEpochTime,
-        LPDBDetailData.trajectoryLength,
+        WCDBDetailData.predictionEpochTime,
+        WCDBDetailData.launchEpochTime,
+        WCDBDetailData.trajectoryLength,
         newData
       )
     }
-  }, [LPDBDetailData, downloadData])
+  }, [WCDBDetailData, downloadData])
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
@@ -44,7 +44,7 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
 
   return (
     <>
-      <LPDBTableWrapper>
+      <WCDBTableWrapper>
         <div className="back-container" onClick={handleBackButton}>
           <img src="svg/left-arrow.svg" />
           Go Back
@@ -89,14 +89,14 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
             )}
           </Table>
         </div>
-      </LPDBTableWrapper>
+      </WCDBTableWrapper>
     </>
   )
 }
 
-export default LPDBDetailTable
+export default WCDBDetailTable
 
-const LPDBTableWrapper = styled.div`
+const WCDBTableWrapper = styled.div`
   .back-container {
     margin-bottom: 1rem;
     display: flex;

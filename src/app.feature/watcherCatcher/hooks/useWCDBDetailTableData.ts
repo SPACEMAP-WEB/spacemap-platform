@@ -1,11 +1,11 @@
-import { LPDBDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
+import { WCDBDataType } from '../types/watcherCatcher'
 
-const useLPDBDetailTableData = (LPDBDetailData: LPDBDataType[] | undefined) => {
+const useWCDBDetailTableData = (LPDBDetailData: WCDBDataType[] | undefined) => {
   if (!!LPDBDetailData) return
   const data = useMemo(() => LPDBDetailData, [LPDBDetailData])
-  const columns: Column<LPDBDataType>[] = useMemo(
+  const columns: Column<WCDBDataType>[] = useMemo(
     () => [
       {
         Header: 'Index',
@@ -35,4 +35,4 @@ const useLPDBDetailTableData = (LPDBDetailData: LPDBDataType[] | undefined) => {
   return { data, columns }
 }
 
-export default useLPDBDetailTableData
+export default useWCDBDetailTableData

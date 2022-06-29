@@ -1,69 +1,66 @@
-import React, { useRef, useState } from 'react'
-import styled from 'styled-components'
+import { Input } from '@app.components/Input'
 import ModalWrapper from '@app.components/modal/ModalWrapper'
-import { useModal } from '@app.modules/hooks/useModal'
-
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
-import { LPDBResponseType } from '@app.feature/launchConjunctions/types/launchConjunctions'
-import { useMutationPostLPDB } from '../query/useMutationLPDB'
-import { isCalculatableDate } from '../module/dateHandle'
 import WarningModal from '@app.components/modal/WarningModal'
+import { useModal } from '@app.modules/hooks/useModal'
+import React, { useRef, useState } from 'react'
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
+import styled from 'styled-components'
+import { isCalculatableDate } from '../module/dateHandle'
+import { WCDBResponseType } from '../types/watcherCatcher'
 
-type AssessmentModalProps = {
-  handleAssessmentModalClose: () => void
-  setIsLPDBTableOpen: React.Dispatch<React.SetStateAction<boolean>>
+type SearchModalProps = {
+  handleSearchModalClose: () => void
+  setIsWCDBTableOpen: React.Dispatch<React.SetStateAction<boolean>>
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  refetchLPDBData: <TPageData>(
+  refetchWCDBData: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
-  ) => Promise<QueryObserverResult<LPDBResponseType, unknown>>
+  ) => Promise<QueryObserverResult<WCDBResponseType, unknown>>
 }
 
 type ModalStyleProps = {
   isSubmitDisabled: boolean
 }
 
-const AssessmentModal = ({
-  handleAssessmentModalClose,
+const SearchModal = ({
+  handleSearchModalClose,
   setIsSuccessModalOpen,
-  setIsLPDBTableOpen,
-}: AssessmentModalProps) => {
+  setIsWCDBTableOpen,
+}: SearchModalProps) => {
   const { isVisible, handleCloseModal, handleSetModal } = useModal('WATCHERCATCHER')
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true)
-  const [thresholdValue, setThresholdValue] = useState<number>(0)
-  const [inputFile, setInputFile] = useState<File>()
-  const [fileName, setFileName] = useState<string>('')
-  const { mutate } = useMutationPostLPDB()
-  const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
-
-  const fileInput = useRef<HTMLInputElement>(null)
+  const [latitudeValue, setLatitudeValue] = useState<number>(0)
+  const [longitudeValue, setLongitudeValue] = useState<number>(0)
+  const [epochtimeValue, setEpochtimeValue] = useState()
+  const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
   const modalEl = useRef<HTMLDivElement>(null)
 
-  const onCickFileUpload = () => {
-    fileInput?.current.click()
-  }
-
-  const handleThresholdInputChange = (e) => {
-    setThresholdValue(e.target.value)
-  }
-
-  const handleFileChange = (e) => {
-    setInputFile(e.target.files[0])
-    setFileName(e.target.files[0]?.name)
-    if (!!e.target.files.length) {
-      setIsSubmitDisabled(false)
+  const handleInputValueChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    inputType: 'latitude' | 'longitude' | 'epochtime'
+  ) => {
+    switch (inputType) {
+      case 'longitude':
+        setLongitudeValue(+e.target.value)
+        break
+      case 'latitude':
+        setLatitudeValue(+e.target.value)
+        break
+      case 'epochtime':
+        // setEpochtimeValue(e.target.value)
+        console.log(e.target.value)
+        break
     }
   }
 
   const handleSubmit = () => {
     try {
       if (!isCalculatableDate()) {
-        setIsLcaModalVisible(true)
+        setIsWatcherModalVisible(true)
         return
       }
       setIsSuccessModalOpen(true)
-      mutate({ threshold: String(thresholdValue), trajectory: inputFile })
-      setIsLPDBTableOpen(true)
-      handleAssessmentModalClose()
+      setIsWCDBTableOpen(true)
+      handleSearchModalClose()
       handleSetModal()
     } catch (error) {
       console.error(error)
@@ -71,7 +68,7 @@ const AssessmentModal = ({
   }
 
   const handleClose = () => {
-    setIsLcaModalVisible(false)
+    setIsWatcherModalVisible(false)
   }
 
   return (
@@ -80,11 +77,11 @@ const AssessmentModal = ({
         <Modal ref={modalEl} isSubmitDisabled={isSubmitDisabled}>
           <div className="modal-content-container">
             <header className="modal-header">
-              <h1 className="modal-title">Launch Conjunctions Assessment</h1>
+              <h1 className="modal-title">Watcher Catcher</h1>
               <img
                 src="/svg/close-white.svg"
                 className="modal-close"
-                onClick={handleAssessmentModalClose}
+                onClick={handleSearchModalClose}
               />
             </header>
             <div className="body-container">
@@ -95,49 +92,32 @@ const AssessmentModal = ({
                   file, see below.
                 </p>
               </section>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
-                  alignItems: 'center',
-                }}
-              >
-                <section className="file-input-container" onClick={onCickFileUpload}>
-                  <input
-                    type="file"
-                    style={{ display: 'none' }}
-                    ref={fileInput}
-                    onChange={handleFileChange}
-                    accept="text/plain"
-                  />
-                  <img src="/svg/file.svg" className="add-file" />
-                  <p className="file-input-button">Upload File</p>
-                </section>
-                <p className="file-text">{fileName}</p>
-              </div>
-              <section className="threshold-container">
-                <p className="threshold-text">Threshold (km): </p>
-                <input
+              <section className="latitude-container">
+                <p className="latitude-text">latitude: </p>
+                <Input
                   type="number"
-                  value={thresholdValue}
-                  onChange={handleThresholdInputChange}
+                  value={latitudeValue}
+                  onChange={(e) => handleInputValueChange(e, 'latitude')}
                   className="threshold-input"
-                ></input>
+                ></Input>
               </section>
-              <section className="example-container">
-                <p className="link-notice-text">
-                  Click
-                  <a href="/sample/bocachica_J2000_converted.txt" className="link-text" download>
-                    this link
-                    <svg viewBox="0 0 70 36">
-                      <path d="M6.9739 30.8153H63.0244C65.5269 30.8152 75.5358 -3.68471 35.4998 2.81531C-16.1598 11.2025 0.894099 33.9766 26.9922 34.3153C104.062 35.3153 54.5169 -6.68469 23.489 9.31527" />
-                    </svg>
-                  </a>
-                  to download a sample file containing launch trajectory. (Note: The trajectory is
-                  currently a time-ordered coordinates sampled at 1 Hz frequency. The conversion to
-                  and from a corresponding ephemeris is straightforward.)
-                </p>
+              <section className="longitude-container">
+                <p className="longitude-text">longitude: </p>
+                <Input
+                  type="number"
+                  value={longitudeValue}
+                  onChange={(e) => handleInputValueChange(e, 'longitude')}
+                  className="threshold-input"
+                ></Input>
+              </section>
+              <section className="threshold-container">
+                <p className="threshold-text">Epoch Time: </p>
+                <Input
+                  type="datetime-local"
+                  value={epochtimeValue}
+                  onChange={(e) => handleInputValueChange(e, 'epochtime')}
+                  className="threshold-input"
+                ></Input>
               </section>
               <button className="submit-button" onClick={handleSubmit} disabled={isSubmitDisabled}>
                 Submit
@@ -146,7 +126,7 @@ const AssessmentModal = ({
           </div>
         </Modal>
       </ModalWrapper>
-      {isLcaModalVisible && (
+      {isWatcherModalVisible && (
         <WarningModal
           handleRequestModalCancel={handleClose}
           message={"It isn't open from 12:00 to 18:00."}
@@ -156,13 +136,13 @@ const AssessmentModal = ({
   )
 }
 
-export default AssessmentModal
+export default SearchModal
 
 const Modal = styled.div<ModalStyleProps>`
   position: relative;
-  width: 45rem;
+  width: 32rem;
   height: 40rem;
-  padding: 1rem;
+  padding: 2rem;
   border-radius: 0.5rem;
   background-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
@@ -270,22 +250,29 @@ const Modal = styled.div<ModalStyleProps>`
         }
       }
     }
+
+    .longitude-container {
+      display: flex;
+      align-items: center;
+      .longitude-text {
+        width: 10rem;
+        color: #c9c9c9;
+      }
+    }
+    .latitude-container {
+      display: flex;
+      align-items: center;
+      .latitude-text {
+        width: 10rem;
+        color: #c9c9c9;
+      }
+    }
     .threshold-container {
       display: flex;
       align-items: center;
-      gap: 1rem;
       .threshold-text {
+        width: 10rem;
         color: #c9c9c9;
-      }
-      .threshold-input {
-        border: none;
-        border-radius: 5px;
-        width: 100%;
-        height: 30px;
-        background-color: rgba(149, 149, 149, 0.4);
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 15px;
-        padding: 7px;
       }
     }
 

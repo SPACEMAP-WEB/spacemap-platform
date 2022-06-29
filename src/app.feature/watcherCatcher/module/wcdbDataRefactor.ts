@@ -1,12 +1,9 @@
-import {
-  LPDBDataType,
-  LPDBTempDataType,
-} from '@app.feature/launchConjunctions/types/launchConjunctions'
 import moment from 'moment'
+import { WCDBDataType, WCDBTempDataType } from '../types/watcherCatcher'
 
-export const lpdbDataRefactor = (lpdbData: LPDBTempDataType[]): LPDBDataType[] => {
+export const wcdbDataRefactor = (wcdbData: WCDBTempDataType[]): WCDBDataType[] => {
   let newData = []
-  lpdbData.forEach((item, index) => {
+  wcdbData.forEach((item, index) => {
     const { _id, pid, pName, sid, sName, dca, tcaStartTime, tcaEndTime, tcaTime } = item
     const formattedTcaTime = moment.utc(tcaTime).format('MMM DD, YYYY HH:mm:ss')
     const maxlength = 13

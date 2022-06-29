@@ -1,4 +1,4 @@
-import AlertModal from '@app.components/modal/AlertModal'
+import AlertModal from '@app.components/modal/SuccessModal'
 import React from 'react'
 
 type Props = {

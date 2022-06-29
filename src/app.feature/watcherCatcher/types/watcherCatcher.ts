@@ -1,4 +1,4 @@
-export type LPDBResponseDataType = {
+export type WCDBResponseDataType = {
   _id: string
   email: string
   trajectoryPath: string
@@ -9,7 +9,7 @@ export type LPDBResponseDataType = {
   __v: number
 }
 
-export type LPDBDataType = {
+export type WCDBDataType = {
   index: number
   id: string
   primary: number | string
@@ -22,7 +22,7 @@ export type LPDBDataType = {
   'tca/dca': string
 }
 
-export type LPDBTempDataType = {
+export type WCDBTempDataType = {
   createdAt: string
   dca: number
   pName: string
@@ -38,27 +38,27 @@ export type LPDBTempDataType = {
   placeId: string
 }
 
-export type LPDBDetailResponseDataType = {
+export type WCDBDetailResponseDataType = {
   trajectoryPath: string
   predictionEpochTime: string
   launchEpochTime: string
   trajectoryLength: number
-  lpdb: LPDBTempDataType[]
+  wcdb: WCDBTempDataType[]
 }
 
-export type LPDBDetailResponseType = {
+export type WCDBDetailResponseType = {
   message: string
   success: boolean
-  data: LPDBDetailResponseDataType
+  data: WCDBDetailResponseDataType
 }
 
-export type LPDBResponseType = {
+export type WCDBResponseType = {
   message: string
   success: boolean
-  data: LPDBResponseDataType[]
+  data: WCDBResponseDataType[]
 }
 
-export type LPDBRequestType = {
+export type WCDBRequestType = {
   threshold: string
   trajectory: File
 }

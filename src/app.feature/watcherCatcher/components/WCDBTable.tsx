@@ -1,31 +1,31 @@
 import { Table } from '@app.components/Table'
-import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useModal } from '@app.modules/hooks/useModal'
 import React, { useEffect, useRef, useState } from 'react'
 import { CellProps, Column, useTable } from 'react-table'
 import styled from 'styled-components'
-import useLPDBTableData from '../hooks/useLPDBTableData'
-import { useMutationDeleteLPDB } from '../query/useMutationLPDB'
-import LPDBDetailTable from './LPDBDetailTable'
+import useWCDBTableData from '../hooks/useWCDBTableData'
+import { useMutationDeleteWCDB } from '../query/useMutationWCDB'
+import { WCDBResponseDataType } from '../types/watcherCatcher'
+import WCDBDetailTable from './WCDBDetailTable'
 
-type LPDBProps = {
-  LPDBData: LPDBResponseDataType[]
+type WCDBProps = {
+  WCDBData: WCDBResponseDataType[]
   handleNewLaunchClick: () => void
   cesiumModule: CesiumModule
 }
 
-const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) => {
+const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) => {
   const [isDetailClicked, setIsDetailClicked] = useState<boolean>(false)
-  const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
-  const { columns, data } = useLPDBTableData(LPDBData)
+  const [selectedWCDBId, setSelectedWCDBId] = useState<string>('')
+  const { columns, data } = useWCDBTableData(WCDBData)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
   const { isVisible: isLaunchConjunctionsClicked } = useModal('WATCHERCATCHER')
-  const { mutate } = useMutationDeleteLPDB()
+  const { mutate } = useMutationDeleteWCDB()
 
   const handleDetailClick = async (id: string) => {
-    setSelectedLPDBId(id)
+    setSelectedWCDBId(id)
     setIsDetailClicked(true)
   }
 
@@ -43,7 +43,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
       data,
     },
     (hooks) => {
-      hooks.visibleColumns.push((columns: Column<LPDBResponseDataType>[]) => {
+      hooks.visibleColumns.push((columns: Column<WCDBResponseDataType>[]) => {
         columns[3] = {
           Header: 'Status',
           accessor: 'status',
@@ -96,12 +96,12 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
 
   return (
     <>
-      <LPDBTableWrapper ref={tableContainerRef}>
+      <WCDBTableWrapper ref={tableContainerRef}>
         {!isDetailClicked ? (
           <>
-            <div className="launch-conjunction-header">
+            <div className="watcher-catcher-header">
               <h1 className="title">Launch Conjunctions</h1>
-              <button onClick={handleNewLaunchClick} className="new-launch-container">
+              <button onClick={handleNewLaunchClick} className="new-watcher-catcher-container">
                 + New Launch
               </button>
             </div>
@@ -132,20 +132,20 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
             </div>
           </>
         ) : (
-          <LPDBDetailTable
+          <WCDBDetailTable
             handleBackButton={handleBackButton}
-            LPDBId={selectedLPDBId}
+            WCDBId={selectedWCDBId}
             cesiumModule={cesiumModule}
           />
         )}
-      </LPDBTableWrapper>
+      </WCDBTableWrapper>
     </>
   )
 }
 
-export default LPDBTable
+export default WCDBTable
 
-const LPDBTableWrapper = styled.div`
+const WCDBTableWrapper = styled.div`
   width: 500px;
   padding: 1.5rem;
   background-color: rgba(84, 84, 84, 0.4);
@@ -160,7 +160,7 @@ const LPDBTableWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  .launch-conjunction-header {
+  .watcher-catcher-header {
     width: 100%;
     display: flex;
     align-items: center;
@@ -170,7 +170,7 @@ const LPDBTableWrapper = styled.div`
       font-size: 20px;
       margin-bottom: 15px;
     }
-    .new-launch-container {
+    .new-watcher-catcher-container {
       width: 100px;
       height: 36px;
       font-size: 12px;
