@@ -25,6 +25,7 @@ phases:
       # name: version
     commands:
       - n 16
+      - npm i copy-webpack-plugin
       - npm install
       # - command
   pre_build:
