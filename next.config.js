@@ -5,7 +5,7 @@ const envrc = require('./.env.config.json')
 const env = envrc[process.env.NODE_ENV]
 
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   env: {
     SPACEMAP_PLATFORM_API_URI: env.SPACEMAP_PLATFORM_API_URI,
     SPACEMAP_PLATFORM_NODE_ENV: process.env.NODE_ENV,
