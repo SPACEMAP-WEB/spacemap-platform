@@ -26,7 +26,6 @@ phases:
     commands:
       - n 16
       - npm install
-      - npm link webpack
       - npm shrinkwrap
       # - command
   pre_build:
