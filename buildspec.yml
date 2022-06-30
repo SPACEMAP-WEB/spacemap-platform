@@ -59,7 +59,7 @@ artifacts:
     - '.next/**/*'
     - '.ebextensions/**/*'
     - '.npmrc'
-    - 'next.config.js'
+    # - 'next.config.js'
     - 'Procfile'
     #- 'node_modules/**/*'
   #name: $(date +%Y-%m-%d)
