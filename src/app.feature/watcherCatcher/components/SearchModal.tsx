@@ -87,11 +87,7 @@ const SearchModal = ({
             </header>
             <div className="body-container">
               <section className="description-container">
-                <p className="description-text">
-                  Reports all RSOs within the "Threshold" from the launch vehicle which follows the
-                  "Launch Trajectory.“ Choose a file using the Upload File button. For an example
-                  file, see below.
-                </p>
+                <p className="description-text"></p>
               </section>
               <section className="latitude-container">
                 <p className="latitude-text">latitude: </p>

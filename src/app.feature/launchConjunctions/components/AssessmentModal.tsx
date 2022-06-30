@@ -132,7 +132,7 @@ const AssessmentModal = ({
                   <a
                     href="https://platformapi.spacemap42.com/public/samples/bocachica_J2000_converted.txt"
                     className="link-text"
-                    download
+                    download="sample_trajectory"
                   >
                     this link
                     <svg viewBox="0 0 70 36">
