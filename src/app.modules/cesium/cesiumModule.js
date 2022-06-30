@@ -247,7 +247,6 @@ class CesiumModule {
       }
     }
     updateCZML(epochTime, 3600, 600, tles, rsoParams)
-    await this.turnOnIcrf()
   }
 
   async trajectory2czml(trajcetory, predictionEpochTime) {
