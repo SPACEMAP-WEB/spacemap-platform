@@ -26,9 +26,7 @@ const SearchModal = ({
   const { isVisible, handleCloseModal, handleSetModal } = useModal('WATCHERCATCHER')
   const [latitudeValue, setLatitudeValue] = useState<number>(0)
   const [longitudeValue, setLongitudeValue] = useState<number>(0)
-  const [epochtimeValue, setEpochtimeValue] = useState<string>(
-    new Date().toISOString().substring(0, 16)
-  )
+  const [epochtimeValue, setEpochtimeValue] = useState<string>(new Date().toISOString())
   const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
   const modalEl = useRef<HTMLDivElement>(null)
   const { mutate } = useMutationPostWCDB()
@@ -45,8 +43,7 @@ const SearchModal = ({
         setLatitudeValue(+e.target.value)
         break
       case 'epochtime':
-        setEpochtimeValue(e.target.value)
-        console.log(e.target.value)
+        setEpochtimeValue(e.target.value + ':00.000Z')
         break
     }
   }
@@ -61,7 +58,7 @@ const SearchModal = ({
       mutate({
         longitude: longitudeValue,
         latitude: latitudeValue,
-        epochTime: new Date(epochtimeValue),
+        epochTime: new Date(epochtimeValue).toUTCString(),
       })
       setIsWCDBTableOpen(true)
       handleSearchModalClose()
@@ -118,7 +115,7 @@ const SearchModal = ({
                 <p className="threshold-text">Epoch Time: </p>
                 <Input
                   type="datetime-local"
-                  value={epochtimeValue}
+                  value={epochtimeValue.substring(0, 16)}
                   onChange={(e) => handleInputValueChange(e, 'epochtime')}
                   className="threshold-input"
                 ></Input>
