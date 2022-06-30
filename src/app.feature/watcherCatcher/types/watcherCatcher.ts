@@ -61,5 +61,5 @@ export type WCDBResponseType = {
 export type WCDBRequestType = {
   latitude: number
   longitude: number
-  epochTime: Date
+  epochTime: string
 }
