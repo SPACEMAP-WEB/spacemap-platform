@@ -8,6 +8,7 @@ import { LPDBResponseType } from '@app.feature/launchConjunctions/types/launchCo
 import { useMutationPostLPDB } from '../query/useMutationLPDB'
 import { isCalculatableDate } from '../module/dateHandle'
 import WarningModal from '@app.components/modal/WarningModal'
+import { PrimaryButton } from '@app.components/button/Button'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -139,9 +140,9 @@ const AssessmentModal = ({
                   and from a corresponding ephemeris is straightforward.)
                 </p>
               </section>
-              <button className="submit-button" onClick={handleSubmit} disabled={isSubmitDisabled}>
+              <PrimaryButton onClick={handleSubmit} isDisabled={isSubmitDisabled}>
                 Submit
-              </button>
+              </PrimaryButton>
             </div>
           </div>
         </Modal>
@@ -286,23 +287,6 @@ const Modal = styled.div<ModalStyleProps>`
         color: rgba(255, 255, 255, 0.8);
         font-size: 15px;
         padding: 7px;
-      }
-    }
-
-    .submit-button {
-      width: 120px;
-      height: 40px;
-      font-size: 1rem;
-      cursor: pointer;
-      background-color: rgba(124, 124, 124, 0.4);
-      color: ${(props) => (props.isSubmitDisabled ? '#7a7a7a' : '#e2e2e2')};
-      z-index: 4;
-      border-radius: 8px;
-      transition: all 0.3s ease-in;
-      &:hover {
-        background-color: ${(props) =>
-          props.isSubmitDisabled ? 'rgba(124, 124, 124, 0.4)' : '#fccb16'};
-        color: #7a7a7a;
       }
     }
   }

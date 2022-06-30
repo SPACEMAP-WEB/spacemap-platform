@@ -4,16 +4,18 @@ import LaunchConjunctions from '@app.feature/launchConjunctions/screen/LaunchCon
 import WatcherCatcher from '@app.feature/watcherCatcher/screen/WatcherCatcher'
 import React from 'react'
 import styled from 'styled-components'
-import Button from './button/Button'
+import LoginButton from './button/LoginButton'
+
 import Logo from './Logo'
 import SideMenu from './SideMenu'
 
 const MainLayout = ({ cesiumModule }) => {
+  // console.log('MAIN')
   return (
     <MainLayoutWrapper>
       <Logo />
       <SideMenu />
-      <Button />
+      <LoginButton />
       <Conjunctions cesiumModule={cesiumModule} />
       <LaunchConjunctions cesiumModule={cesiumModule} />
       <WatcherCatcher cesiumModule={cesiumModule} />

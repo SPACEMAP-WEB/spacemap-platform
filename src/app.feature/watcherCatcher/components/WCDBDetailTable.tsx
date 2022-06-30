@@ -21,6 +21,16 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
   useEffect(() => {
     if (!!WCDBDetailData) {
       setTableData(wcdbDataRefactor(WCDBDetailData?.wcdb))
+      const newData = wcdbDataRefactor(WCDBDetailData.wcdb)
+      cesiumModule.drawWatcherCatcher(
+        WCDBDetailData.latitude,
+        WCDBDetailData.longitude,
+        WCDBDetailData.predictionEpochTime,
+        WCDBDetailData.epochTime,
+        newData
+      )
+
+      // console.log(WCDBDetailData)
     }
   }, [WCDBDetailData])
 
