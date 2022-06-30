@@ -18,7 +18,7 @@ const downloadHelper = async (filePath: string) => {
     element.click()
     setSelectedPath('')
   } else {
-    console.log('Selected path is empty...')
+    // console.log('Selected path is empty...')
   }
 }
 

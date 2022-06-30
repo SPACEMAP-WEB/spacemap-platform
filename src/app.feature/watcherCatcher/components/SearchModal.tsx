@@ -46,7 +46,7 @@ const SearchModal = ({
         break
       case 'epochtime':
         setEpochtimeValue(e.target.value)
-        console.log(e.target.value)
+        // console.log(e.target.value)
         break
     }
   }

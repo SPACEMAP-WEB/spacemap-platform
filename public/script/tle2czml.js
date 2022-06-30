@@ -12,7 +12,7 @@ self.addEventListener('message', async function (e) {
   const intervalUnitTime = e.data[2]
   const tles = e.data[3]
   const rsoParams = e.data[4]
-  console.log(e.data)
+  // console.log(e.data)
   // const tle = await drawTLEs(initialTimeWindow, duration, intervalUnitTime)
   let tleCZML = await tle2czml(initialTimeWindow, duration, intervalUnitTime, tles, rsoParams)
   postMessage(tleCZML)
@@ -86,8 +86,8 @@ async function satrec2czml(
 
   initTime.setSeconds(initTime.getSeconds() - periodSeconds / 2)
   let satID = Number(satrec.satnum.split(' ').join(''))
-  // console.log(satID)
-  // console.log((duration + periodSeconds) / interval)
+  // // console.log(satID)
+  // // console.log((duration + periodSeconds) / interval)
   for (let i = -periodSeconds / 2; i <= duration + periodSeconds / 2; i += interval) {
     //iterates every second (86400sec in 1day)
 
@@ -103,7 +103,7 @@ async function satrec2czml(
     }
     res.push(i, positionEci.x, positionEci.y, positionEci.z)
   }
-  // if ('46048' === satID) console.log(res)
+  // if ('46048' === satID) // console.log(res)
   let startAvailTime = moment(startTime, 'YYYY-MM-DDTHH:mm:ss.SSSSZ')
     .clone()
     .add(-duration - periodSeconds / 2, 's')

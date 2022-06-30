@@ -32,6 +32,10 @@ const AppContainer: NextComponentType<AppContext, AppInitialProps, AppProps> = (
     <>
       <Head>
         <title> SPACEMAP:42</title>
+        <link
+          href="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/Cesium/Widgets/widgets.css"
+          rel="stylesheet"
+        ></link>
       </Head>
       <GlobalStyle />
       <Provider store={store}>

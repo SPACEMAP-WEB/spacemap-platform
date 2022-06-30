@@ -3,9 +3,9 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4012",
+    "dev": "next dev -p 8080",
     "build": "next build",
-    "start": "pwd && ls -alh && next start -p 4012",
+    "start": "pwd && ls -alh && next start -p 8080",
     "lint": "next lint"
   },
   "dependencies": {

@@ -23,7 +23,7 @@ export const useDeleteMutationFavorite = () => {
   // const queryClient = useQueryClient()
   return useMutation(
     async (id: string) => {
-      console.log('delete')
+      // console.log('delete')
       await api.DELETE({ url: API_FAVORITE + `/${id}` })
     },
     {

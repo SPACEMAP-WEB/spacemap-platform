@@ -30,7 +30,7 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
         newData
       )
 
-      console.log(WCDBDetailData)
+      // console.log(WCDBDetailData)
     }
   }, [WCDBDetailData])
 
