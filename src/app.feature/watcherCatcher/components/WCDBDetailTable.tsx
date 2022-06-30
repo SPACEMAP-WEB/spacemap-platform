@@ -3,44 +3,29 @@ import CesiumModule from '@app.modules/cesium/cesiumModule'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
 import styled from 'styled-components'
-import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
 import { useInstance } from '../module/useInstance'
-import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
-import { LPDBDataType } from '../types/launchConjunctions'
+import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
+import { useQueryGetWCDBDetail } from '../query/useQueryWCDB'
+import { WCDBDataType } from '../types/watcherCatcher'
 
-type LPDBDetailProps = {
-  LPDBId: string
+type WCDBDetailProps = {
+  WCDBId: string
   handleBackButton: () => void
   cesiumModule: CesiumModule
 }
 
-const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailProps) => {
-  const { data: LPDBDetailData } = useQueryGetLPDBDetail(LPDBId)
-  // const { columns, data } = useLPDBDetailTableData(lpdbDataRefactor(LPDBDetailData?.lpdb))
-  const { data: downloadData } = useQueryGetTrajectory(LPDBDetailData?.trajectoryPath)
-  const [tableData, setTableData] = useState<LPDBDataType[]>([] as LPDBDataType[])
+const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailProps) => {
+  const { data: WCDBDetailData } = useQueryGetWCDBDetail(WCDBId)
+  const [tableData, setTableData] = useState<WCDBDataType[]>([] as WCDBDataType[])
 
   useEffect(() => {
-    if (!!LPDBDetailData) {
-      setTableData(lpdbDataRefactor(LPDBDetailData.lpdb))
+    if (!!WCDBDetailData) {
+      setTableData(wcdbDataRefactor(WCDBDetailData?.wcdb))
     }
   })
 
-  useEffect(() => {
-    if (LPDBDetailData && downloadData) {
-      const newData = lpdbDataRefactor(LPDBDetailData.lpdb)
-      cesiumModule.drawLaunchConjunctions(
-        downloadData.data,
-        LPDBDetailData.predictionEpochTime,
-        LPDBDetailData.launchEpochTime,
-        LPDBDetailData.trajectoryLength,
-        newData
-      )
-    }
-  }, [LPDBDetailData, downloadData])
-
   const data = useMemo(() => tableData, [tableData])
-  const columns: Column<LPDBDataType>[] = useMemo(
+  const columns: Column<WCDBDataType>[] = useMemo(
     () => [
       {
         Header: 'Index',
@@ -80,7 +65,7 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
 
   return (
     <>
-      <LPDBTableWrapper>
+      <WCDBTableWrapper>
         <div className="back-container" onClick={handleBackButton}>
           <img src="svg/left-arrow.svg" />
           Go Back
@@ -125,14 +110,14 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
             )}
           </Table>
         </div>
-      </LPDBTableWrapper>
+      </WCDBTableWrapper>
     </>
   )
 }
 
-export default LPDBDetailTable
+export default WCDBDetailTable
 
-const LPDBTableWrapper = styled.div`
+const WCDBTableWrapper = styled.div`
   .back-container {
     margin-bottom: 1rem;
     display: flex;

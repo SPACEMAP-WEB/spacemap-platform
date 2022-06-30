@@ -1,11 +1,11 @@
-import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import moment from 'moment'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
+import { WCDBResponseDataType } from '../types/watcherCatcher'
 
-const useLPDBTableData = (LPDBData: LPDBResponseDataType[]) => {
-  const data = useMemo(() => LPDBData, [LPDBData])
-  const columns: Column<LPDBResponseDataType>[] = useMemo(
+const useLPDBTableData = (WCDBData: WCDBResponseDataType[]) => {
+  const data = useMemo(() => WCDBData, [WCDBData])
+  const columns: Column<WCDBResponseDataType>[] = useMemo(
     () => [
       {
         Header: 'ID',
@@ -13,7 +13,7 @@ const useLPDBTableData = (LPDBData: LPDBResponseDataType[]) => {
       },
       {
         Header: 'Type',
-        accessor: (row) => 'LCA',
+        accessor: () => 'WC',
       },
       {
         Header: 'Upload Date',
