@@ -11,6 +11,7 @@ import { unwrapResult } from '@reduxjs/toolkit'
 
 const conjunctionsPath = '/sideMenu/conjunction.svg'
 const launchConjunctionPath = '/sideMenu/launch-conjunction.svg'
+const watcherCatcherPath = '/sideMenu/watcher-catcher.svg'
 
 const SideMenu = () => {
   const dispatch = useAppDispatch()
@@ -29,6 +30,13 @@ const SideMenu = () => {
       .catch(() => checkModalVisible(modalTypeData.LAUNCHCONJUNCTIONS))
   }
 
+  const handleWatcherCatcher = () => {
+    dispatch(requestCheckLogin())
+      .then(unwrapResult)
+      .then(() => login && checkModalVisible(modalTypeData.WATCHERCATCHER))
+      .catch(() => checkModalVisible(modalTypeData.WATCHERCATCHER))
+  }
+
   return (
     <SideMenuWrapper>
       <MenuIcon
@@ -44,6 +52,12 @@ const SideMenu = () => {
         height={35}
         menuDescription={'Launch Conjunctions'}
         onClick={handleLaunchConjunctionClick}
+      />
+      <MenuIcon
+        path={watcherCatcherPath}
+        alt={'watcher-catcher'}
+        menuDescription={'Watcher Catcher'}
+        onClick={handleWatcherCatcher}
       />
     </SideMenuWrapper>
   )

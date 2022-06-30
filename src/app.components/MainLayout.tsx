@@ -1,6 +1,7 @@
 import SignInModal from '@app.components/modal/SignInModal'
 import Conjunctions from '@app.feature/conjunctions/screen/Conjunctions'
 import LaunchConjunctions from '@app.feature/launchConjunctions/screen/LaunchConjunctions'
+import WatcherCatcher from '@app.feature/watcherCatcher/screen/WatcherCatcher'
 import React from 'react'
 import styled from 'styled-components'
 import Button from './button/Button'
@@ -15,6 +16,7 @@ const MainLayout = ({ cesiumModule }) => {
       <Button />
       <Conjunctions cesiumModule={cesiumModule} />
       <LaunchConjunctions cesiumModule={cesiumModule} />
+      <WatcherCatcher cesiumModule={cesiumModule} />
       <SignInModal />
     </MainLayoutWrapper>
   )

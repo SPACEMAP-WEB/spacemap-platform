@@ -26,7 +26,10 @@ phases:
     commands:
       - n 16
       - npm install
-      - npm shrinkwrap
+      - npm install babel-cli cross-env --global
+      # - npm shrinkwrap
+      - npm install -g next
+      - yarn
       # - command
   pre_build:
     commands:
@@ -35,7 +38,7 @@ phases:
       # - command
   build:
     commands:
-      - sh build.sh
+      - yarn build
       # - command
   post_build:
     commands:
