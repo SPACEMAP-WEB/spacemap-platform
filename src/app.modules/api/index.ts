@@ -39,7 +39,7 @@ class API {
     } catch (error) {
       const { response } = error as AxiosError
       if (response.status === 401 && url !== API_OAUTH) {
-        console.log('logout')
+        // console.log('logout')
         store.dispatch({
           type: setAutoLogout,
         })

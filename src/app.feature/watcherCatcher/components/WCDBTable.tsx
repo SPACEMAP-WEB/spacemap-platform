@@ -37,7 +37,7 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
     setIsDetailClicked(false)
   }
 
-  console.log(WCDBData)
+  // console.log(WCDBData)
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {

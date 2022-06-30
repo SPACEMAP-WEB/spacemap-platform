@@ -5,6 +5,7 @@ import { API_TLES, API_RSOS } from '@app.modules/keyFactory'
 import { twoline2satrec } from 'satellite.js'
 class CesiumModule {
   constructor() {
+    // console.log('construct')
     this.viewer
     this.tles
     this.rsoParams
@@ -46,7 +47,7 @@ class CesiumModule {
   }
 
   async drawConjunctions(pid, sid, from, tca, to) {
-    console.log(pid, sid, from, tca, to)
+    // console.log(pid, sid, from, tca, to)
     await this.turnOffIcrf()
     await this.clean()
     let tles = this.tles
@@ -98,7 +99,7 @@ class CesiumModule {
     }
     updateCZML(tca, 0, 600, tles, rsoParams)
 
-    // console.log(pairCzml)
+    // // console.log(pairCzml)
     // this.czmlDataSource.process(pairCzml).then(function (ds) {
     //   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
     //   viewer.timeline.updateFromClock()
@@ -135,10 +136,10 @@ class CesiumModule {
     lpdb
   ) {
     await this.clean()
-    // console.log(trajectory)
-    // console.log(predictionEpochTime)
+    // // console.log(trajectory)
+    // // console.log(predictionEpochTime)
     // console.log(launchEpochTime)
-    // console.log(lpdb)
+    // // console.log(lpdb)
 
     const czmlDataSource = this.czmlDataSource
     const [trajcetoryCzml, endInterval] = await this.trajectory2czml(
@@ -167,11 +168,11 @@ class CesiumModule {
           const clockViewModel = viewer.clockViewModel
           clockViewModel.startTime = initialTime.toISOString()
           clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-          console.log('!!!!')
+          // console.log('!!!!')
           czmlDataSource.process(trajcetoryCzml).then(function (ds) {
             viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
             viewer.timeline.updateFromClock()
-            console.log('!!!')
+            // console.log('!!!')
             for (const currRow of lpdb) {
               const pairCzml = makePair(
                 currRow.primary,
@@ -181,7 +182,7 @@ class CesiumModule {
                 currRow.end
               )
               czmlDataSource.process(pairCzml).then(function (ds) {
-                console.log('!!')
+                // console.log('!!')
               })
             }
           })
@@ -191,6 +192,61 @@ class CesiumModule {
     }
     updateCZML(predictionEpochTime, endInterval, 600, tles, rsoParams)
 
+    await this.turnOnIcrf()
+  }
+
+  async drawWatcherCatcher(latitude, longitude, predictionEpochTime, epochTime, wcdb) {
+    await this.clean()
+    // // console.log(trajectory)
+    // // console.log(predictionEpochTime)
+    // // console.log(launchEpochTime)
+    // // console.log(lpdb)
+    // console.log(epochTime)
+    const czmlDataSource = this.czmlDataSource
+    const { siteCzml, siteConeCzml } = await this.site2czml(latitude, longitude, epochTime)
+    // console.log(siteCzml)
+    // console.log(siteConeCzml)
+    const viewer = this.viewer
+    // const lpdb2Czml = this.lpdb2Czml
+    const makePair = this.makePair
+    const initialTime = moment(predictionEpochTime).utc()
+    this.isPairMode = false
+    const [tles, rsoParams] = await this.updateTlesAndRsos(initialTime)
+
+    const worker = new Worker('/script/tle2czml.js')
+    function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
+      worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
+      worker.onmessage = (e) => {
+        viewer.dataSources.removeAll()
+        // console.log(e.data)
+        czmlDataSource.load(e.data).then(function (ds) {
+          // console.log(ds)
+          viewer.dataSources.add(ds)
+          const clockViewModel = viewer.clockViewModel
+          clockViewModel.startTime = initialTime.toISOString()
+          clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
+          czmlDataSource.process([siteCzml, siteConeCzml]).then(function (ds) {
+            // console.log('?')
+            // console.log(epochTime)
+            viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(epochTime)
+            viewer.timeline.updateFromClock()
+            for (const currRow of wcdb) {
+              // console.log(currRow)
+              const pairCzml = makePair(
+                currRow.primary,
+                currRow.secondary,
+                currRow.start,
+                currRow.tca,
+                currRow.end
+              )
+              czmlDataSource.process(pairCzml).then(function (ds) {})
+            }
+          })
+          worker.terminate()
+        })
+      }
+    }
+    updateCZML(epochTime, 3600, 600, tles, rsoParams)
     await this.turnOnIcrf()
   }
 
@@ -282,8 +338,91 @@ class CesiumModule {
     trajectoryCzml.position.cartesian = cartesian
     trajectoryCzml.position.epoch = startTime
     trajectoryCzml.availability = `${startTime}/${endTime}`
-    console.log(endInterval)
+    // console.log(endInterval)
     return [trajectoryCzml, endInterval]
+  }
+
+  async site2czml(latitude, longitude, epochTime) {
+    // console.log(longitude)
+    // console.log(latitude)
+    const position = Cesium.Cartesian3.fromDegrees(longitude, latitude)
+    const { x, y, z } = position
+    const cameraAngle = 100
+    const fixedAltitude = 1300000.0
+    const magnitude = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2))
+    const endMoment = moment(epochTime).add(1, 'hours').toISOString()
+    // console.log(endMoment)
+
+    const siteCzml = {
+      id: '0',
+      name: 'Site',
+      availability: `${epochTime}/${endMoment}`,
+      description: 'Site',
+      label: {
+        fillColor: {
+          rgba: [255, 255, 255, 255],
+        },
+        font: '12pt Arial',
+        horizontalOrigin: 'LEFT',
+        outlineColor: {
+          rgba: [24, 24, 24, 255],
+        },
+        outlineWidth: 2,
+        pixelOffset: {
+          cartesian2: [10, 10],
+        },
+        show: true,
+        style: 'FILL_AND_OUTLINE',
+        text: 'Site',
+        verticalOrigin: 'CENTER',
+      },
+      position: {
+        referenceFrame: 'FIXED',
+        epoch: `${epochTime}`,
+        cartesian: [x, y, z],
+      },
+      point: {
+        show: true,
+        color: {
+          rgba: [255, 255, 255, 255],
+        },
+        outlineColor: {
+          rgba: [0, 128, 255, 255],
+        },
+        outlineWidth: 4,
+        pixelSize: 8,
+      },
+    }
+
+    const siteConeCzml = {
+      id: 'cone',
+      name: 'SiteCone',
+      availability: `${epochTime}/${endMoment}`,
+      description: 'SiteCone',
+      position: {
+        referenceFrame: 'FIXED',
+        epoch: `${epochTime}`,
+        // cartesian: [37.55168063833871, 126.98829170545699],
+        cartesian: [
+          x + ((x / magnitude) * fixedAltitude) / 2,
+          y + ((y / magnitude) * fixedAltitude) / 2,
+          z + ((z / magnitude) * fixedAltitude) / 2,
+        ],
+      },
+      cylinder: {
+        length: fixedAltitude,
+        topRadius: Math.tan((cameraAngle * Math.PI) / 360) * fixedAltitude,
+        bottomRadius: 0.0,
+        material: {
+          solidColor: {
+            color: {
+              rgba: [240, 240, 24, 90],
+            },
+          },
+        },
+      },
+    }
+    return { siteCzml, siteConeCzml }
   }
 
   async turnOffPathNLabel(prevPid, prevSid) {
@@ -383,11 +522,11 @@ class CesiumModule {
     scene.globe.enableLighting = true
     // const currTime = initialTime
     // initialTime = moment().utc().startOf('day')
-    console.log(initialTime)
+    // console.log(initialTime)
 
     // await this.tles2satrecs(this.tles)
 
-    console.log(initialTimeISOString)
+    // console.log(initialTimeISOString)
     const czmlDataSource = new Cesium.CzmlDataSource()
     this.czmlDataSource = czmlDataSource
 

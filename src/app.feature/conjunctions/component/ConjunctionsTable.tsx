@@ -154,7 +154,7 @@ const ConjunctionsTable = ({
           <>
             <tbody {...getTableBodyProps()}>
               {page.map((row, index) => {
-                console.log(row)
+                // console.log(row)
                 prepareRow(row)
                 return (
                   <tr {...row.getRowProps()}>
