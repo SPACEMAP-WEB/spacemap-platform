@@ -11,6 +11,7 @@ import { unwrapResult } from '@reduxjs/toolkit'
 
 const conjunctionsPath = '/sideMenu/conjunction.svg'
 const launchConjunctionPath = '/sideMenu/launch-conjunction.svg'
+const watcherCatcherPath = '/sideMenu/watcher-catcher.svg'
 
 const SideMenu = () => {
   const dispatch = useAppDispatch()
@@ -53,7 +54,7 @@ const SideMenu = () => {
         onClick={handleLaunchConjunctionClick}
       />
       <MenuIcon
-        path={conjunctionsPath}
+        path={watcherCatcherPath}
         alt={'watcher-catcher'}
         menuDescription={'Watcher Catcher'}
         onClick={handleWatcherCatcher}
