@@ -22,7 +22,7 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
     if (!!WCDBDetailData) {
       setTableData(wcdbDataRefactor(WCDBDetailData?.wcdb))
     }
-  })
+  }, [WCDBDetailData])
 
   const data = useMemo(() => tableData, [tableData])
   const columns: Column<WCDBDataType>[] = useMemo(

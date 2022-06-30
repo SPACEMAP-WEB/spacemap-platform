@@ -24,7 +24,7 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
     if (!!LPDBDetailData) {
       setTableData(lpdbDataRefactor(LPDBDetailData.lpdb))
     }
-  })
+  }, [LPDBDetailData])
 
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
