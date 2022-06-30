@@ -9,6 +9,7 @@ import Logo from './Logo'
 import SideMenu from './SideMenu'
 
 const MainLayout = ({ cesiumModule }) => {
+  console.log('MAIN')
   return (
     <MainLayoutWrapper>
       <Logo />

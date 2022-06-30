@@ -4,8 +4,8 @@ import Head from 'next/head'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
-import CesiumModule from '@app.modules/cesium/cesiumModule'
 import MainLayout from '@app.components/MainLayout'
+import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { requestCheckLogin } from 'src/app.store/loginStore/loginUser'
 
 const CesiumComponent = dynamic(() => import('@app.components/Cesium'), {
@@ -22,6 +22,7 @@ const PageMain = () => {
 
   if (isLoading) return null
   const cesiumModule = new CesiumModule()
+  console.log('index')
   return (
     <>
       <Head>
