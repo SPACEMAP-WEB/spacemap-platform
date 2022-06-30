@@ -1,9 +1,8 @@
 import { Table } from '@app.components/Table'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
 import styled from 'styled-components'
-import useWCDBDetailTableData from '../hooks/useWCDBDetailTableData'
 import { useInstance } from '../module/useInstance'
 import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
 import { useQueryGetWCDBDetail } from '../query/useQueryWCDB'
@@ -17,16 +16,42 @@ type WCDBDetailProps = {
 
 const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailProps) => {
   const { data: WCDBDetailData } = useQueryGetWCDBDetail(WCDBId)
-  const [columns, setColumns] = useState<Column<WCDBDataType>[]>([] as Column<WCDBDataType>[])
-  const [data, setData] = useState<WCDBDataType[]>([] as WCDBDataType[])
+  const [tableData, setTableData] = useState<WCDBDataType[]>([] as WCDBDataType[])
 
-  if (!!WCDBDetailData) {
-    const { columns: tempColumns, data: tempData } = useWCDBDetailTableData(
-      wcdbDataRefactor(WCDBDetailData.wcdb.slice(1, 3))
-    )
-    setColumns(tempColumns)
-    setData(tempData)
-  }
+  useEffect(() => {
+    if (!!WCDBDetailData) {
+      setTableData(wcdbDataRefactor(WCDBDetailData?.wcdb))
+    }
+  })
+
+  const data = useMemo(() => tableData, [tableData])
+  const columns: Column<WCDBDataType>[] = useMemo(
+    () => [
+      {
+        Header: 'Index',
+        accessor: 'index',
+      },
+      {
+        Header: 'Primary',
+        accessor: (row) => {
+          return Object.values(row.primary)
+        },
+      },
+      {
+        Header: 'Secondary',
+        accessor: (row) => {
+          return Object.values(row.secondary)
+        },
+      },
+      {
+        Header: 'TCA/DCA',
+        accessor: (row) => {
+          return Object.values(row['tca/dca'])
+        },
+      },
+    ],
+    []
+  )
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
@@ -66,10 +91,10 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
                         {row.cells.map((cell) => {
                           return (
                             <td
-                              rowSpan={cell.column.id === 'Index' && index % 2 === 0 ? 2 : 1}
+                              rowSpan={cell.column.Header === 'Index' && index % 2 === 0 ? 2 : 1}
                               style={{
                                 display:
-                                  cell.column.id === 'Index' && index % 2 === 1 ? 'none' : null,
+                                  cell.column.Header === 'Index' && index % 2 === 1 ? 'none' : null,
                               }}
                               {...cell.getCellProps()}
                             >

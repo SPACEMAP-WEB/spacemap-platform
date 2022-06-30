@@ -1,12 +1,12 @@
 import { Table } from '@app.components/Table'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
-import React, { useEffect } from 'react'
-import { useTable } from 'react-table'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Column, useTable } from 'react-table'
 import styled from 'styled-components'
-import useLPDBDetailTableData from '../hooks/useLPDBDetailTableData'
 import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
 import { useInstance } from '../module/useInstance'
 import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
+import { LPDBDataType } from '../types/launchConjunctions'
 
 type LPDBDetailProps = {
   LPDBId: string
@@ -16,8 +16,15 @@ type LPDBDetailProps = {
 
 const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailProps) => {
   const { data: LPDBDetailData } = useQueryGetLPDBDetail(LPDBId)
-  const { columns, data } = useLPDBDetailTableData(lpdbDataRefactor(LPDBDetailData?.lpdb))
+  // const { columns, data } = useLPDBDetailTableData(lpdbDataRefactor(LPDBDetailData?.lpdb))
   const { data: downloadData } = useQueryGetTrajectory(LPDBDetailData?.trajectoryPath)
+  const [tableData, setTableData] = useState<LPDBDataType[]>([] as LPDBDataType[])
+
+  useEffect(() => {
+    if (!!LPDBDetailData) {
+      setTableData(lpdbDataRefactor(LPDBDetailData.lpdb))
+    }
+  })
 
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
@@ -31,6 +38,35 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
       )
     }
   }, [LPDBDetailData, downloadData])
+
+  const data = useMemo(() => tableData, [tableData])
+  const columns: Column<LPDBDataType>[] = useMemo(
+    () => [
+      {
+        Header: 'Index',
+        accessor: 'index',
+      },
+      {
+        Header: 'Primary',
+        accessor: (row) => {
+          return Object.values(row.primary)
+        },
+      },
+      {
+        Header: 'Secondary',
+        accessor: (row) => {
+          return Object.values(row.secondary)
+        },
+      },
+      {
+        Header: 'TCA/DCA',
+        accessor: (row) => {
+          return Object.values(row['tca/dca'])
+        },
+      },
+    ],
+    []
+  )
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
@@ -70,10 +106,10 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
                         {row.cells.map((cell) => {
                           return (
                             <td
-                              rowSpan={cell.column.id === 'Index' && index % 2 === 0 ? 2 : 1}
+                              rowSpan={cell.column.Header === 'Index' && index % 2 === 0 ? 2 : 1}
                               style={{
                                 display:
-                                  cell.column.id === 'Index' && index % 2 === 1 ? 'none' : null,
+                                  cell.column.Header === 'Index' && index % 2 === 1 ? 'none' : null,
                               }}
                               {...cell.getCellProps()}
                             >

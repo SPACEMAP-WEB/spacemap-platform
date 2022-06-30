@@ -1,7 +1,7 @@
 import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import moment from 'moment'
 import { useMemo } from 'react'
-import { CellProps, Column } from 'react-table'
+import { Column } from 'react-table'
 
 const useLPDBTableData = (LPDBData: LPDBResponseDataType[]) => {
   const data = useMemo(() => LPDBData, [LPDBData])
