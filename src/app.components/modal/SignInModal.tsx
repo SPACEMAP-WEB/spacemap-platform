@@ -18,7 +18,7 @@ const SignInModal = () => {
     router.push({
       pathname: `${process.env.SPACEMAP_PLATFORM_API_URI}/oauth/google`,
       query: {
-        host: location.host,
+        host: location.href,
       },
     })
     // router.push(`${process.env.SPACEMAP_PLATFORM_API_URI}/oauth/google`)
