@@ -37,8 +37,6 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
     setIsDetailClicked(false)
   }
 
-  // console.log(WCDBData)
-
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
       columns,
@@ -48,7 +46,6 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
       hooks.visibleColumns.push((columns: Column<WCDBResponseDataType>[]) => {
         columns[3] = {
           Header: 'Status',
-          accessor: 'status',
           Cell: ({ row }: CellProps<WCDBResponseDataType>) => (
             <>
               {row.original.status === 'DONE' ? (
