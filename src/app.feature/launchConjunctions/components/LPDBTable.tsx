@@ -46,7 +46,6 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
       hooks.visibleColumns.push((columns: Column<LPDBResponseDataType>[]) => {
         columns[3] = {
           Header: 'Status',
-          accessor: 'status',
           Cell: ({ row, value }: CellProps<LPDBResponseDataType>) => (
             <>
               {row.original.status === 'DONE' ? (
