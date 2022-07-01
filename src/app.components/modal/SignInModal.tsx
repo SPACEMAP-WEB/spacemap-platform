@@ -1,4 +1,5 @@
 import ModalWrapper from '@app.components/modal/ModalWrapper'
+import ConjunctionsFavoriteTable from '@app.feature/favorite/component/ConjunctionsFavoriteTable'
 import { useModal } from '@app.modules/hooks/useModal'
 import { useRouter } from 'next/router'
 import React, { useRef } from 'react'
@@ -14,7 +15,13 @@ const SignInModal = () => {
   }
 
   const handleClickLogin = (sns: string) => {
-    router.push(`${process.env.SPACEMAP_PLATFORM_API_URI}/oauth/google`)
+    router.push({
+      pathname: `${process.env.SPACEMAP_PLATFORM_API_URI}/oauth/google`,
+      query: {
+        host: location.href,
+      },
+    })
+    // router.push(`${process.env.SPACEMAP_PLATFORM_API_URI}/oauth/google`)
   }
 
   return (

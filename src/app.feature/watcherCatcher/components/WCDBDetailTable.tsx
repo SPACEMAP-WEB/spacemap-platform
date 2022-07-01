@@ -29,8 +29,6 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
         WCDBDetailData.epochTime,
         newData
       )
-
-      // console.log(WCDBDetailData)
     }
   }, [WCDBDetailData])
 

@@ -1,17 +1,22 @@
+import { unwrapResult } from '@reduxjs/toolkit'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'src/app.store/config/configureStore'
-import { requestLogout } from 'src/app.store/loginStore/loginUser'
+import { useSelector } from 'react-redux'
+import { RootState, useAppDispatch } from 'src/app.store/config/configureStore'
+import { requestCheckLogin, requestLogout } from 'src/app.store/loginStore/loginUser'
 import { setModal } from 'src/app.store/modalStore/store.modalApp'
 import styled from 'styled-components'
 import { PrimaryButton } from './Button'
 
 const Button = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { user, login } = useSelector((state: RootState) => state.login)
 
   const handleSnsLogin = () => {
-    login ? dispatch(requestLogout()) : dispatch(setModal({ type: 'LOGIN' }))
+    login
+      ? dispatch(requestLogout())
+          .then(unwrapResult)
+          .then(() => dispatch(requestCheckLogin()))
+      : dispatch(setModal({ type: 'LOGIN' }))
   }
 
   return (
