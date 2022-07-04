@@ -30,13 +30,12 @@
     "/no-useless-escape": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "no-empty-interface": "off",
-    "comma-dangle": "off",
     "@typescript-eslint/comma-dangle": [
       "error",
       {
         "arrays": "always-multiline",
         "objects": "always-multiline",
-        "imports": "never",
+        "imports": "always-multiline",
         "exports": "never",
         "functions": "never"
       }
@@ -44,7 +43,7 @@
     "prettier/prettier": [
       "error",
       {
-        "endOfLine": "auto",
+        "endOfLine": "lf",
         "useTabs": false,
         "singleQuote": true,
         "semi": false,
