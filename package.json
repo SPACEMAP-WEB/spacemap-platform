@@ -3,9 +3,10 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3002",
     "build": "next build",
-    "start": "pwd && ls -alh && next start -p 8080",
+    "start": "next start -p 8080",
+    "start:dev": "NODE_ENV=development next start -p 8080",
+    "start:local": "NODE_ENV=local next dev -p 8080",
     "lint": "next lint"
   },
   "dependencies": {
