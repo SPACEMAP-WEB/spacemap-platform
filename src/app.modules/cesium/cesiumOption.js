@@ -1,4 +1,6 @@
-export const cesiumOption = {
+import * as Cesium from 'cesium'
+
+const cesiumOption = {
   imageryProvider: new Cesium.TileMapServiceImageryProvider({
     url: Cesium.buildModuleUrl('/cesium/Assets/Textures/NaturalEarthII'),
   }),
@@ -41,3 +43,5 @@ export const cesiumOption = {
     },
   }),
 }
+
+export default cesiumOption
