@@ -2,7 +2,9 @@ const webpack = require('webpack')
 const CopywebpackPlugin = require('copy-webpack-plugin')
 const path = require('path')
 const envrc = require('./.env.config.json')
-const env = envrc[process.env.NODE_ENV]
+const env = envrc[process.env.SPACEMAP_NODE_ENV]
+console.log(envrc)
+console.log(env)
 
 const nextConfig = {
   reactStrictMode: false,

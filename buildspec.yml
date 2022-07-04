@@ -2,8 +2,8 @@ version: 0.2
 
 #env:
 #variables:
-#CASHDOC_NODE_ENV: "development"
-#NODE_ENV: "development"
+#CASHDOC_SPACEMAP_NODE_ENV: "development"
+#SPACEMAP_NODE_ENV: "development"
 #parameter-app.store:
 # key: "value"
 # key: "value"
@@ -29,7 +29,6 @@ phases:
       - npm install babel-cli cross-env --global
       # - npm shrinkwrap
       - npm install -g next
-      - yarn
       # - command
   pre_build:
     commands:
@@ -38,7 +37,7 @@ phases:
       # - command
   build:
     commands:
-      - yarn build
+      - npm run build:dev
       # - command
   post_build:
     commands:
@@ -59,7 +58,6 @@ artifacts:
     - '.next/**/*'
     - '.ebextensions/**/*'
     - '.npmrc'
-    # - 'next.config.js'
     - 'Procfile'
     #- 'node_modules/**/*'
   #name: $(date +%Y-%m-%d)
