@@ -7,10 +7,9 @@ import styled from 'styled-components'
 import LoginButton from './button/LoginButton'
 
 import Logo from './Logo'
-import SideMenu from './SideMenu'
+import SideMenu from '../app.feature/sideMenu/screen/SideMenu'
 
 const MainLayout = ({ cesiumModule }) => {
-  // console.log('MAIN')
   return (
     <MainLayoutWrapper>
       <Logo />
