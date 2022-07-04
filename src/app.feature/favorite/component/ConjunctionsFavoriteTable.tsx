@@ -15,7 +15,7 @@ import {
 } from '@app.feature/favorite/query/useQueryFavorite'
 import { API_FAVORITE, API_FAVORITE_CONJUNCTIONS } from '@app.modules/keyFactory'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { CellProps, Column, usePagination, useRowSelect, useTable } from 'react-table'
 import styled from 'styled-components'
