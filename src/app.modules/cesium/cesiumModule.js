@@ -3,6 +3,7 @@ import moment from 'moment'
 import api from '@app.modules/api'
 import { API_TLES, API_RSOS } from '@app.modules/keyFactory'
 import { twoline2satrec } from 'satellite.js'
+
 class CesiumModule {
   constructor() {
     // console.log('construct')
@@ -239,7 +240,9 @@ class CesiumModule {
                 currRow.tca,
                 currRow.end
               )
-              czmlDataSource.process(pairCzml).then(function (ds) {})
+              czmlDataSource.process(pairCzml).then(function (ds) {
+                console.log(ds)
+              })
             }
           })
           worker.terminate()
@@ -468,7 +471,7 @@ class CesiumModule {
     return pairCzml
   }
 
-  async initiailze(initialTime, duration, intervalUnitTime) {
+  async initialize(initialTime, duration, intervalUnitTime) {
     Cesium.Ion.defaultAccessToken =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZDQ4OGYzYi0zNjBmLTQ1ZTAtODUwNS0xNDgyYjA4NDRjYTMiLCJpZCI6NzQ5ODIsImlhdCI6MTYzODI1OTc1Mn0.pz3a2LRR9kAkSV5m8X3WdnE0RsimkJRJWld0PvHGThk'
 
