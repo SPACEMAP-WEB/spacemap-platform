@@ -28,8 +28,8 @@ export const requestApiGetFavorite = async (query) => {
 }
 
 export const useQueryGetPPDB = ({ query, isConjunctionsClicked }) => {
-  const queryKey = API_PPDB
-  const apiMethod = requestAPiGetPPDB
+  const queryKey = API_FAVORITE_CONJUNCTIONS
+  const apiMethod = requestApiGetFavorite
   return useQuery([queryKey, query], () => apiMethod(query), {
     keepPreviousData: true,
     enabled: isConjunctionsClicked,

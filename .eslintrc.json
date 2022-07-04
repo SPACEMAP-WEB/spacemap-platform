@@ -40,16 +40,7 @@
         "functions": "never"
       }
     ],
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "lf",
-        "useTabs": false,
-        "singleQuote": true,
-        "semi": false,
-        "bracketSpacing": true
-      }
-    ],
+    "prettier/prettier": "off",
     "indent": "off",
     "prefer-const": "off",
     "semi": ["error", "never"],

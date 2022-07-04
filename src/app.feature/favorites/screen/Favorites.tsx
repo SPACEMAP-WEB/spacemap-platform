@@ -1,11 +1,14 @@
 import FilterSelect from '@app.components/FilterSelect'
 import Search from '@app.components/Search'
-import { PPDBSearchParamsType, SortType } from '@app.feature/conjunctions/types/conjunctions'
+import { PPDBSearchParamsType, SortType } from '@app.feature/favorites/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
+import ConjunctionsFavorite from '../../favorite/screen/ConjunctionsFavorite'
 import ConjunctionsTable from '../component/ConjunctionsTable'
 import { slideIn, slideOut } from '../module/keyFrames'
 
@@ -20,7 +23,7 @@ const filterOptions: FilterSelectType[] = [
   },
 ]
 
-const Conjunctions = ({ cesiumModule }) => {
+const Favorites = ({ cesiumModule }) => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const favoriteConjunctionsRef = useRef<HTMLDivElement>(null)
@@ -28,10 +31,12 @@ const Conjunctions = ({ cesiumModule }) => {
     limit: size,
     page: 0,
   })
+  const { login } = useSelector((state: RootState) => state.login)
   const [conjunctionsVisible, setConjunctionsVisible] = useState(false)
   const [searchValue, setSearchValue] = useState<string>('')
   const [close, setClose] = useState(false)
-  const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
+  const [favoriteData, setFavoriteData] = useState<FilterSelectType[]>([])
+  const { isVisible: isConjunctionsClicked } = useModal('FAVORITES')
 
   const handleSearch = async () => {
     setQueryParams({
@@ -45,6 +50,15 @@ const Conjunctions = ({ cesiumModule }) => {
     setQueryParams({
       ...queryParams,
       sort: e.target.value as SortType,
+    })
+  }
+
+  const handleFavoriteIdChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value
+    delete queryParams.satellite
+    setQueryParams({
+      ...queryParams,
+      ...(id !== 'ALL' ? { satellite: e.target.value } : {}),
     })
   }
 
@@ -74,7 +88,7 @@ const Conjunctions = ({ cesiumModule }) => {
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
           <section className="conjunctions-wrapper" ref={conjunctionsRef}>
-            <h1 className="title conjunctions">Conjunctions</h1>
+            <h1 className="title conjunctions">Favorites</h1>
             <div className="header-group">
               <Search
                 handleSearch={handleSearch}
@@ -83,12 +97,22 @@ const Conjunctions = ({ cesiumModule }) => {
               />
               <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
             </div>
+              <div className="favorite-filter">
+                <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+              </div>
             <ConjunctionsTable
+              setFavoriteData={setFavoriteData}
               queryParams={queryParams}
               setQueryParams={setQueryParams}
               cesiumModule={cesiumModule}
               size={size}
             />
+          </section>
+          <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
+            <h1 className="title bookmark">Favorites</h1>
+            <div className="bookmark-table-wrapper">
+              <ConjunctionsFavorite login={login} />
+            </div>
           </section>
         </ConjunctionsWrapper>
       )}
@@ -96,7 +120,7 @@ const Conjunctions = ({ cesiumModule }) => {
   )
 }
 
-export default Conjunctions
+export default Favorites
 
 type TConjunctions = {
   isConjunctionsClicked: boolean

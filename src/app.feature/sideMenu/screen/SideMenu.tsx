@@ -37,7 +37,7 @@ const SideMenu = () => {
         path={FavoritePath}
         alt={'favorite'}
         menuDescription={'Favorites'}
-        onClick={() => handleLoginMenuClick('CONJUNCTIONS')}
+        onClick={() => handleLoginMenuClick('FAVORITES')}
       />
     </SideMenuWrapper>
   )

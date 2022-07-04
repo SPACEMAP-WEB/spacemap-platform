@@ -1,9 +1,11 @@
 import { Table } from '@app.components/Table'
-import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
-import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
-import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
+import { ppdbDataRefactor } from '@app.feature/favorites/module/ppdbDataRefactor'
+import { useQueryGetPPDB } from '@app.feature/favorites/query/useQueryPPDB'
+import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/favorites/types/conjunctions'
+import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { useModal } from '@app.modules/hooks/useModal'
+import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
@@ -14,6 +16,7 @@ import Pagination from '../../../app.components/Pagination'
 import { COLUMNS } from './TableColumns'
 
 type TableProps = {
+  setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
   cesiumModule
@@ -21,6 +24,7 @@ type TableProps = {
 }
 
 const ConjunctionsTable = ({
+  setFavoriteData,
   queryParams,
   setQueryParams,
   cesiumModule,
@@ -28,7 +32,7 @@ const ConjunctionsTable = ({
 }: TableProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
-  const { isVisible } = useModal('CONJUNCTIONS')
+  const { isVisible } = useModal('FAVORITES')
   const isConjunctionsClicked = isVisible
   const debounceFn = useDebounce(() => {
     const size = responsiveCellSizeHandler(window.innerHeight)
@@ -41,6 +45,8 @@ const ConjunctionsTable = ({
     query: queryParams,
     isConjunctionsClicked,
   })
+
+  const { data: queryFavorite, isSuccess } = useQueryFavorite('')
 
   const columns = useMemo(
     () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
@@ -77,9 +83,24 @@ const ConjunctionsTable = ({
     }
   )
 
+  const requestFavoriteData = async () => {
+    if (isSuccess)
+      setFavoriteData([
+        { label: 'All', value: 'ALL' },
+        ...queryFavorite?.interestedArray?.map((sat) => ({
+          label: String(sat.id),
+          value: String(sat.id),
+        })),
+      ])
+  }
+
   useEffect(() => {
     setQueryParams({ ...queryParams, page: pageIndex })
   }, [pageIndex])
+
+  useEffect(() => {
+    requestFavoriteData()
+  }, [queryFavorite])
 
   useEffect(() => {
     if (fetchedPPDBData) {
