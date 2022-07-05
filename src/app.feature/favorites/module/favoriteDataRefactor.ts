@@ -3,19 +3,17 @@ import {
   FavoriteColumnType,
   FavoriteDataType,
   FavoriteFindDataType,
-} from '@app.feature/favorite/types/favorite'
+} from '@app.feature/favorites/types/favorite'
 
 export const favoriteDataRefactor = (data: FavoriteDataType): FavoriteColumnType[] => {
+  if (!data) return []
   if (!Object.keys(data).length) return []
   const { interestedArray } = data
-  let refactorArr = []
-  for (let i = 0; i < interestedArray.length; i++) {
-    refactorArr.push({
-      noradId: interestedArray[i].id,
-      satName: interestedArray[i].name,
-      isInterested: true,
-    })
-  }
+  const refactorArr = interestedArray.map((sat) => ({
+    noradId: String(sat.id),
+    satName: sat.name,
+    isInterested: true,
+  }))
   return refactorArr
 }
 

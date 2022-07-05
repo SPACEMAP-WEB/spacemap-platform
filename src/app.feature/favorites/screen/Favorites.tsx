@@ -1,6 +1,7 @@
 import FilterSelect from '@app.components/FilterSelect'
 import Search from '@app.components/Search'
-import { PPDBSearchParamsType, SortType } from '@app.feature/favorites/types/conjunctions'
+import { slideIn, slideOut } from '@app.feature/conjunctions/module/keyFrames'
+import { PPDBSearchParamsType, SortType } from '@app.feature/conjunctions/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
@@ -8,9 +9,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
-import ConjunctionsFavorite from '../../favorite/screen/ConjunctionsFavorite'
-import ConjunctionsTable from '../component/ConjunctionsTable'
-import { slideIn, slideOut } from '../module/keyFrames'
+import ConjunctionsFavorite from './ConjunctionsFavorite'
+import FavoritesTable from '../component/FavoritesTable'
 
 const filterOptions: FilterSelectType[] = [
   {
@@ -100,7 +100,7 @@ const Favorites = ({ cesiumModule }) => {
               <div className="favorite-filter">
                 <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
               </div>
-            <ConjunctionsTable
+            <FavoritesTable
               setFavoriteData={setFavoriteData}
               queryParams={queryParams}
               setQueryParams={setQueryParams}
