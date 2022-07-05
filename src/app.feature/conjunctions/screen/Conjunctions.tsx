@@ -4,7 +4,7 @@ import { PPDBSearchParamsType, SortType } from '@app.feature/conjunctions/types/
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import ConjunctionsTable from '../component/ConjunctionsTable'
 import { slideIn, slideOut } from '../module/keyFrames'
@@ -32,6 +32,10 @@ const Conjunctions = ({ cesiumModule }) => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [close, setClose] = useState(false)
   const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
+
+  const handleSearchValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value)
+  }
 
   const handleSearch = async () => {
     setQueryParams({
@@ -79,7 +83,7 @@ const Conjunctions = ({ cesiumModule }) => {
               <Search
                 handleSearch={handleSearch}
                 searchValue={searchValue}
-                setSearchValue={setSearchValue}
+                handleValueChange={handleSearchValueChange}
               />
               <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
             </div>

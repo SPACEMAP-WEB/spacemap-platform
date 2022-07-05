@@ -47,10 +47,7 @@ const ConjunctionsTable = ({
     isConjunctionsClicked,
   })
 
-  console.log(fetchedPPDBData)
-
   const { data: queryFavorite, isSuccess } = useQueryFavorite('')
-  console.log(queryFavorite)
 
   const columns = useMemo(
     () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
@@ -161,9 +158,9 @@ const ConjunctionsTable = ({
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          rowSpan={cell.column.id === 'Index' && index % 2 === 0 ? 2 : 1}
+                          rowSpan={(cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 0 ? 2 : 1}
                           style={{
-                            display: cell.column.id === 'Index' && index % 2 === 1 ? 'none' : null,
+                            display: (cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 1 ? 'none' : null,
                           }}
                           {...cell.getCellProps()}
                         >

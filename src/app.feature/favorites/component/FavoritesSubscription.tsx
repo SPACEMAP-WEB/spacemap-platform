@@ -1,9 +1,10 @@
+import { SecondaryButton } from '@app.components/button/Button'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
-import ConjunctionsFavoriteTable from '../component/ConjunctionsFavoriteTable'
+import FavoritesSubscriptionTable from './FavoritesSubscriptionTable'
 
-const ConjunctionsFavorite = ({ login }: { login: boolean }) => {
+const FavoritesSubscription = ({ login }: { login: boolean }) => {
   const [inputValue, setInputValue] = useState('')
   const {
     handleSubmit,
@@ -17,7 +18,6 @@ const ConjunctionsFavorite = ({ login }: { login: boolean }) => {
 
   return (
     <StyledWrapper>
-      {login && (
         <form className="favorite-form" onSubmit={handleSubmit(handleFavorite)}>
           <input
             className="favorite-form-input"
@@ -25,22 +25,15 @@ const ConjunctionsFavorite = ({ login }: { login: boolean }) => {
             {...register('favorite')}
             placeholder="Search Your Satellites"
           />
-          <button className="favorite-form-btn" type="submit">
-            Search
-          </button>
+          <SecondaryButton width={80} height={30} type="submit">Search</SecondaryButton>
           {errors.favorite && <span>Favorite Field is Required</span>}
         </form>
-      )}
-      {login ? (
-        <ConjunctionsFavoriteTable inputValue={inputValue} />
-      ) : (
-        <div className="login-required">Login and save your favorite satellites!</div>
-      )}
+        <FavoritesSubscriptionTable inputValue={inputValue} />
     </StyledWrapper>
   )
 }
 
-export default ConjunctionsFavorite
+export default FavoritesSubscription
 
 const StyledWrapper = styled.div`
   text-align: center;
@@ -62,14 +55,6 @@ const StyledWrapper = styled.div`
       ::placeholder {
         color: white;
         opacity: 0.5;
-      }
-    }
-    .favorite-form-btn {
-      background-color: rgba(124, 124, 124, 0.4);
-      color: #e2e2e2;
-      border-radius: 5px;
-      :hover {
-        cursor: pointer;
       }
     }
   }
