@@ -30,8 +30,8 @@ type SecondaryButtonProps = {
 }
 
 export const SecondaryButton = styled.button<SecondaryButtonProps>`
-  width: 100px;
-  height: 36px;
+  width: ${({ width }) => (width ? `${width}px` : '100px')};
+  height: ${({ height }) => (height ? `${height}px` : '36px')};
   font-size: 12px;
   background-color: rgba(255, 255, 255, 0.13);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);

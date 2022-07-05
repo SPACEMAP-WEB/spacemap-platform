@@ -1,28 +1,26 @@
 import React, { ChangeEvent } from 'react'
 import styled from 'styled-components'
+import { SecondaryButton } from './button/Button'
 
 type SearchProps = {
-  handleSearch: React.MouseEventHandler<HTMLButtonElement>
+  handleSearch: () => void
   searchValue: string
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>
+  handleValueChange: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-const Search = ({ handleSearch, searchValue, setSearchValue }: SearchProps) => {
-  const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value)
-  }
+const Search = ({ handleSearch, searchValue, handleValueChange }: SearchProps) => {
   return (
     <SearchWrapper>
       <input
         type="text"
         className="search-input"
         value={searchValue}
-        onChange={handleValueChange}
+        onChange={(e) => handleValueChange(e)}
         placeholder="Search Sat. ID or Sat. Name"
       />
-      <button className="search-button" onClick={handleSearch}>
+      <SecondaryButton width={80} height={30} className="search-button" onClick={handleSearch}>
         Search
-      </button>
+      </SecondaryButton>
     </SearchWrapper>
   )
 }

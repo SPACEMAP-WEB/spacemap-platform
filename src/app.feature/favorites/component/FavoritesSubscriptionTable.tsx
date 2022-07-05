@@ -25,7 +25,7 @@ const borderStyle = {
   border: '1px solid gray',
 }
 
-const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
+const FavoritesSubscriptionTable = ({ inputValue }: { inputValue: string }) => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const queryClient = useQueryClient()
   const [customPageSize, setCustomPageSize] = useState(size)
@@ -213,7 +213,7 @@ const ConjunctionsFavoriteTable = ({ inputValue }: { inputValue: string }) => {
   )
 }
 
-export default ConjunctionsFavoriteTable
+export default FavoritesSubscriptionTable
 
 const StyledWrapper = styled.div`
   margin-top: 10px;

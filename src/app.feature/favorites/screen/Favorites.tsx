@@ -1,7 +1,7 @@
 import FilterSelect from '@app.components/FilterSelect'
 import Search from '@app.components/Search'
 import { slideIn, slideOut } from '@app.feature/conjunctions/module/keyFrames'
-import { PPDBSearchParamsType, SortType } from '@app.feature/conjunctions/types/conjunctions'
+import { PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
@@ -9,8 +9,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
-import ConjunctionsFavorite from './ConjunctionsFavorite'
+import FavoriteSubscription from '../component/FavoritesSubscription'
 import FavoritesTable from '../component/FavoritesTable'
+import { MainTitle, SubTitle } from '@app.components/title/Title'
+import WarningModal from '@app.components/modal/WarningModal'
+import useFavoritesEventHandler from '../hooks/useFavoritesEventHandler'
 
 const filterOptions: FilterSelectType[] = [
   {
@@ -32,43 +35,16 @@ const Favorites = ({ cesiumModule }) => {
     page: 0,
   })
   const { login } = useSelector((state: RootState) => state.login)
-  const [conjunctionsVisible, setConjunctionsVisible] = useState(false)
-  const [searchValue, setSearchValue] = useState<string>('')
   const [close, setClose] = useState(false)
   const [favoriteData, setFavoriteData] = useState<FilterSelectType[]>([])
-  const { isVisible: isConjunctionsClicked } = useModal('FAVORITES')
-
-  const handleSearch = async () => {
-    setQueryParams({
-      ...queryParams,
-      page: 0,
-      satellite: searchValue,
-    })
-  }
-
-  const handleFilterChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setQueryParams({
-      ...queryParams,
-      sort: e.target.value as SortType,
-    })
-  }
-
-  const handleFavoriteIdChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = e.target.value
-    delete queryParams.satellite
-    setQueryParams({
-      ...queryParams,
-      ...(id !== 'ALL' ? { satellite: e.target.value } : {}),
-    })
-  }
-
-  const conjunctionsUnmount = () => {
-    !isConjunctionsClicked && setConjunctionsVisible(false)
-  }
-
-  useEffect(() => {
-    isConjunctionsClicked && setConjunctionsVisible(true)
-  }, [isConjunctionsClicked])
+  const { isVisible, handleCloseModal } = useModal('FAVORITES')
+  const {
+    searchValue,
+    handleFavoriteSearch,
+    handleSearchValueChange,
+    handleSortFilterChange,
+    handleFavoriteIdChange,
+  } = useFavoritesEventHandler({ queryParams, setQueryParams })
 
   useEffect(() => {
     if (!conjunctionsRef.current || !favoriteConjunctionsRef.current) return
@@ -79,27 +55,30 @@ const Favorites = ({ cesiumModule }) => {
 
   return (
     <>
-      {conjunctionsVisible && (
-        <ConjunctionsWrapper
-          onAnimationEnd={conjunctionsUnmount}
-          isConjunctionsClicked={isConjunctionsClicked}
-        >
+      {!login && isVisible && (
+        <WarningModal
+          handleRequestModalCancel={handleCloseModal}
+          message={'Login first to use our service'}
+        />
+      )}
+      {login && isVisible && (
+        <FavoritesWrapper isConjunctionsClicked={isVisible}>
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
-          <section className="conjunctions-wrapper" ref={conjunctionsRef}>
-            <h1 className="title conjunctions">Favorites</h1>
+          <section className="favorites-ppdb-container" ref={conjunctionsRef}>
+            <MainTitle>Favorites</MainTitle>
             <div className="header-group">
               <Search
-                handleSearch={handleSearch}
+                handleSearch={handleFavoriteSearch}
                 searchValue={searchValue}
-                setSearchValue={setSearchValue}
+                handleValueChange={handleSearchValueChange}
               />
-              <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
+              <FilterSelect filterOptions={filterOptions} onChange={handleSortFilterChange} />
             </div>
-              <div className="favorite-filter">
-                <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
-              </div>
+            <div className="favorite-filter">
+              <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+            </div>
             <FavoritesTable
               setFavoriteData={setFavoriteData}
               queryParams={queryParams}
@@ -108,13 +87,14 @@ const Favorites = ({ cesiumModule }) => {
               size={size}
             />
           </section>
+
           <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
-            <h1 className="title bookmark">Favorites</h1>
+            <SubTitle>Subscribe New Satellites!</SubTitle>
             <div className="bookmark-table-wrapper">
-              <ConjunctionsFavorite login={login} />
+              <FavoriteSubscription login={login} />
             </div>
           </section>
-        </ConjunctionsWrapper>
+        </FavoritesWrapper>
       )}
     </>
   )
@@ -126,7 +106,7 @@ type TConjunctions = {
   isConjunctionsClicked: boolean
 }
 
-const ConjunctionsWrapper = styled.div<TConjunctions>`
+const FavoritesWrapper = styled.div<TConjunctions>`
   width: 500px;
   padding: 1rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
@@ -142,10 +122,8 @@ const ConjunctionsWrapper = styled.div<TConjunctions>`
   justify-content: center;
   gap: 1rem;
   animation: ${(props) => (props.isConjunctionsClicked ? slideIn : slideOut)} 1s;
-  .title {
-    color: white;
-    font-size: 20px;
-    margin-bottom: 15px;
+  .favorites-ppdb-container {
+    margin-bottom: 20px;
   }
   .bookmark-wrapper {
     width: 100%;
