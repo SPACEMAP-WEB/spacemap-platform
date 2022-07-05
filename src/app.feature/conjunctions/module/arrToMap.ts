@@ -1,4 +1,5 @@
-import { FavoriteColumnType } from '@app.feature/favorite/types/favorite'
+import { FavoriteColumnType } from '@app.feature/favorites/types/favorite'
+
 
 export const arrToMap = (arr: FavoriteColumnType[]): Map<string, FavoriteColumnType> => {
   return arr.reduce((map, obj) => {

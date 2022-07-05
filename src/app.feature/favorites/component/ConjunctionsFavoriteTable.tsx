@@ -4,15 +4,11 @@ import { Table } from '@app.components/Table'
 import {
   favoriteDataRefactor,
   favoriteFindDataRefactor,
-} from '@app.feature/favorite/module/favoriteDataRefactor'
+} from '@app.feature/favorites/module/favoriteDataRefactor'
 import {
   useDeleteMutationFavorite,
   usePostMutationFavorite,
-} from '@app.feature/favorite/query/useMutationFavorite'
-import {
-  useQueryFavorite,
-  useQuerySearchFavorite,
-} from '@app.feature/favorite/query/useQueryFavorite'
+} from '@app.feature/favorites/query/useMutationFavorite'
 import { API_FAVORITE, API_FAVORITE_CONJUNCTIONS } from '@app.modules/keyFactory'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useState } from 'react'
@@ -22,6 +18,7 @@ import styled from 'styled-components'
 import Pagination from '../../../app.components/Pagination'
 import useFavoriteTableData from '../hooks/useFavoriteTableData'
 import { updateBookmarkData } from '../module/bookmarkDataCompare'
+import { useQueryFavorite, useQuerySearchFavorite } from '../query/useQueryFavorites'
 import { FavoriteColumnType, FavoriteDataType, FavoriteFindDataType } from '../types/favorite'
 
 const borderStyle = {

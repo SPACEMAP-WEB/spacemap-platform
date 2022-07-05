@@ -1,4 +1,5 @@
-import { FavoriteColumnType } from '@app.feature/favorite/types/favorite'
+
+import { FavoriteColumnType } from '@app.feature/favorites/types/favorite'
 import { arrToMap } from './arrToMap'
 
 type TCompare = {

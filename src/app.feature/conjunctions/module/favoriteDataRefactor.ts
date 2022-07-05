@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
-import {
-  FavoriteColumnType,
-  FavoriteDataType,
-  FavoriteFindDataType,
-} from '@app.feature/favorite/types/favorite'
+
+import { FavoriteColumnType, FavoriteDataType, FavoriteFindDataType } from '@app.feature/favorites/types/favorite'
+
 
 export const favoriteDataRefactor = (data: FavoriteDataType): FavoriteColumnType[] => {
   if (!Object.keys(data).length) return []

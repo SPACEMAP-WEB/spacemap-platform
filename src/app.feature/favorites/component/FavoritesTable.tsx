@@ -1,8 +1,8 @@
 import { Table } from '@app.components/Table'
-import { ppdbDataRefactor } from '@app.feature/favorites/module/ppdbDataRefactor'
-import { useQueryGetPPDB } from '@app.feature/favorites/query/useQueryPPDB'
-import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/favorites/types/conjunctions'
-import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
+import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
+import { useInstance } from '@app.feature/conjunctions/module/useInstance'
+import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
+import { useQueryFavorite, useQueryGetFavoritePPDB } from '@app.feature/favorites/query/useQueryFavorites'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
@@ -10,15 +10,16 @@ import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeH
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
 import styled from 'styled-components'
-import { useInstance } from '../module/useInstance'
-import { tableWidthStyle } from '../style/tableStyle'
 import Pagination from '../../../app.components/Pagination'
+import { tableWidthStyle } from '../style/tableStyle'
 import { COLUMNS } from './TableColumns'
+
+type NewType = PPDBSearchParamsType
 
 type TableProps = {
   setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
-  setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
+  setQueryParams: React.Dispatch<React.SetStateAction<NewType>>
   cesiumModule
   size: number
 }
@@ -41,12 +42,15 @@ const ConjunctionsTable = ({
     setQueryParams({ ...queryParams, limit: size })
   }, 800)
 
-  const { data: fetchedPPDBData, isLoading } = useQueryGetPPDB({
+  const { data: fetchedPPDBData, isLoading } = useQueryGetFavoritePPDB({
     query: queryParams,
     isConjunctionsClicked,
   })
 
+  console.log(fetchedPPDBData)
+
   const { data: queryFavorite, isSuccess } = useQueryFavorite('')
+  console.log(queryFavorite)
 
   const columns = useMemo(
     () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
