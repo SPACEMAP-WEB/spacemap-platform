@@ -13,7 +13,7 @@ export const viewerSlice = createSlice({
   name: 'viewer',
   initialState,
   reducers: {
-    setViewer: (state, { payload: {} }) => {
+    setViewer: (state) => {
       Cesium.Ion.defaultAccessToken = state.accessToken
 
       state.viewer = new Cesium.Viewer('cesiumContainer', {
@@ -63,12 +63,12 @@ export const viewerSlice = createSlice({
       state.scene.globe.enableLighting = true
       state.czmlDataSource = new Cesium.CzmlDataSource()
 
-      const initialTimeISOString = initialTime.toISOString()
-      const [tles, rsoParams] = await this.updateTlesAndRsos(initialTime)
-      if (duration === undefined) {
-        duration = 172800
-        intervalUnitTime = 600
-      }
+      // const initialTimeISOString = initialTime.toISOString()
+      // const [tles, rsoParams] = await this.updateTlesAndRsos(initialTime)
+      // if (duration === undefined) {
+      //   duration = 172800
+      //   intervalUnitTime = 600
+      // }
     },
   },
 })
