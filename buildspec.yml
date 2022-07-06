@@ -59,6 +59,7 @@ artifacts:
     - '.ebextensions/**/*'
     - '.npmrc'
     - 'Procfile'
+    - '.env.config.json'
     #- 'node_modules/**/*'
   #name: $(date +%Y-%m-%d)
   #discard-paths: yes
