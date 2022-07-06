@@ -37,7 +37,7 @@ phases:
       # - command
   build:
     commands:
-      - npm run build:dev
+      - npm run build
       # - command
   post_build:
     commands:

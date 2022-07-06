@@ -1,20 +1,29 @@
 import PageMain from './main'
-import dynamic from 'next/dynamic'
 import styled from 'styled-components'
-// console.log('called?')
 import CesiumModule from '@app.modules/cesium/cesiumModule'
+import { useAppDispatch } from 'src/app.store/config/configureStore'
+import { useEffect } from 'react'
+import { setViewer } from 'src/app.store/cesium/store.cesium'
+import { drawRsos } from 'src/app.store/cesium/cesiumReducer'
+import moment from 'moment'
 const cesiumModule = new CesiumModule()
-const CesiumComponent = dynamic(() => import('@app.components/Cesium'), {
-  ssr: false,
-})
 
-const AppIndex = () => (
-  <>
-    <PageMain cesiumModule={cesiumModule} />
-    <CesiumComponent cesiumModule={cesiumModule} />
-    <StyledWrapper id="cesiumContainer"></StyledWrapper>
-  </>
-)
+const AppIndex = () => {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(setViewer())
+    const today = moment()
+    dispatch(drawRsos({ initialTime: today }))
+  }, [])
+
+  return (
+    <>
+      <PageMain cesiumModule={cesiumModule} />
+      <StyledWrapper id="cesiumContainer"></StyledWrapper>
+    </>
+  )
+}
 
 const StyledWrapper = styled.div`
   height: 100vh;
