@@ -4,6 +4,8 @@ import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useAppDispatch } from 'src/app.store/config/configureStore'
 import { useEffect } from 'react'
 import { setViewer } from 'src/app.store/cesium/store.cesium'
+import { drawRsos } from 'src/app.store/cesium/cesiumReducer'
+import moment from 'moment'
 const cesiumModule = new CesiumModule()
 
 const AppIndex = () => {
@@ -11,6 +13,8 @@ const AppIndex = () => {
 
   useEffect(() => {
     dispatch(setViewer())
+    const today = moment()
+    dispatch(drawRsos({ initialTime: today }))
   }, [])
 
   return (
