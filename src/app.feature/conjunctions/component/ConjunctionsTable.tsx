@@ -8,7 +8,6 @@ import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeH
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
 import styled from 'styled-components'
-import { useInstance } from '../module/useInstance'
 import { tableWidthStyle } from '../style/tableStyle'
 import Pagination from '../../../app.components/Pagination'
 import { COLUMNS } from './TableColumns'
@@ -71,10 +70,7 @@ const ConjunctionsTable = ({
       manualPagination: true,
       pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
-    usePagination,
-    (hooks) => {
-      hooks.useInstance.push(useInstance)
-    }
+    usePagination
   )
 
   useEffect(() => {

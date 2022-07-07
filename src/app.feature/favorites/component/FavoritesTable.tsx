@@ -1,6 +1,5 @@
 import { Table } from '@app.components/Table'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
-import { useInstance } from '@app.feature/conjunctions/module/useInstance'
 import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 import { useQueryFavorite, useQueryGetFavoritePPDB } from '@app.feature/favorites/query/useQueryFavorites'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
@@ -78,10 +77,7 @@ const ConjunctionsTable = ({
       manualPagination: true,
       pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
-    usePagination,
-    (hooks) => {
-      hooks.useInstance.push(useInstance)
-    }
+    usePagination
   )
 
   const requestFavoriteData = async () => {

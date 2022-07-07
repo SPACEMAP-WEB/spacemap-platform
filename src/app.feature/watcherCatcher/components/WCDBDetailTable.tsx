@@ -3,7 +3,6 @@ import CesiumModule from '@app.modules/cesium/cesiumModule'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
 import styled from 'styled-components'
-import { useInstance } from '../module/useInstance'
 import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
 import { useQueryGetWCDBDetail } from '../query/useQueryWCDB'
 import { WCDBDataType } from '../types/watcherCatcher'
@@ -65,9 +64,6 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
     {
       columns,
       data,
-    },
-    (hooks) => {
-      hooks.useInstance.push(useInstance)
     }
   )
 

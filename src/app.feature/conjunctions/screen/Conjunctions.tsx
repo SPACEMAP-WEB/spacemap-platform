@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import ConjunctionsTable from '../component/ConjunctionsTable'
 import useConjunctionsEventHandler from '../hooks/useConjunctionsEventHandler'
-import { slideIn, slideOut } from '../module/keyFrames'
+import { slideIn, slideOut } from '../../../app.styled/keyFrames'
 
 const filterOptions: FilterSelectType[] = [
   {
