@@ -1,4 +1,5 @@
 import { Table } from '@app.components/Table'
+import { slideIn, slideOut } from '@app.feature/conjunctions/module/keyFrames'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useModal } from '@app.modules/hooks/useModal'
 import React, { useEffect, useRef, useState } from 'react'
@@ -21,7 +22,7 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
   const { columns, data } = useWCDBTableData(WCDBData)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const tableRef = useRef<HTMLTableElement>(null)
-  const { isVisible: isLaunchConjunctionsClicked } = useModal('WATCHERCATCHER')
+  const { isVisible: isWatcherCatcherClicked } = useModal('WATCHERCATCHER')
   const { mutate } = useMutationDeleteWCDB()
 
   const handleDetailClick = async (id: string) => {
@@ -89,15 +90,15 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
     if (!tableContainerRef || !tableContainerRef.current) return
     if (!tableRef || !tableRef.current) return
 
-    tableContainerRef.current.style.visibility = isLaunchConjunctionsClicked ? 'visible' : 'hidden'
+    tableContainerRef.current.style.visibility = isWatcherCatcherClicked ? 'visible' : 'hidden'
     tableContainerRef.current.style.transform = `translateX(${
-      isLaunchConjunctionsClicked ? '0' : '40rem'
+      isWatcherCatcherClicked ? '0' : '40rem'
     })`
   })
 
   return (
     <>
-      <WCDBTableWrapper ref={tableContainerRef}>
+      <WCDBTableWrapper isVisible={isWatcherCatcherClicked} ref={tableContainerRef}>
         {!isDetailClicked ? (
           <>
             <div className="watcher-catcher-header">
@@ -146,7 +147,11 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
 
 export default WCDBTable
 
-const WCDBTableWrapper = styled.div`
+type WCDBWrapperProps = {
+  isVisible: boolean
+}
+
+const WCDBTableWrapper = styled.div<WCDBWrapperProps>`
   width: 500px;
   padding: 1.5rem;
   background-color: rgba(84, 84, 84, 0.4);
@@ -161,6 +166,7 @@ const WCDBTableWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  animation: ${(props) => (props.isVisible ? slideIn : slideOut)} 1s;
   .watcher-catcher-header {
     width: 100%;
     display: flex;

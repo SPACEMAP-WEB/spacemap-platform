@@ -38,7 +38,7 @@ export default FavoritesSubscription
 const StyledWrapper = styled.div`
   text-align: center;
   .favorite-form {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     width: 300px;
     display: flex;
     gap: 1rem;

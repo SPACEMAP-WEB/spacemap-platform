@@ -1,12 +1,13 @@
 import FilterSelect from '@app.components/FilterSelect'
 import Search from '@app.components/Search'
-import { PPDBSearchParamsType, SortType } from '@app.feature/conjunctions/types/conjunctions'
+import { PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import ConjunctionsTable from '../component/ConjunctionsTable'
+import useConjunctionsEventHandler from '../hooks/useConjunctionsEventHandler'
 import { slideIn, slideOut } from '../module/keyFrames'
 
 const filterOptions: FilterSelectType[] = [
@@ -23,57 +24,25 @@ const filterOptions: FilterSelectType[] = [
 const Conjunctions = ({ cesiumModule }) => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
-  const favoriteConjunctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: size,
     page: 0,
   })
-  const [conjunctionsVisible, setConjunctionsVisible] = useState(false)
-  const [searchValue, setSearchValue] = useState<string>('')
   const [close, setClose] = useState(false)
   const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
-
-  const handleSearchValueChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value)
-  }
-
-  const handleSearch = async () => {
-    setQueryParams({
-      ...queryParams,
-      page: 0,
-      satellite: searchValue,
-    })
-  }
-
-  const handleFilterChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setQueryParams({
-      ...queryParams,
-      sort: e.target.value as SortType,
-    })
-  }
-
-  const conjunctionsUnmount = () => {
-    !isConjunctionsClicked && setConjunctionsVisible(false)
-  }
+  const { searchValue, handleFavoriteSearch, handleSearchValueChange, handleSortFilterChange } =
+    useConjunctionsEventHandler({ queryParams, setQueryParams })
 
   useEffect(() => {
-    isConjunctionsClicked && setConjunctionsVisible(true)
-  }, [isConjunctionsClicked])
-
-  useEffect(() => {
-    if (!conjunctionsRef.current || !favoriteConjunctionsRef.current) return
+    if (!conjunctionsRef.current) return
 
     conjunctionsRef.current.style.display = close ? 'none' : 'block'
-    favoriteConjunctionsRef.current.style.display = close ? 'none' : 'block'
   }, [close, conjunctionsRef.current])
 
   return (
     <>
-      {conjunctionsVisible && (
-        <ConjunctionsWrapper
-          onAnimationEnd={conjunctionsUnmount}
-          isConjunctionsClicked={isConjunctionsClicked}
-        >
+      {isConjunctionsClicked && (
+        <ConjunctionsWrapper isConjunctionsClicked={isConjunctionsClicked}>
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
@@ -81,11 +50,11 @@ const Conjunctions = ({ cesiumModule }) => {
             <h1 className="title conjunctions">Conjunctions</h1>
             <div className="header-group">
               <Search
-                handleSearch={handleSearch}
+                handleSearch={handleFavoriteSearch}
                 searchValue={searchValue}
                 handleValueChange={handleSearchValueChange}
               />
-              <FilterSelect filterOptions={filterOptions} onChange={handleFilterChange} />
+              <FilterSelect filterOptions={filterOptions} onChange={handleSortFilterChange} />
             </div>
             <ConjunctionsTable
               queryParams={queryParams}
@@ -102,13 +71,13 @@ const Conjunctions = ({ cesiumModule }) => {
 
 export default Conjunctions
 
-type TConjunctions = {
+type ConjunctionsProps = {
   isConjunctionsClicked: boolean
 }
 
-const ConjunctionsWrapper = styled.div<TConjunctions>`
+const ConjunctionsWrapper = styled.div<ConjunctionsProps>`
   width: 500px;
-  padding: 1rem 2rem;
+  padding: 1.5rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
   position: fixed;
@@ -150,7 +119,7 @@ const ConjunctionsWrapper = styled.div<TConjunctions>`
   }
   .header-group {
     display: flex;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 
   .favorite-filter {
