@@ -108,7 +108,7 @@ type TConjunctions = {
 
 const FavoritesWrapper = styled.div<TConjunctions>`
   width: 500px;
-  padding: 1rem 2rem;
+  padding: 1.5rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
   position: fixed;
@@ -148,7 +148,7 @@ const FavoritesWrapper = styled.div<TConjunctions>`
   }
   .header-group {
     display: flex;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 
   .favorite-filter {

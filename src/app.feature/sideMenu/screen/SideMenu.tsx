@@ -60,4 +60,7 @@ const SideMenuWrapper = styled.div`
   align-items: center;
   gap: 1rem;
   flex-direction: column;
+  @media screen and (min-width: 1920px) {
+    width: 3.8rem;
+  }
 `

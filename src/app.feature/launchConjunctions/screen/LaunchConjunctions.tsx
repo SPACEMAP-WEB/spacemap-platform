@@ -70,7 +70,9 @@ const LaunchConjunctions = ({ cesiumModule }) => {
       )}
       {isLoading && <div>loading...</div>}
       {isSuccess && (
-        <LaunchConjunctionsWrapper>{isVisible && renderModal()}</LaunchConjunctionsWrapper>
+        <LaunchConjunctionsWrapper isVisible={isVisible}>
+          {isVisible && renderModal()}
+        </LaunchConjunctionsWrapper>
       )}
       {isSuccessModalOpen && <SuccessModal setIsSuccessModalOpen={setIsSuccessModalOpen} />}
     </>
@@ -79,4 +81,8 @@ const LaunchConjunctions = ({ cesiumModule }) => {
 
 export default LaunchConjunctions
 
-const LaunchConjunctionsWrapper = styled.div``
+type LaunchConjunctionsProps = {
+  isVisible: boolean
+}
+
+const LaunchConjunctionsWrapper = styled.div<LaunchConjunctionsProps>``
