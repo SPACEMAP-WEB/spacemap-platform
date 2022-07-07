@@ -6,7 +6,7 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import { LPDBResponseType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMutationPostLPDB } from '../query/useMutationLPDB'
-import { isCalculatableDate } from '../module/dateHandle'
+import { isCalculatableDate } from '@app.modules/util/calculatableDateHandler'
 import WarningModal from '@app.components/modal/WarningModal'
 import { PrimaryButton } from '@app.components/button/Button'
 

@@ -1,6 +1,6 @@
 import FilterSelect from '@app.components/FilterSelect'
 import Search from '@app.components/Search'
-import { slideIn, slideOut } from '@app.feature/conjunctions/module/keyFrames'
+import { slideIn, slideOut } from 'src/app.styled/keyFrames'
 import { PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'

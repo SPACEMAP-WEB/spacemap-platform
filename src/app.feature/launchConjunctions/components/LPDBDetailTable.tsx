@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
 import styled from 'styled-components'
 import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
-import { useInstance } from '../module/useInstance'
 import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
 import { LPDBDataType } from '../types/launchConjunctions'
 
@@ -72,9 +71,6 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
     {
       columns,
       data,
-    },
-    (hooks) => {
-      hooks.useInstance.push(useInstance)
     }
   )
 

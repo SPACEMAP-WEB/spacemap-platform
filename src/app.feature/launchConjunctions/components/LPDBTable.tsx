@@ -1,5 +1,5 @@
 import { Table } from '@app.components/Table'
-import { slideIn, slideOut } from '@app.feature/conjunctions/module/keyFrames'
+import { slideIn, slideOut } from 'src/app.styled/keyFrames'
 import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useModal } from '@app.modules/hooks/useModal'
