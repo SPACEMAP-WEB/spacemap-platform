@@ -1,8 +1,12 @@
-import { drawCzmlOfConjuctions, drawCzmlOfRsos } from '@app.modules/cesium/drawCzml'
+import {
+  drawCzmlOfConjuctions,
+  drawCzmlOfLaunchConjuctions,
+  drawCzmlOfRsos,
+} from '@app.modules/cesium/drawCzml'
 import { createSlice, current } from '@reduxjs/toolkit'
 import * as Cesium from 'cesium'
 import { clean, updateCZML } from './cesiumModules'
-import { drawConjuctions, drawRsos } from './cesiumReducer'
+import { drawConjuctions, drawLcaConjuctions, drawRsos } from './cesiumReducer'
 import { TStoreCesium } from './type'
 
 const initialState: TStoreCesium = {
@@ -102,6 +106,18 @@ export const viewerSlice = createSlice({
           callback: drawCzmlOfConjuctions,
           ...currentState,
           ...payload,
+        })
+        return { ...currentState, tles, rsoParams }
+      })
+      .addCase(drawLcaConjuctions.fulfilled, (state, { payload }) => {
+        const currentState = current(state)
+        const { tles, rsoParams } = payload
+        clean({ czmlDataSource: currentState.czmlDataSource })
+        updateCZML({
+          callback: drawCzmlOfLaunchConjuctions,
+          ...currentState,
+          ...payload,
+          initialTimeISOString: payload.predictionEpochTime,
         })
         return { ...currentState, tles, rsoParams }
       })

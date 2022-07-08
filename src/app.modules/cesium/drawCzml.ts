@@ -10,7 +10,6 @@ export const drawCzmlOfRsos = (ds, rest) => {
 }
 
 export const drawCzmlOfConjuctions = async (ds, rest) => {
-  console.log('czml')
   const { viewer, czmlDataSource, primarySatColor, secondarySatColor, pid, sid, from, tca, to } =
     rest
   viewer.dataSources.add(ds)
@@ -32,4 +31,25 @@ export const drawCzmlOfConjuctions = async (ds, rest) => {
   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
   viewer.timeline.updateFromClock()
   viewer.flyTo(newDs.entities.getById(`${pid}/${sid}`))
+}
+
+export const drawCzmlOfLaunchConjuctions = async (ds, rest) => {
+  const { viewer, czmlDataSource, initialTime, trajectoryCzml, launchEpochTime, lpdb } = rest
+  viewer.dataSources.removeAll()
+  const clockViewModel = viewer.clockViewModel
+  clockViewModel.startTime = initialTime.toISOString()
+  clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
+  await czmlDataSource.process(trajectoryCzml)
+  viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
+  viewer.timeline.updateFromClock()
+  lpdb.forEach(async (currRow) => {
+    const pairCzml = makePair(
+      currRow.primary,
+      currRow.secondary,
+      currRow.start,
+      currRow.tca,
+      currRow.end
+    )
+    await czmlDataSource.process(pairCzml)
+  })
 }

@@ -43,7 +43,7 @@ export const turnOffPathNLabel = ({ prevPid, prevSid, czmlDataSource }) => {
   secondarySat.label.show = false
 }
 
-export const clean = ({ prevPid, prevSid, czmlDataSource }) => {
+export const clean = ({ prevPid = null, prevSid = null, czmlDataSource }) => {
   if (prevPid) {
     turnOffPathNLabel({ prevPid, prevSid, czmlDataSource })
     czmlDataSource.entities.removeById(`${prevPid}/${prevSid}`)
@@ -146,7 +146,7 @@ const createTrajectoryCzml = (startTime, endTime, cartesian) => {
   return trajectoryCzml
 }
 
-export const trajectory2czml = (trajcetory, predictionEpochTime) => {
+export const trajectory2czml = ({ trajcetory, predictionEpochTime }) => {
   let splitLines = trajcetory.split('\n')
   let startTime: Date | string = new Date(predictionEpochTime)
   let endTime
@@ -177,7 +177,7 @@ export const trajectory2czml = (trajcetory, predictionEpochTime) => {
 
   const trajectoryCzml = createTrajectoryCzml(startTime, endTime, cartesian)
 
-  return [trajectoryCzml, endInterval]
+  return { trajectoryCzml, endInterval }
 }
 
 export const updateCZML = ({

@@ -166,11 +166,9 @@ class CesiumModule {
           const clockViewModel = viewer.clockViewModel
           clockViewModel.startTime = initialTime.toISOString()
           clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-          // console.log('!!!!')
           czmlDataSource.process(trajcetoryCzml).then(function (ds) {
             viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
             viewer.timeline.updateFromClock()
-            // console.log('!!!')
             for (const currRow of lpdb) {
               const pairCzml = makePair(
                 currRow.primary,
