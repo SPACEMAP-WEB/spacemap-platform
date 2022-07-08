@@ -45,8 +45,6 @@ export const drawConjuctions = createAsyncThunk<any, TargDrawConjuctions>(
 export const drawLcaConjuctions = createAsyncThunk<any, any>(
   'DRAW_LCA_CONJUCTIONS',
   async ({ predictionEpochTime, trajcetory, launchEpochTime, trajcetoryLength = 3600, lpdb }) => {
-    console.log('tr')
-    console.log(trajcetory)
     const initialTime = moment(predictionEpochTime).utc()
     const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
     const { trajectoryCzml, endInterval } = trajectory2czml({ trajcetory, predictionEpochTime })
@@ -66,5 +64,15 @@ export const drawLcaConjuctions = createAsyncThunk<any, any>(
       trajectoryCzml,
       endInterval,
     }
+  }
+)
+
+export const drawWatchaCapture = createAsyncThunk<any, any>(
+  'DRAW_WATCHA_CAPTURE',
+  async ({ latitude, longitude, predictionEpochTime, epochTime, wcdb }) => {
+    const initialTime = moment(predictionEpochTime).utc()
+    const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
+
+    return {}
   }
 )

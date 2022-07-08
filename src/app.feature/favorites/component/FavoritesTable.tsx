@@ -2,13 +2,17 @@ import { Table } from '@app.components/Table'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
 import { useInstance } from '@app.feature/conjunctions/module/useInstance'
 import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
-import { useQueryFavorite, useQueryGetFavoritePPDB } from '@app.feature/favorites/query/useQueryFavorites'
+import {
+  useQueryFavorite,
+  useQueryGetFavoritePPDB,
+} from '@app.feature/favorites/query/useQueryFavorites'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { useModal } from '@app.modules/hooks/useModal'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
+import { useAppDispatch } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import Pagination from '../../../app.components/Pagination'
 import { tableWidthStyle } from '../style/tableStyle'
@@ -20,17 +24,11 @@ type TableProps = {
   setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<NewType>>
-  cesiumModule
   size: number
 }
 
-const ConjunctionsTable = ({
-  setFavoriteData,
-  queryParams,
-  setQueryParams,
-  cesiumModule,
-  size,
-}: TableProps) => {
+const ConjunctionsTable = ({ setFavoriteData, queryParams, setQueryParams, size }: TableProps) => {
+  const dispatch = useAppDispatch()
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
   const { isVisible } = useModal('FAVORITES')
@@ -49,10 +47,7 @@ const ConjunctionsTable = ({
 
   const { data: queryFavorite, isSuccess } = useQueryFavorite('')
 
-  const columns = useMemo(
-    () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
-    [queryParams]
-  )
+  const columns = useMemo(() => COLUMNS({ queryParams, customPageSize, dispatch }), [queryParams])
   const data = useMemo(() => tableData, [tableData])
 
   const {
@@ -158,9 +153,18 @@ const ConjunctionsTable = ({
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          rowSpan={(cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 0 ? 2 : 1}
+                          rowSpan={
+                            (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                            index % 2 === 0
+                              ? 2
+                              : 1
+                          }
                           style={{
-                            display: (cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 1 ? 'none' : null,
+                            display:
+                              (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                              index % 2 === 1
+                                ? 'none'
+                                : null,
                           }}
                           {...cell.getCellProps()}
                         >
