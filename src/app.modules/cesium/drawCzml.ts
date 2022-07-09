@@ -35,7 +35,7 @@ export const drawCzmlOfConjuctions = async (ds, rest) => {
 
 export const drawCzmlOfLaunchConjuctions = async (ds, rest) => {
   const { viewer, czmlDataSource, initialTime, trajectoryCzml, launchEpochTime, lpdb } = rest
-  viewer.dataSources.removeAll()
+  viewer.dataSources.add(ds)
   const clockViewModel = viewer.clockViewModel
   clockViewModel.startTime = initialTime.toISOString()
   clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
@@ -43,6 +43,27 @@ export const drawCzmlOfLaunchConjuctions = async (ds, rest) => {
   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
   viewer.timeline.updateFromClock()
   lpdb.forEach(async (currRow) => {
+    const pairCzml = makePair(
+      currRow.primary,
+      currRow.secondary,
+      currRow.start,
+      currRow.tca,
+      currRow.end
+    )
+    await czmlDataSource.process(pairCzml)
+  })
+}
+
+export const drawCzmlOfWatchaCapture = async (ds, rest) => {
+  const { viewer, initialTime, siteCzml, siteConeCzml, czmlDataSource, epochTime, wcdb } = rest
+  viewer.dataSources.add(ds)
+  const clockViewModel = viewer.clockViewModel
+  clockViewModel.startTime = initialTime.toISOString()
+  clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
+  await czmlDataSource.process([siteCzml, siteConeCzml])
+  viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(epochTime)
+  viewer.timeline.updateFromClock()
+  wcdb.forEach(async (currRow) => {
     const pairCzml = makePair(
       currRow.primary,
       currRow.secondary,

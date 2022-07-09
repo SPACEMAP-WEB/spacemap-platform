@@ -2,6 +2,8 @@ import { Table } from '@app.components/Table'
 import CesiumModule from '@app.modules/cesium/cesiumModule'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
+import { drawWatchaCapture } from 'src/app.store/cesium/cesiumReducer'
+import { useAppDispatch } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import { useInstance } from '../module/useInstance'
 import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
@@ -15,6 +17,7 @@ type WCDBDetailProps = {
 }
 
 const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailProps) => {
+  const dispatch = useAppDispatch()
   const { data: WCDBDetailData } = useQueryGetWCDBDetail(WCDBId)
   const [tableData, setTableData] = useState<WCDBDataType[]>([] as WCDBDataType[])
 
@@ -22,12 +25,14 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
     if (!!WCDBDetailData) {
       setTableData(wcdbDataRefactor(WCDBDetailData?.wcdb))
       const newData = wcdbDataRefactor(WCDBDetailData.wcdb)
-      cesiumModule.drawWatcherCatcher(
-        WCDBDetailData.latitude,
-        WCDBDetailData.longitude,
-        WCDBDetailData.predictionEpochTime,
-        WCDBDetailData.epochTime,
-        newData
+      dispatch(
+        drawWatchaCapture({
+          latitude: WCDBDetailData.latitude,
+          longitude: WCDBDetailData.longitude,
+          predictionEpochTime: WCDBDetailData.predictionEpochTime,
+          epochTime: WCDBDetailData.epochTime,
+          wcdb: newData,
+        })
       )
     }
   }, [WCDBDetailData])

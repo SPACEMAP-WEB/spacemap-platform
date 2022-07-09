@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import moment from 'moment'
-import { trajectory2czml, updateTlesAndRsos } from './cesiumModules'
+import { site2czml, trajectory2czml, updateTlesAndRsos } from './cesiumModules'
 import { TargDrawConjuctions, TargDrawRsos, TdrawRsos } from './type'
 
 export const drawRsos = createAsyncThunk<TdrawRsos, TargDrawRsos>(
@@ -49,7 +49,6 @@ export const drawLcaConjuctions = createAsyncThunk<any, any>(
     const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
     const { trajectoryCzml, endInterval } = trajectory2czml({ trajcetory, predictionEpochTime })
     const worker = new Worker('/script/tle2czml.js')
-    console.log('yes')
     return {
       initialTime,
       predictionEpochTime,
@@ -72,7 +71,17 @@ export const drawWatchaCapture = createAsyncThunk<any, any>(
   async ({ latitude, longitude, predictionEpochTime, epochTime, wcdb }) => {
     const initialTime = moment(predictionEpochTime).utc()
     const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
-
-    return {}
+    const { siteCzml, siteConeCzml } = site2czml({ latitude, longitude, epochTime })
+    const worker = new Worker('/script/tle2czml.js')
+    return {
+      initialTime,
+      tles,
+      rsoParams,
+      siteCzml,
+      siteConeCzml,
+      wcdb,
+      worker,
+      epochTime,
+    }
   }
 )

@@ -182,6 +182,87 @@ export const trajectory2czml = ({ trajcetory, predictionEpochTime }) => {
   return { trajectoryCzml, endInterval }
 }
 
+const createSiteCzml = ({
+  epochTime,
+  x,
+  y,
+  z,
+  endMoment,
+  fixedAltitude,
+  magnitude,
+  cameraAngle,
+}) => {
+  const siteCzml = {
+    id: '0',
+    name: 'Site',
+    availability: `${epochTime}/${endMoment}`,
+    description: 'Site',
+    label: {
+      fillColor: {
+        rgba: [255, 255, 255, 255],
+      },
+      font: '12pt Arial',
+      horizontalOrigin: 'LEFT',
+      outlineColor: {
+        rgba: [24, 24, 24, 255],
+      },
+      outlineWidth: 2,
+      pixelOffset: {
+        cartesian2: [10, 10],
+      },
+      show: true,
+      style: 'FILL_AND_OUTLINE',
+      text: 'Site',
+      verticalOrigin: 'CENTER',
+    },
+    position: {
+      referenceFrame: 'FIXED',
+      epoch: `${epochTime}`,
+      cartesian: [x, y, z],
+    },
+    point: {
+      show: true,
+      color: {
+        rgba: [255, 255, 255, 255],
+      },
+      outlineColor: {
+        rgba: [0, 128, 255, 255],
+      },
+      outlineWidth: 4,
+      pixelSize: 8,
+    },
+  }
+  const siteConeCzml = {
+    id: 'cone',
+    name: 'SiteCone',
+    availability: `${epochTime}/${endMoment}`,
+    description: 'SiteCone',
+    position: {
+      referenceFrame: 'FIXED',
+      epoch: `${epochTime}`,
+      // cartesian: [37.55168063833871, 126.98829170545699],
+      cartesian: [
+        x + ((x / magnitude) * fixedAltitude) / 2,
+        y + ((y / magnitude) * fixedAltitude) / 2,
+        z + ((z / magnitude) * fixedAltitude) / 2,
+      ],
+    },
+    cylinder: {
+      length: fixedAltitude,
+      topRadius: Math.tan((cameraAngle * Math.PI) / 360) * fixedAltitude,
+      bottomRadius: 0.0,
+      material: {
+        solidColor: {
+          color: {
+            rgba: [240, 240, 24, 90],
+          },
+        },
+      },
+    },
+  }
+  return { siteCzml, siteConeCzml }
+}
+
 export const site2czml = ({ latitude, longitude, epochTime }) => {
   const position = Cesium.Cartesian3.fromDegrees(longitude, latitude)
   const { x, y, z } = position
@@ -189,6 +270,8 @@ export const site2czml = ({ latitude, longitude, epochTime }) => {
   const fixedAltitude = 1300000.0
   const magnitude = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2))
   const endMoment = moment(epochTime).add(1, 'hours').toISOString()
+
+  return createSiteCzml({ x, y, z, epochTime, cameraAngle, fixedAltitude, magnitude, endMoment })
 }
 
 export const updateCZML = ({
