@@ -275,7 +275,7 @@ export const site2czml = ({ latitude, longitude, epochTime }) => {
 }
 
 export const updateCZML = ({
-  initialTime,
+  initialTime = null,
   initialTimeISOString,
   duration,
   intervalUnitTime,

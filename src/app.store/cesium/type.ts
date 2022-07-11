@@ -1,14 +1,14 @@
+import { LPDBDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import * as Cesium from 'cesium'
 import moment from 'moment'
 
 export type TStoreCesium = {
-  viewer: any
+  viewer: Cesium.Viewer
   scene: Cesium.Scene
-  czmlDataSource: any
+  czmlDataSource: Cesium.CzmlDataSource
   accessToken: string
-  tles: any
-  rsoParams: any
-  satrecs: []
+  tles: Ttle
+  rsoParams: TRsoParams
   primarySatColor: Cesium.Color
   secondarySatColor: Cesium.Color
   apartColor: Cesium.Color
@@ -52,5 +52,20 @@ export type TargDrawConjuctions = {
 }
 
 export type TdrawConjuctions = TargDrawConjuctions & {
+  tles: Ttle
+  rsoParams: TRsoParams
+  worker: Worker
+}
+export type TargDrawLcaConjuctions = {
+  trajectory: string
+  predictionEpochTime: string
+  launchEpochTime: string
+  trajectoryLength: number
+  lpdb: LPDBDataType[]
+}
+
+export type TdrawLcaConjuctions = TargDrawLcaConjuctions & {
+  tles: Ttle
+  rsoParams: TRsoParams
   worker: Worker
 }
