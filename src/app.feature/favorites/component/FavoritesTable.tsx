@@ -7,6 +7,7 @@ import {
 } from '@app.feature/favorites/query/useQueryFavorites'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { useModal } from '@app.modules/hooks/useModal'
+import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -38,6 +39,8 @@ const ConjunctionsTable = ({ setFavoriteData, queryParams, setQueryParams, size 
     setPageSize(size)
     setQueryParams({ ...queryParams, limit: size })
   }, 800)
+
+  const { timeFormat } = useTimeFormatHandler()
 
   const { data: fetchedPPDBData, isLoading } = useQueryGetFavoritePPDB({
     query: queryParams,
@@ -96,7 +99,7 @@ const ConjunctionsTable = ({ setFavoriteData, queryParams, setQueryParams, size 
 
   useEffect(() => {
     if (fetchedPPDBData) {
-      const newData = ppdbDataRefactor(fetchedPPDBData.result)
+      const newData = ppdbDataRefactor(fetchedPPDBData.result, timeFormat)
       setTableData(newData)
     }
   }, [fetchedPPDBData])

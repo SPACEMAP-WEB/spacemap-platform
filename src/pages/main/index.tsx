@@ -14,7 +14,6 @@ const PageMain = () => {
   }, [])
 
   if (isLoading) return null
-
   return (
     <>
       <MainLayout />

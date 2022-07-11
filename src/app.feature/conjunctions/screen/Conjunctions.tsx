@@ -1,25 +1,14 @@
-import FilterSelect from '@app.components/FilterSelect'
 import Search from '@app.components/Search'
 import { PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
-import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import ConjunctionsTable from '../component/ConjunctionsTable'
 import useConjunctionsEventHandler from '../hooks/useConjunctionsEventHandler'
 import { slideIn, slideOut } from '../../../app.styled/keyFrames'
-
-const filterOptions: FilterSelectType[] = [
-  {
-    label: 'tca',
-    value: 'tcaTime',
-  },
-  {
-    label: 'dca',
-    value: 'dca',
-  },
-]
+import ConfigBox, { ConfigBoxProps } from '@app.components/ConfigBox'
+import { useQueryGetPPDB } from '../query/useQueryPPDB'
 
 const Conjunctions = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
@@ -30,8 +19,56 @@ const Conjunctions = () => {
   })
   const [close, setClose] = useState(false)
   const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
-  const { searchValue, handleFavoriteSearch, handleSearchValueChange, handleSortFilterChange } =
-    useConjunctionsEventHandler({ queryParams, setQueryParams })
+
+  const { data: fetchedPPDBData } = useQueryGetPPDB({
+    query: queryParams,
+    isConjunctionsClicked,
+  })
+
+  const {
+    searchValue,
+    handleFavoriteSearch,
+    handleSearchValueChange,
+    handleSortFilterChange,
+    handleTimeChange,
+  } = useConjunctionsEventHandler({ queryParams, setQueryParams })
+
+  const sortList: ConfigBoxProps[] = [
+    {
+      title: 'Time Format',
+      name: 'time',
+      handleChange: handleTimeChange,
+      itemValue: [
+        {
+          label: 'UTC',
+          value: 'UTC',
+        },
+        {
+          label: 'Local',
+          value: 'LOCAL',
+        },
+        {
+          label: 'Remaining',
+          value: 'REMAINING',
+        },
+      ],
+    },
+    {
+      title: 'Sort By',
+      name: 'sort',
+      handleChange: handleSortFilterChange,
+      itemValue: [
+        {
+          label: 'TCA',
+          value: 'tcaTime',
+        },
+        {
+          label: 'DCA',
+          value: 'dca',
+        },
+      ],
+    },
+  ]
 
   useEffect(() => {
     if (!conjunctionsRef.current) return
@@ -54,8 +91,17 @@ const Conjunctions = () => {
                 searchValue={searchValue}
                 handleValueChange={handleSearchValueChange}
               />
-              <FilterSelect filterOptions={filterOptions} onChange={handleSortFilterChange} />
             </div>
+            <ConfigBox sortList={sortList} />
+            {!!fetchedPPDBData && (
+              <ConjunctionsTable
+                fetchedTableData={fetchedPPDBData}
+                queryParams={queryParams}
+                setQueryParams={setQueryParams}
+                cesiumModule={cesiumModule}
+                size={size}
+              />
+            )}
             <ConjunctionsTable
               queryParams={queryParams}
               setQueryParams={setQueryParams}
