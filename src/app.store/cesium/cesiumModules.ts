@@ -148,8 +148,8 @@ const createTrajectoryCzml = (startTime, endTime, cartesian) => {
   return trajectoryCzml
 }
 
-export const trajectory2czml = ({ trajcetory, predictionEpochTime }) => {
-  let splitLines = trajcetory.split('\n')
+export const trajectory2czml = ({ trajectory, predictionEpochTime }) => {
+  let splitLines = trajectory.split('\n')
   let startTime: Date | string = new Date(predictionEpochTime)
   let endTime
   let endInterval

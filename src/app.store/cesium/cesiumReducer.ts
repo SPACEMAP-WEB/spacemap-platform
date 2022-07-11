@@ -44,15 +44,15 @@ export const drawConjuctions = createAsyncThunk<any, TargDrawConjuctions>(
 
 export const drawLcaConjuctions = createAsyncThunk<any, any>(
   'DRAW_LCA_CONJUCTIONS',
-  async ({ predictionEpochTime, trajcetory, launchEpochTime, trajcetoryLength = 3600, lpdb }) => {
+  async ({ predictionEpochTime, trajectory, launchEpochTime, trajcetoryLength = 3600, lpdb }) => {
     const initialTime = moment(predictionEpochTime).utc()
     const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
-    const { trajectoryCzml, endInterval } = trajectory2czml({ trajcetory, predictionEpochTime })
+    const { trajectoryCzml, endInterval } = trajectory2czml({ trajectory, predictionEpochTime })
     const worker = new Worker('/script/tle2czml.js')
     return {
       initialTime,
       predictionEpochTime,
-      trajcetory,
+      trajectory,
       launchEpochTime,
       intervalUnitTime: 600,
       duration: trajcetoryLength,

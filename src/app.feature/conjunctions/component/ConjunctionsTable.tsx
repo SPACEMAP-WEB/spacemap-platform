@@ -16,11 +16,10 @@ import { useAppDispatch } from 'src/app.store/config/configureStore'
 type TableProps = {
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
-  cesiumModule
   size: number
 }
 
-const ConjunctionsTable = ({ queryParams, setQueryParams, cesiumModule, size }: TableProps) => {
+const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
   const { isVisible } = useModal('CONJUNCTIONS')

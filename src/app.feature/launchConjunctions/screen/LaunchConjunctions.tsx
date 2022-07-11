@@ -9,7 +9,7 @@ import AssessmentModal from '../components/AssessmentModal'
 import LPDBTable from '../components/LPDBTable'
 import SuccessModal from '../components/SuccessModal'
 
-const LaunchConjunctions = ({ cesiumModule }) => {
+const LaunchConjunctions = () => {
   const { isVisible, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
   const {
     user: { email },
@@ -46,13 +46,7 @@ const LaunchConjunctions = ({ cesiumModule }) => {
       )
     } else if (LPDBData.data.length > 0 || isLPDBTableOpen) {
       refetchLPDBData()
-      return (
-        <LPDBTable
-          LPDBData={LPDBData.data}
-          handleNewLaunchClick={handleNewLaunchClick}
-          cesiumModule={cesiumModule}
-        />
-      )
+      return <LPDBTable LPDBData={LPDBData.data} handleNewLaunchClick={handleNewLaunchClick} />
     }
   }
 

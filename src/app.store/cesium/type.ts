@@ -3,9 +3,9 @@ import moment from 'moment'
 
 export type TStoreCesium = {
   viewer: any
-  scene: any
+  scene: Cesium.Scene
   czmlDataSource: any
-  accessToken: any
+  accessToken: string
   tles: any
   rsoParams: any
   satrecs: []

@@ -1,5 +1,4 @@
 import { Table } from '@app.components/Table'
-import CesiumModule from '@app.modules/cesium/cesiumModule'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
 import { drawWatchaCapture } from 'src/app.store/cesium/cesiumReducer'
@@ -12,10 +11,9 @@ import { WCDBDataType } from '../types/watcherCatcher'
 type WCDBDetailProps = {
   WCDBId: string
   handleBackButton: () => void
-  cesiumModule: CesiumModule
 }
 
-const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailProps) => {
+const WCDBDetailTable = ({ handleBackButton, WCDBId }: WCDBDetailProps) => {
   const dispatch = useAppDispatch()
   const { data: WCDBDetailData } = useQueryGetWCDBDetail(WCDBId)
   const [tableData, setTableData] = useState<WCDBDataType[]>([] as WCDBDataType[])
@@ -65,12 +63,10 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId, cesiumModule }: WCDBDetailP
     []
   )
 
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
-    {
-      columns,
-      data,
-    }
-  )
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
+    columns,
+    data,
+  })
 
   return (
     <>

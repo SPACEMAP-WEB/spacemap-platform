@@ -21,7 +21,7 @@ const filterOptions: FilterSelectType[] = [
   },
 ]
 
-const Conjunctions = ({ cesiumModule }) => {
+const Conjunctions = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
@@ -59,7 +59,6 @@ const Conjunctions = ({ cesiumModule }) => {
             <ConjunctionsTable
               queryParams={queryParams}
               setQueryParams={setQueryParams}
-              cesiumModule={cesiumModule}
               size={size}
             />
           </section>
