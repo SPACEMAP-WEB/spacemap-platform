@@ -83,7 +83,6 @@ const Favorites = ({ cesiumModule }) => {
               setFavoriteData={setFavoriteData}
               queryParams={queryParams}
               setQueryParams={setQueryParams}
-              cesiumModule={cesiumModule}
               size={size}
             />
           </section>
