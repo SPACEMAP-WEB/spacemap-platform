@@ -12,6 +12,7 @@ import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
+import { useAppDispatch } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import Pagination from '../../../app.components/Pagination'
 import { tableWidthStyle } from '../style/tableStyle'
@@ -23,17 +24,11 @@ type TableProps = {
   setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<NewType>>
-  cesiumModule
   size: number
 }
 
-const ConjunctionsTable = ({
-  setFavoriteData,
-  queryParams,
-  setQueryParams,
-  cesiumModule,
-  size,
-}: TableProps) => {
+const ConjunctionsTable = ({ setFavoriteData, queryParams, setQueryParams, size }: TableProps) => {
+  const dispatch = useAppDispatch()
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
   const { isVisible } = useModal('FAVORITES')
@@ -54,10 +49,7 @@ const ConjunctionsTable = ({
 
   const { data: queryFavorite, isSuccess } = useQueryFavorite('')
 
-  const columns = useMemo(
-    () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
-    [queryParams]
-  )
+  const columns = useMemo(() => COLUMNS({ queryParams, customPageSize, dispatch }), [queryParams])
   const data = useMemo(() => tableData, [tableData])
 
   const {

@@ -8,9 +8,8 @@ import ConjunctionsTable from '../component/ConjunctionsTable'
 import useConjunctionsEventHandler from '../hooks/useConjunctionsEventHandler'
 import { slideIn, slideOut } from '../../../app.styled/keyFrames'
 import ConfigBox, { ConfigBoxProps } from '@app.components/ConfigBox'
-import { useQueryGetPPDB } from '../query/useQueryPPDB'
 
-const Conjunctions = ({ cesiumModule }) => {
+const Conjunctions = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
@@ -19,11 +18,6 @@ const Conjunctions = ({ cesiumModule }) => {
   })
   const [close, setClose] = useState(false)
   const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
-
-  const { data: fetchedPPDBData } = useQueryGetPPDB({
-    query: queryParams,
-    isConjunctionsClicked,
-  })
 
   const {
     searchValue,
@@ -93,15 +87,11 @@ const Conjunctions = ({ cesiumModule }) => {
               />
             </div>
             <ConfigBox sortList={sortList} />
-            {!!fetchedPPDBData && (
-              <ConjunctionsTable
-                fetchedTableData={fetchedPPDBData}
-                queryParams={queryParams}
-                setQueryParams={setQueryParams}
-                cesiumModule={cesiumModule}
-                size={size}
-              />
-            )}
+            <ConjunctionsTable
+              queryParams={queryParams}
+              setQueryParams={setQueryParams}
+              size={size}
+            />
           </section>
         </ConjunctionsWrapper>
       )}
