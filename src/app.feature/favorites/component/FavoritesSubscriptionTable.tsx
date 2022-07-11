@@ -109,7 +109,7 @@ const FavoritesSubscriptionTable = ({ inputValue }: { inputValue: string }) => {
               </div>
             )
           },
-          Cell: ({ row }: CellProps<any>) => (
+          Cell: ({ row }: CellProps<FavoriteColumnType>) => (
             <div>
               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
             </div>

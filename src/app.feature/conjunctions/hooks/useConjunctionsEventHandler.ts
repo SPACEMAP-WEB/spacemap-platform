@@ -1,3 +1,5 @@
+import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
+import { TimeFormatType } from '@app.modules/types/time'
 import { ChangeEvent, useState } from 'react'
 import { PPDBSearchParamsType, SortType } from '../types/conjunctions'
 
@@ -11,6 +13,7 @@ const useConjunctionsEventHandler = ({
   setQueryParams,
 }: ConjunctionsEventHandlerProps) => {
   const [searchValue, setSearchValue] = useState<string>('')
+  const { handleSetTimeFormat } = useTimeFormatHandler()
 
   const handleSearchValueChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value)
@@ -24,7 +27,11 @@ const useConjunctionsEventHandler = ({
     })
   }
 
-  const handleSortFilterChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleSetTimeFormat(e.target.value as TimeFormatType)
+  }
+
+  const handleSortFilterChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setQueryParams({
       ...queryParams,
       sort: e.target.value as SortType,
@@ -36,6 +43,7 @@ const useConjunctionsEventHandler = ({
     handleSearchValueChange,
     handleFavoriteSearch,
     handleSortFilterChange,
+    handleTimeChange,
   }
 }
 

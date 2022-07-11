@@ -14,9 +14,6 @@ const PageMain = ({ cesiumModule }) => {
   }, [])
 
   if (isLoading) return null
-
-  // // console.log(cesiumModule)
-  // console.log('index')
   return (
     <>
       <MainLayout cesiumModule={cesiumModule} />

@@ -5,7 +5,6 @@
   "printWidth": 100,
   "eslintIntegration": true,
   "endOfLine": "auto",
-  "trailingComma": "all",
   "parser": "typescript",
   "useTabs": false,
   "bracketSpacing": true,

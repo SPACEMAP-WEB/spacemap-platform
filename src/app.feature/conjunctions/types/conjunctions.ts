@@ -37,6 +37,11 @@ export type PPDBResponseDataType = {
   conjunctions: ConjunctionsDataType[]
 }
 
+export type PPDBResponseDataCamelType = {
+  totalCount: number
+  result: ConjunctionsDataType[]
+}
+
 export type PPDBResponseType = ResponseType & {
   data: PPDBResponseDataType
 }
