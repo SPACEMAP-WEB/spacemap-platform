@@ -5,7 +5,7 @@ import MainLayout from '@app.components/MainLayout'
 
 import { requestCheckLogin } from 'src/app.store/loginStore/loginUser'
 
-const PageMain = ({ cesiumModule }) => {
+const PageMain = () => {
   const dispatch = useDispatch()
   const { isLoading } = useSelector((state: RootState) => state.login)
 
@@ -15,11 +15,9 @@ const PageMain = ({ cesiumModule }) => {
 
   if (isLoading) return null
 
-  // // console.log(cesiumModule)
-  // console.log('index')
   return (
     <>
-      <MainLayout cesiumModule={cesiumModule} />
+      <MainLayout />
     </>
   )
 }

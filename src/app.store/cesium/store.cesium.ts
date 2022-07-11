@@ -35,8 +35,7 @@ export const viewerSlice = createSlice({
   reducers: {
     setViewer: (state) => {
       Cesium.Ion.defaultAccessToken = state.accessToken
-
-      state.viewer = new Cesium.Viewer('cesiumContainer', {
+      const viewer = new Cesium.Viewer('cesiumContainer', {
         imageryProvider: new Cesium.TileMapServiceImageryProvider({
           url: Cesium.buildModuleUrl('/cesium/Assets/Textures/NaturalEarthII'),
         }),
@@ -79,6 +78,8 @@ export const viewerSlice = createSlice({
           },
         }),
       })
+
+      state.viewer = viewer
       state.scene = state.viewer.scene
       state.scene.globe.enableLighting = true
       state.czmlDataSource = new Cesium.CzmlDataSource()
@@ -88,6 +89,7 @@ export const viewerSlice = createSlice({
     builder
       .addCase(drawRsos.fulfilled, (state, { payload }) => {
         const currentState = current(state)
+        console.log(currentState)
         const { tles, rsoParams } = payload
         updateCZML({ callback: drawCzmlOfRsos, ...state, ...payload })
         return { ...currentState, tles, rsoParams }
