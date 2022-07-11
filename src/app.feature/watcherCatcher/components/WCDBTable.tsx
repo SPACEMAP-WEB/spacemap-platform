@@ -1,6 +1,5 @@
 import { Table } from '@app.components/Table'
 import { slideIn, slideOut } from 'src/app.styled/keyFrames'
-import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useModal } from '@app.modules/hooks/useModal'
 import React, { useEffect, useRef, useState } from 'react'
 import { CellProps, Column, useTable } from 'react-table'
@@ -13,10 +12,9 @@ import WCDBDetailTable from './WCDBDetailTable'
 type WCDBProps = {
   WCDBData: WCDBResponseDataType[]
   handleNewLaunchClick: () => void
-  cesiumModule: CesiumModule
 }
 
-const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) => {
+const WCDBTable = ({ WCDBData, handleNewLaunchClick }: WCDBProps) => {
   const [isDetailClicked, setIsDetailClicked] = useState<boolean>(false)
   const [selectedWCDBId, setSelectedWCDBId] = useState<string>('')
   const { columns, data } = useWCDBTableData(WCDBData)
@@ -134,11 +132,7 @@ const WCDBTable = ({ WCDBData, handleNewLaunchClick, cesiumModule }: WCDBProps) 
             </div>
           </>
         ) : (
-          <WCDBDetailTable
-            handleBackButton={handleBackButton}
-            WCDBId={selectedWCDBId}
-            cesiumModule={cesiumModule}
-          />
+          <WCDBDetailTable handleBackButton={handleBackButton} WCDBId={selectedWCDBId} />
         )}
       </WCDBTableWrapper>
     </>

@@ -26,7 +26,7 @@ const filterOptions: FilterSelectType[] = [
   },
 ]
 
-const Favorites = ({ cesiumModule }) => {
+const Favorites = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const favoriteConjunctionsRef = useRef<HTMLDivElement>(null)
@@ -83,7 +83,6 @@ const Favorites = ({ cesiumModule }) => {
               setFavoriteData={setFavoriteData}
               queryParams={queryParams}
               setQueryParams={setQueryParams}
-              cesiumModule={cesiumModule}
               size={size}
             />
           </section>

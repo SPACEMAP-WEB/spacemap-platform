@@ -71,9 +71,6 @@ class CesiumModule {
         viewer.dataSources.removeAll()
         czmlDataSource.load(e.data).then(function (ds) {
           viewer.dataSources.add(ds)
-          // const clockViewModel = viewer.clockViewModel
-          // clockViewModel.startTime = initialTime.toISOString()
-          // clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
           makePair(pid, sid, from, tca, to).then((pairCzml) => {
             czmlDataSource.process(pairCzml).then(function (ds) {
               const primarySat = ds.entities.getById(pid)
@@ -169,11 +166,9 @@ class CesiumModule {
           const clockViewModel = viewer.clockViewModel
           clockViewModel.startTime = initialTime.toISOString()
           clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-          // console.log('!!!!')
           czmlDataSource.process(trajcetoryCzml).then(function (ds) {
             viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
             viewer.timeline.updateFromClock()
-            // console.log('!!!')
             for (const currRow of lpdb) {
               const pairCzml = makePair(
                 currRow.primary,

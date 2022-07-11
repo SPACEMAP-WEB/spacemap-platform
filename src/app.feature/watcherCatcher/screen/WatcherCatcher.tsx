@@ -9,7 +9,7 @@ import SuccessModal from '../components/SuccessModal'
 import WCDBTable from '../components/WCDBTable'
 import { useQueryGetWCDB } from '../query/useQueryWCDB'
 
-const WatcherCatcher = ({ cesiumModule }) => {
+const WatcherCatcher = () => {
   const { isVisible, handleCloseModal } = useModal('WATCHERCATCHER')
   const {
     user: { email },
@@ -46,13 +46,7 @@ const WatcherCatcher = ({ cesiumModule }) => {
       )
     } else if (WCDBData.data.length > 0 || isWCDBTableOpen) {
       refetchWCDBData()
-      return (
-        <WCDBTable
-          WCDBData={WCDBData.data}
-          handleNewLaunchClick={handleNewLaunchClick}
-          cesiumModule={cesiumModule}
-        />
-      )
+      return <WCDBTable WCDBData={WCDBData.data} handleNewLaunchClick={handleNewLaunchClick} />
     }
   }
 

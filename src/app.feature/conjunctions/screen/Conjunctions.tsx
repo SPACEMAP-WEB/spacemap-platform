@@ -10,7 +10,7 @@ import { slideIn, slideOut } from '../../../app.styled/keyFrames'
 import ConfigBox, { ConfigBoxProps } from '@app.components/ConfigBox'
 import { useQueryGetPPDB } from '../query/useQueryPPDB'
 
-const Conjunctions = ({ cesiumModule }) => {
+const Conjunctions = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
@@ -102,6 +102,11 @@ const Conjunctions = ({ cesiumModule }) => {
                 size={size}
               />
             )}
+            <ConjunctionsTable
+              queryParams={queryParams}
+              setQueryParams={setQueryParams}
+              size={size}
+            />
           </section>
         </ConjunctionsWrapper>
       )}
