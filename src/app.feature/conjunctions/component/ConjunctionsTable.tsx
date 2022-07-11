@@ -1,10 +1,6 @@
 import { Table } from '@app.components/Table'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
-import {
-  PPDBDataType,
-  PPDBResponseDataCamelType,
-  PPDBSearchParamsType,
-} from '@app.feature/conjunctions/types/conjunctions'
+import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -15,29 +11,20 @@ import Pagination from '../../../app.components/Pagination'
 import { COLUMNS } from './TableColumns'
 import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
 import { useAppDispatch } from 'src/app.store/config/configureStore'
+import { useQueryGetPPDB } from '../query/useQueryPPDB'
+import { useModal } from '@app.modules/hooks/useModal'
 
 type TableProps = {
-  fetchedTableData: PPDBResponseDataCamelType
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
   size: number
 }
 
-const ConjunctionsTable = ({
-  fetchedTableData,
-  queryParams,
-  setQueryParams,
-  cesiumModule,
-  size,
-}: TableProps) => {
-  const [tableData, setTableData] = useState<PPDBDataType[]>([])
-  const [customPageSize, setCustomPageSize] = useState(size)
 const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
-  const { isVisible } = useModal('CONJUNCTIONS')
-  const isConjunctionsClicked = isVisible
   const dispatch = useAppDispatch()
+  const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
   const debounceFn = useDebounce(() => {
     const size = responsiveCellSizeHandler(window.innerHeight)
     setCustomPageSize(size)
@@ -45,6 +32,11 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
     setQueryParams({ ...queryParams, limit: size })
   }, 800)
   const { timeFormat } = useTimeFormatHandler()
+
+  const { data: fetchedPPDBData, isLoading } = useQueryGetPPDB({
+    query: queryParams,
+    isConjunctionsClicked,
+  })
 
   const columns = useMemo(() => COLUMNS({ queryParams, customPageSize, dispatch }), [queryParams])
   const data = useMemo(() => tableData, [tableData])
@@ -70,7 +62,7 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
       data,
       initialState: { pageIndex: 0, pageSize: size },
       manualPagination: true,
-      pageCount: Math.ceil(fetchedTableData?.totalCount / customPageSize),
+      pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
     usePagination
   )
@@ -80,11 +72,11 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
   }, [pageIndex])
 
   useEffect(() => {
-    if (fetchedTableData) {
-      const newData = ppdbDataRefactor(fetchedTableData.result, timeFormat)
+    if (fetchedPPDBData) {
+      const newData = ppdbDataRefactor(fetchedPPDBData.result, timeFormat)
       setTableData(newData)
     }
-  }, [fetchedTableData, timeFormat])
+  }, [fetchedPPDBData, timeFormat])
 
   const handlePage = async (callback) => {
     callback()
@@ -111,6 +103,7 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
     queryParams,
   }
 
+  if (isLoading) return <div>Loading</div>
   return (
     <StyledTable>
       <Table className="table" {...getTableProps()} css={tableWidthStyle}>

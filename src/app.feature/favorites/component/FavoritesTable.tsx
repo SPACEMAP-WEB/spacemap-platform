@@ -27,7 +27,7 @@ type TableProps = {
   size: number
 }
 
-const ConjunctionsTable = ({ setFavoriteData, queryParams, setQueryParams, size }: TableProps) => {
+const FavoritesTable = ({ setFavoriteData, queryParams, setQueryParams, size }: TableProps) => {
   const dispatch = useAppDispatch()
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
@@ -183,7 +183,7 @@ const ConjunctionsTable = ({ setFavoriteData, queryParams, setQueryParams, size 
   )
 }
 
-export default ConjunctionsTable
+export default FavoritesTable
 
 const StyledTable = styled.div`
   border-radius: 10px;

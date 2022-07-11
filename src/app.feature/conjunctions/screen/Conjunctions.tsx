@@ -4,11 +4,10 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import ConjunctionsTable from '../component/ConjunctionsTable'
 import useConjunctionsEventHandler from '../hooks/useConjunctionsEventHandler'
 import { slideIn, slideOut } from '../../../app.styled/keyFrames'
 import ConfigBox, { ConfigBoxProps } from '@app.components/ConfigBox'
-import { useQueryGetPPDB } from '../query/useQueryPPDB'
+import ConjunctionsTable from '../component/ConjunctionsTable'
 
 const Conjunctions = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
@@ -19,11 +18,6 @@ const Conjunctions = () => {
   })
   const [close, setClose] = useState(false)
   const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
-
-  const { data: fetchedPPDBData } = useQueryGetPPDB({
-    query: queryParams,
-    isConjunctionsClicked,
-  })
 
   const {
     searchValue,
@@ -93,15 +87,6 @@ const Conjunctions = () => {
               />
             </div>
             <ConfigBox sortList={sortList} />
-            {!!fetchedPPDBData && (
-              <ConjunctionsTable
-                fetchedTableData={fetchedPPDBData}
-                queryParams={queryParams}
-                setQueryParams={setQueryParams}
-                cesiumModule={cesiumModule}
-                size={size}
-              />
-            )}
             <ConjunctionsTable
               queryParams={queryParams}
               setQueryParams={setQueryParams}
