@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { tableWidthStyle } from '../style/tableStyle'
 import Pagination from '../../../app.components/Pagination'
 import { COLUMNS } from './TableColumns'
+import { useAppDispatch } from 'src/app.store/config/configureStore'
 
 type TableProps = {
   queryParams: PPDBSearchParamsType
@@ -19,16 +20,12 @@ type TableProps = {
   size: number
 }
 
-const ConjunctionsTable = ({
-  queryParams,
-  setQueryParams,
-  cesiumModule,
-  size,
-}: TableProps) => {
+const ConjunctionsTable = ({ queryParams, setQueryParams, cesiumModule, size }: TableProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
   const { isVisible } = useModal('CONJUNCTIONS')
   const isConjunctionsClicked = isVisible
+  const dispatch = useAppDispatch()
   const debounceFn = useDebounce(() => {
     const size = responsiveCellSizeHandler(window.innerHeight)
     setCustomPageSize(size)
@@ -41,10 +38,7 @@ const ConjunctionsTable = ({
     isConjunctionsClicked,
   })
 
-  const columns = useMemo(
-    () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
-    [queryParams]
-  )
+  const columns = useMemo(() => COLUMNS({ queryParams, customPageSize, dispatch }), [queryParams])
   const data = useMemo(() => tableData, [tableData])
 
   const {
@@ -132,9 +126,18 @@ const ConjunctionsTable = ({
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          rowSpan={(cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 0 ? 2 : 1}
+                          rowSpan={
+                            (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                            index % 2 === 0
+                              ? 2
+                              : 1
+                          }
                           style={{
-                            display: (cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 1 ? 'none' : null,
+                            display:
+                              (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                              index % 2 === 1
+                                ? 'none'
+                                : null,
                           }}
                           {...cell.getCellProps()}
                         >
