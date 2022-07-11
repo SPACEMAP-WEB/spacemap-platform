@@ -1,9 +1,13 @@
 import { Table } from '@app.components/Table'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
 import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
-import { useQueryFavorite, useQueryGetFavoritePPDB } from '@app.feature/favorites/query/useQueryFavorites'
+import {
+  useQueryFavorite,
+  useQueryGetFavoritePPDB,
+} from '@app.feature/favorites/query/useQueryFavorites'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { useModal } from '@app.modules/hooks/useModal'
+import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -40,6 +44,8 @@ const ConjunctionsTable = ({
     setPageSize(size)
     setQueryParams({ ...queryParams, limit: size })
   }, 800)
+
+  const { timeFormat } = useTimeFormatHandler()
 
   const { data: fetchedPPDBData, isLoading } = useQueryGetFavoritePPDB({
     query: queryParams,
@@ -101,7 +107,7 @@ const ConjunctionsTable = ({
 
   useEffect(() => {
     if (fetchedPPDBData) {
-      const newData = ppdbDataRefactor(fetchedPPDBData.result)
+      const newData = ppdbDataRefactor(fetchedPPDBData.result, timeFormat)
       setTableData(newData)
     }
   }, [fetchedPPDBData])
@@ -154,9 +160,18 @@ const ConjunctionsTable = ({
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          rowSpan={(cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 0 ? 2 : 1}
+                          rowSpan={
+                            (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                            index % 2 === 0
+                              ? 2
+                              : 1
+                          }
                           style={{
-                            display: (cell.column.id === 'Index' || cell.column.id ==='View') && index % 2 === 1 ? 'none' : null,
+                            display:
+                              (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                              index % 2 === 1
+                                ? 'none'
+                                : null,
                           }}
                           {...cell.getCellProps()}
                         >
