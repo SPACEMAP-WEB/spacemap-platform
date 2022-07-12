@@ -33,3 +33,19 @@ export const useDeleteMutationFavorite = () => {
     }
   )
 }
+
+export const usePostMutationFavoriteMailService = () => {
+  return useMutation(
+    async (isMailServiceSelected: boolean) => {
+      const res = await api.POST({
+        url: API_FAVORITE + `/settings/subscribe?subscribe=${isMailServiceSelected}`,
+      })
+      return res.data
+    },
+    {
+      onError: (error) => {
+        console.error(error)
+      },
+    }
+  )
+}

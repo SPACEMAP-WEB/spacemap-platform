@@ -3,6 +3,7 @@ export type FavoriteDataType = {
   email?: string
   __v?: number
   interestedArray: { id: number; name: string }[]
+  subscribe: boolean
 }
 
 export type FavoriteColumnType = {

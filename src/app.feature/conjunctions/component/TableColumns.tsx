@@ -29,7 +29,6 @@ export const COLUMNS = ({
   {
     Header: 'Secondary',
     accessor: (row) => {
-      console.log(row.secondary)
       return Object.values(row.secondary)
     },
   },

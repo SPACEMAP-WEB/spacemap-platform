@@ -219,12 +219,14 @@ const StyledWrapper = styled.div`
   margin-top: 10px;
   .table {
     font-size: 11px;
+    margin-bottom: 1.2rem;
   }
   @media screen and (min-width: 1920px) {
     .table {
       font-size: 13px;
     }
   }
+
   .pagination {
     margin-top: 10px;
     .pagination-count {
