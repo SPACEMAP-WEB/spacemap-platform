@@ -23,7 +23,6 @@ const initialState: TStoreCesium = {
   secondarySatColor: Cesium.Color.DARKORCHID,
   apartColor: Cesium.Color.GREEN,
   closeColor: Cesium.Color.RED,
-
   isPairMode: true,
   prevPid: null,
   prevSid: null,
@@ -87,15 +86,9 @@ export const viewerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(drawRsos.fulfilled, (state, { payload }) => {
-        const currentState = current(state)
-        console.log(currentState)
-        const { tles, rsoParams } = payload
-        updateCZML({ callback: drawCzmlOfRsos, ...state, ...payload })
-        return { ...currentState, tles, rsoParams }
-      })
       .addCase(drawConjuctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
+        const worker = new Worker('/script/tle2czml.js')
         const { tles, rsoParams } = payload
         clean({
           prevPid: payload.pid,
@@ -109,11 +102,20 @@ export const viewerSlice = createSlice({
           callback: drawCzmlOfConjuctions,
           ...currentState,
           ...payload,
+          worker,
         })
+        return { ...currentState, tles, rsoParams }
+      })
+      .addCase(drawRsos.fulfilled, (state, { payload }) => {
+        const currentState = current(state)
+        const worker = new Worker('/script/tle2czml.js')
+        const { tles, rsoParams } = payload
+        updateCZML({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
         return { ...currentState, tles, rsoParams }
       })
       .addCase(drawLcaConjuctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
+        const worker = new Worker('/script/tle2czml.js')
         const { tles, rsoParams } = payload
         clean({ czmlDataSource: currentState.czmlDataSource })
         updateCZML({
@@ -121,11 +123,13 @@ export const viewerSlice = createSlice({
           ...currentState,
           ...payload,
           initialTimeISOString: payload.predictionEpochTime,
+          worker,
         })
         return { ...currentState, tles, rsoParams }
       })
       .addCase(drawWatchaCapture.fulfilled, (state, { payload }) => {
         const currentState = current(state)
+        const worker = new Worker('/script/tle2czml.js')
         const { tles, rsoParams } = payload
         clean({ czmlDataSource: currentState.czmlDataSource })
         updateCZML({
@@ -133,6 +137,7 @@ export const viewerSlice = createSlice({
           ...currentState,
           ...payload,
           initialTimeISOString: payload.epochTime,
+          worker,
         })
         return { ...currentState, tles, rsoParams }
       })

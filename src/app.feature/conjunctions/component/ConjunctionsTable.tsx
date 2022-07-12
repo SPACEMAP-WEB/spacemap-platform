@@ -13,6 +13,7 @@ import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
 import { useAppDispatch } from 'src/app.store/config/configureStore'
 import { useQueryGetPPDB } from '../query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
+import { drawConjuctions } from 'src/app.store/cesium/cesiumReducer'
 
 type TableProps = {
   queryParams: PPDBSearchParamsType
@@ -38,7 +39,15 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
     isConjunctionsClicked,
   })
 
-  const columns = useMemo(() => COLUMNS({ queryParams, customPageSize, dispatch }), [queryParams])
+  const viewConjucntions = (rowObj) => {
+    dispatch(drawConjuctions({ ...rowObj }))
+  }
+
+  const columns = useMemo(
+    () => COLUMNS({ queryParams, customPageSize, viewConjucntions }),
+    [queryParams]
+  )
+
   const data = useMemo(() => tableData, [tableData])
 
   const {

@@ -34,7 +34,6 @@ export type TdrawRsos = {
   intervalUnitTime: number
   tles: Ttle
   rsoParams: TRsoParams
-  worker: Worker
 }
 
 export type TargDrawRsos = {
@@ -51,6 +50,4 @@ export type TargDrawConjuctions = {
   to: string
 }
 
-export type TdrawConjuctions = TargDrawConjuctions & {
-  worker: Worker
-}
+export type TdrawConjuctions = TargDrawConjuctions
