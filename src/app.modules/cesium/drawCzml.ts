@@ -7,6 +7,7 @@ export const drawCzmlOfRsos = (ds, rest) => {
   const clockViewModel = viewer.clockViewModel
   clockViewModel.startTime = initialTime.toISOString()
   clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
+  viewer.camera.flyHome()
 }
 
 export const drawCzmlOfConjuctions = async (ds, rest) => {

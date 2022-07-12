@@ -4,6 +4,7 @@ import moment from 'moment'
 export type TStoreCesium = {
   viewer: any
   scene: Cesium.Scene
+  camera: any
   czmlDataSource: any
   accessToken: string
   tles: any

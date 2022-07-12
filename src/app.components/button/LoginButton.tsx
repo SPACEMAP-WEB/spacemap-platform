@@ -21,7 +21,7 @@ const Button = () => {
 
   return (
     <ButtonWrapper>
-      {login && <div className="login-user">{`${user.nickname}님`}</div>}
+      {login && <div className="login-user">{`${user.nickname}`}</div>}
       <PrimaryButton borderWeight={1} className="login-button" onClick={handleSnsLogin}>
         {login ? 'Sign Out' : 'Sign In'}
       </PrimaryButton>

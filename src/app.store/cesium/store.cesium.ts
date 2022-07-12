@@ -1,18 +1,19 @@
+import { createSlice, current } from '@reduxjs/toolkit'
+import * as Cesium from 'cesium'
+import { clean, updateCZML } from './cesiumModules'
+import { drawConjuctions, drawLcaConjuctions, drawRsos, drawWatchaCapture } from './cesiumReducer'
+import { TStoreCesium } from './type'
 import {
   drawCzmlOfConjuctions,
   drawCzmlOfLaunchConjuctions,
   drawCzmlOfRsos,
   drawCzmlOfWatchaCapture,
 } from '@app.modules/cesium/drawCzml'
-import { createSlice, current } from '@reduxjs/toolkit'
-import * as Cesium from 'cesium'
-import { clean, updateCZML } from './cesiumModules'
-import { drawConjuctions, drawLcaConjuctions, drawRsos, drawWatchaCapture } from './cesiumReducer'
-import { TStoreCesium } from './type'
 
 const initialState: TStoreCesium = {
   viewer: null,
   scene: null,
+  camera: null,
   czmlDataSource: null,
   accessToken:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZDQ4OGYzYi0zNjBmLTQ1ZTAtODUwNS0xNDgyYjA4NDRjYTMiLCJpZCI6NzQ5ODIsImlhdCI6MTYzODI1OTc1Mn0.pz3a2LRR9kAkSV5m8X3WdnE0RsimkJRJWld0PvHGThk',
@@ -79,6 +80,7 @@ export const viewerSlice = createSlice({
       })
 
       state.viewer = viewer
+      state.camera = viewer.camera
       state.scene = state.viewer.scene
       state.scene.globe.enableLighting = true
       state.czmlDataSource = new Cesium.CzmlDataSource()
@@ -86,6 +88,13 @@ export const viewerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(drawRsos.fulfilled, (state, { payload }) => {
+        const currentState = current(state)
+        const worker = new Worker('/script/tle2czml.js')
+        const { tles, rsoParams } = payload
+        updateCZML({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
+        return { ...currentState, tles, rsoParams }
+      })
       .addCase(drawConjuctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
         const worker = new Worker('/script/tle2czml.js')
@@ -104,13 +113,6 @@ export const viewerSlice = createSlice({
           ...payload,
           worker,
         })
-        return { ...currentState, tles, rsoParams }
-      })
-      .addCase(drawRsos.fulfilled, (state, { payload }) => {
-        const currentState = current(state)
-        const worker = new Worker('/script/tle2czml.js')
-        const { tles, rsoParams } = payload
-        updateCZML({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
         return { ...currentState, tles, rsoParams }
       })
       .addCase(drawLcaConjuctions.fulfilled, (state, { payload }) => {
