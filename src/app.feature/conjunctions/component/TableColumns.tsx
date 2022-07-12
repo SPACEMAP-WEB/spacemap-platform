@@ -1,17 +1,16 @@
 import { Column } from 'react-table'
 import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
-import { drawConjuctions } from 'src/app.store/cesium/cesiumReducer'
 
 type ColumnProps = {
   queryParams: PPDBSearchParamsType
   customPageSize: number
-  dispatch
+  viewConjucntions
 }
 
 export const COLUMNS = ({
   queryParams,
   customPageSize,
-  dispatch,
+  viewConjucntions,
 }: ColumnProps): Column<PPDBDataType>[] => [
   {
     Header: 'Index',
@@ -55,7 +54,7 @@ export const COLUMNS = ({
             cursor: 'pointer',
           }}
           onClick={() => {
-            dispatch(drawConjuctions({ ...rowObj }))
+            viewConjucntions(rowObj)
           }}
           src={'/svg/open-eye.svg'}
           alt="View"

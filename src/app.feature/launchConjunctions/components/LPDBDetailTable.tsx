@@ -28,7 +28,6 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId }: LPDBDetailProps) => {
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.lpdb)
-      console.log(downloadData.data)
       dispatch(
         drawLcaConjuctions({
           trajectory: downloadData.data,

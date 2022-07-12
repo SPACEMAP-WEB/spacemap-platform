@@ -7,10 +7,10 @@ import { timeFormatSlice } from '../timeFormatStore/store.timeFormatApp'
 
 export const store = configureStore({
   reducer: {
+    viewer: viewerSlice.reducer,
     login: userSlice.reducer,
     modal: modalSlice.reducer,
     timeFormat: timeFormatSlice.reducer,
-    viewer: viewerSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
