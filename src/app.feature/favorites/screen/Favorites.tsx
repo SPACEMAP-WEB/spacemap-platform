@@ -14,6 +14,7 @@ import FavoritesTable from '../component/FavoritesTable'
 import { MainTitle, SubTitle } from '@app.components/title/Title'
 import WarningModal from '@app.components/modal/WarningModal'
 import useFavoritesEventHandler from '../hooks/useFavoritesEventHandler'
+import { usePostMutationFavoriteMailService } from '../query/useMutationFavorite'
 
 const filterOptions: FilterSelectType[] = [
   {
@@ -37,7 +38,9 @@ const Favorites = () => {
   const { login } = useSelector((state: RootState) => state.login)
   const [close, setClose] = useState(false)
   const [favoriteData, setFavoriteData] = useState<FilterSelectType[]>([])
+  const [isMailServiceSelected, setIsMailServiceSelected] = useState<boolean>(false)
   const { isVisible, handleCloseModal } = useModal('FAVORITES')
+  const { mutate } = usePostMutationFavoriteMailService()
   const {
     searchValue,
     handleFavoriteSearch,
@@ -52,6 +55,14 @@ const Favorites = () => {
     conjunctionsRef.current.style.display = close ? 'none' : 'block'
     favoriteConjunctionsRef.current.style.display = close ? 'none' : 'block'
   }, [close, conjunctionsRef.current])
+
+  useEffect(() => {
+    mutate(isMailServiceSelected)
+  }, [isMailServiceSelected])
+
+  const handleMailService = () => {
+    setIsMailServiceSelected(!isMailServiceSelected)
+  }
 
   return (
     <>
@@ -81,6 +92,7 @@ const Favorites = () => {
             </div>
             <FavoritesTable
               setFavoriteData={setFavoriteData}
+              setIsMailServiceSelected={setIsMailServiceSelected}
               queryParams={queryParams}
               setQueryParams={setQueryParams}
               size={size}
@@ -93,6 +105,11 @@ const Favorites = () => {
               <FavoriteSubscription login={login} />
             </div>
           </section>
+
+          <div className="mail-service-wrapper">
+            <input type="checkbox" checked={isMailServiceSelected} onChange={handleMailService} />
+            <p>Receive mail about your favorite assets?</p>
+          </div>
         </FavoritesWrapper>
       )}
     </>
@@ -161,5 +178,18 @@ const FavoritesWrapper = styled.div<TConjunctions>`
     display: flex;
     align-items: center;
     gap: 1.5rem;
+  }
+
+  .mail-service-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 1rem;
+    p {
+      color: #c0c0c0;
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
   }
 `

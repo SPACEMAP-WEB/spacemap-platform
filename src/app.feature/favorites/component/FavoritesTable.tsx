@@ -21,13 +21,20 @@ import { COLUMNS } from './TableColumns'
 type NewType = PPDBSearchParamsType
 
 type TableProps = {
+  setIsMailServiceSelected: React.Dispatch<React.SetStateAction<boolean>>
   setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<NewType>>
   size: number
 }
 
-const FavoritesTable = ({ setFavoriteData, queryParams, setQueryParams, size }: TableProps) => {
+const FavoritesTable = ({
+  setIsMailServiceSelected,
+  setFavoriteData,
+  queryParams,
+  setQueryParams,
+  size,
+}: TableProps) => {
   const dispatch = useAppDispatch()
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
@@ -79,14 +86,15 @@ const FavoritesTable = ({ setFavoriteData, queryParams, setQueryParams, size }: 
   )
 
   const requestFavoriteData = async () => {
-    if (isSuccess)
+    if (isSuccess) {
       setFavoriteData([
-        { label: 'All', value: 'ALL' },
         ...queryFavorite?.interestedArray?.map((sat) => ({
           label: String(sat.id),
           value: String(sat.id),
         })),
       ])
+      setIsMailServiceSelected(queryFavorite.subscribe)
+    }
   }
 
   useEffect(() => {
