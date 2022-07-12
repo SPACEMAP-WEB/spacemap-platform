@@ -8,7 +8,14 @@ const rocketBase64 =
 
 // drawRsos
 
-export const getTles = async (year, month, date, hour) => {
+type Tdate = {
+  year: number
+  month: number
+  date: number
+  hour: number
+}
+
+export const getTles = async ({ year, month, date, hour }: Tdate) => {
   const DATE_URI = '/' + year + '/' + month + '/' + date + '/' + hour
   const { data } = await api.GET<null, { data: { tles: Ttle } }>(API_TLES + DATE_URI)
   return data.data.tles
@@ -19,7 +26,7 @@ export const getRsosParams = async () => {
   return data.data.rsoParams
 }
 
-export const dateParser = (initialTime) => {
+export const dateParser = (initialTime: moment.Moment) => {
   const originTleDate = initialTime.clone().add(0, 'd')
   const year = originTleDate.year()
   const month = originTleDate.month() + 1
@@ -30,7 +37,7 @@ export const dateParser = (initialTime) => {
 
 export const updateTlesAndRsos = async (initialTime) => {
   const { year, month, date, hour } = dateParser(initialTime)
-  const tles = await getTles(year, month, date, hour)
+  const tles = await getTles({ year, month, date, hour })
   const rsoParams = await getRsosParams()
   return { tles, rsoParams }
 }
@@ -85,7 +92,7 @@ export const makePair = (pid, sid, from, tca, to) => ({
 })
 
 const createTrajectoryCzml = (startTime, endTime, cartesian) => {
-  let trajectoryCzml = {
+  let trajectoryCzml: any = {
     id: '0',
     name: 'Launch Vehicle',
     availability: '',
@@ -148,10 +155,16 @@ const createTrajectoryCzml = (startTime, endTime, cartesian) => {
   return trajectoryCzml
 }
 
-export const trajectory2czml = ({ trajectory, predictionEpochTime }) => {
+export const trajectory2czml = ({
+  trajectory,
+  predictionEpochTime,
+}: {
+  trajectory: any
+  predictionEpochTime: string
+}) => {
   let splitLines = trajectory.split('\n')
   let startTime: Date | string = new Date(predictionEpochTime)
-  let endTime
+  let endTime: Date | string
   let endInterval
   const cartesian = []
   for (let line of splitLines) {
