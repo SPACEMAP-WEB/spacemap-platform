@@ -26,7 +26,7 @@ const FilterSelect = ({ filterOptions, onChange }: FilterSelectProps) => {
 export default FilterSelect
 
 const FilterSelectWrapper = styled.div`
-  width: 4rem;
+  width: 5rem;
   height: 1.875rem;
   padding: 0 5px;
   margin-left: 5px;

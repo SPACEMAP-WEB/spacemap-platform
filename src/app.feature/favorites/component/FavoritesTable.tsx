@@ -48,7 +48,7 @@ const FavoritesTable = ({
     setQueryParams({ ...queryParams, limit: size })
   }, 800)
 
-  const { timeFormat } = useTimeFormatHandler()
+  const { timeFormat, handleSetTimeFormat } = useTimeFormatHandler()
 
   const { data: fetchedPPDBData, isLoading } = useQueryGetFavoritePPDB({
     query: queryParams,
@@ -106,6 +106,10 @@ const FavoritesTable = ({
   }
 
   useEffect(() => {
+    handleSetTimeFormat('UTC')
+  }, [])
+
+  useEffect(() => {
     setQueryParams({ ...queryParams, page: pageIndex })
   }, [pageIndex])
 
@@ -118,7 +122,7 @@ const FavoritesTable = ({
       const newData = ppdbDataRefactor(fetchedPPDBData.result, timeFormat)
       setTableData(newData)
     }
-  }, [fetchedPPDBData])
+  }, [fetchedPPDBData, timeFormat])
 
   const handlePage = async (callback) => {
     callback()
