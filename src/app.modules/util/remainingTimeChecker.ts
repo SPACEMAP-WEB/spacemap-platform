@@ -7,8 +7,7 @@ const remainingTimeChecker = (tcaTime: moment.Moment) => {
   const hours = moment.duration(diffTime).hours()
   const days = moment.duration(diffTime).days()
 
-  const remainedTime =
-    days > 0 ? `${days}d ${hours}h ${minutes}m left` : `${hours}h ${minutes}m ${seconds}s left`
+  const remainedTime = `${days}d ${hours}h ${minutes}m ${seconds}s left`
 
   return remainedTime
 }
