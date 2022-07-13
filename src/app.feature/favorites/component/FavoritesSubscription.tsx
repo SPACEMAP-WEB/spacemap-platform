@@ -18,17 +18,19 @@ const FavoritesSubscription = ({ login }: { login: boolean }) => {
 
   return (
     <StyledWrapper>
-        <form className="favorite-form" onSubmit={handleSubmit(handleFavorite)}>
-          <input
-            className="favorite-form-input"
-            type="text"
-            {...register('favorite')}
-            placeholder="Search Your Satellites"
-          />
-          <SecondaryButton width={80} height={30} type="submit">Search</SecondaryButton>
-          {errors.favorite && <span>Favorite Field is Required</span>}
-        </form>
-        <FavoritesSubscriptionTable inputValue={inputValue} />
+      <form className="favorite-form" onSubmit={handleSubmit(handleFavorite)}>
+        <input
+          className="favorite-form-input"
+          type="text"
+          {...register('favorite')}
+          placeholder="Search Your Assets"
+        />
+        <SecondaryButton width={80} height={30} type="submit">
+          Search
+        </SecondaryButton>
+        {errors.favorite && <span>Favorite Field is Required</span>}
+      </form>
+      <FavoritesSubscriptionTable inputValue={inputValue} />
     </StyledWrapper>
   )
 }

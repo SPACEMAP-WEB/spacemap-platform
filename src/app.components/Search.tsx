@@ -16,7 +16,7 @@ const Search = ({ handleSearch, searchValue, handleValueChange }: SearchProps) =
         className="search-input"
         value={searchValue}
         onChange={(e) => handleValueChange(e)}
-        placeholder="Search Sat. ID or Sat. Name"
+        placeholder="Search ID or Name"
       />
       <SecondaryButton width={80} height={30} className="search-button" onClick={handleSearch}>
         Search

@@ -15,17 +15,7 @@ import { MainTitle, SubTitle } from '@app.components/title/Title'
 import WarningModal from '@app.components/modal/WarningModal'
 import useFavoritesEventHandler from '../hooks/useFavoritesEventHandler'
 import { usePostMutationFavoriteMailService } from '../query/useMutationFavorite'
-
-const filterOptions: FilterSelectType[] = [
-  {
-    label: 'tca',
-    value: 'tcaTime',
-  },
-  {
-    label: 'dca',
-    value: 'dca',
-  },
-]
+import ConfigBox, { ConfigBoxProps } from '@app.components/ConfigBox'
 
 const Favorites = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
@@ -47,6 +37,7 @@ const Favorites = () => {
     handleSearchValueChange,
     handleSortFilterChange,
     handleFavoriteIdChange,
+    handleTimeChange,
   } = useFavoritesEventHandler({ queryParams, setQueryParams })
 
   useEffect(() => {
@@ -63,6 +54,43 @@ const Favorites = () => {
   const handleMailService = () => {
     setIsMailServiceSelected(!isMailServiceSelected)
   }
+
+  const sortList: ConfigBoxProps[] = [
+    {
+      title: 'Time Format',
+      name: 'time',
+      handleChange: handleTimeChange,
+      itemValue: [
+        {
+          label: 'UTC',
+          value: 'UTC',
+        },
+        {
+          label: 'Local',
+          value: 'LOCAL',
+        },
+        {
+          label: 'Remaining',
+          value: 'REMAINING',
+        },
+      ],
+    },
+    {
+      title: 'Sort By',
+      name: 'sort',
+      handleChange: handleSortFilterChange,
+      itemValue: [
+        {
+          label: 'TCA',
+          value: 'tcaTime',
+        },
+        {
+          label: 'DCA',
+          value: 'dca',
+        },
+      ],
+    },
+  ]
 
   return (
     <>
@@ -85,11 +113,12 @@ const Favorites = () => {
                 searchValue={searchValue}
                 handleValueChange={handleSearchValueChange}
               />
-              <FilterSelect filterOptions={filterOptions} onChange={handleSortFilterChange} />
             </div>
             <div className="favorite-filter">
               <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
             </div>
+
+            <ConfigBox sortList={sortList} />
             <FavoritesTable
               setFavoriteData={setFavoriteData}
               setIsMailServiceSelected={setIsMailServiceSelected}
@@ -100,7 +129,7 @@ const Favorites = () => {
           </section>
 
           <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
-            <SubTitle>Subscribe New Satellites!</SubTitle>
+            <SubTitle>Subscribe New Assets!</SubTitle>
             <div className="bookmark-table-wrapper">
               <FavoriteSubscription login={login} />
             </div>
@@ -187,8 +216,8 @@ const FavoritesWrapper = styled.div<TConjunctions>`
     gap: 0.25rem;
     margin-top: 1rem;
     p {
-      color: #c0c0c0;
-      font-size: 0.9rem;
+      color: #e7e7e7;
+      font-size: 0.95rem;
       font-weight: 300;
     }
   }

@@ -14,13 +14,13 @@ export const ppdbDataRefactor = (
     const formattedTcaTime = () => {
       switch (timeFormat) {
         case 'UTC':
-          return moment.utc(tcaTime).format('MMM DD, YYYY HH:mm:ss')
+          return moment.utc(tcaTime).format('MMM DD, YYYY HH:mm:ss ZZ')
         case 'LOCAL':
-          return moment.utc(tcaTime).local().format('MMM DD, YYYY HH:mm:ss')
+          return moment.utc(tcaTime).local().format('MMM DD, YYYY HH:mm:ss ZZ')
         case 'REMAINING':
           return remainingTimeChecker(moment.utc(tcaTime))
         default:
-          return moment.utc(tcaTime).format('MMM DD, YYYY HH:mm:ss')
+          return moment.utc(tcaTime).format('MMM DD, YYYY HH:mm:ss ZZ')
       }
     }
     const maxlength = 13

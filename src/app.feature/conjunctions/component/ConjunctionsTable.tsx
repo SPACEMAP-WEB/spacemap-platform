@@ -32,7 +32,7 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
     setPageSize(size)
     setQueryParams({ ...queryParams, limit: size })
   }, 800)
-  const { timeFormat } = useTimeFormatHandler()
+  const { timeFormat, handleSetTimeFormat } = useTimeFormatHandler()
 
   const { data: fetchedPPDBData, isLoading } = useQueryGetPPDB({
     query: queryParams,
@@ -79,6 +79,10 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
   useEffect(() => {
     setQueryParams({ ...queryParams, page: pageIndex })
   }, [pageIndex])
+
+  useEffect(() => {
+    handleSetTimeFormat('UTC')
+  }, [])
 
   useEffect(() => {
     if (fetchedPPDBData) {

@@ -4,8 +4,8 @@ import { FavoriteColumnType } from '../types/favorite'
 
 const useFavoriteTableData = (tableData: FavoriteColumnType[]) => {
   const COLUMNS: Column<FavoriteColumnType>[] = [
-    { Header: 'Norad ID', accessor: 'noradId' },
-    { Header: 'Sat. Name', accessor: 'satName' },
+    { Header: 'ID', accessor: 'noradId' },
+    { Header: 'Name', accessor: 'satName' },
   ]
   const columns = useMemo(() => COLUMNS, [])
   const data = useMemo(() => tableData, [tableData])
