@@ -148,12 +148,28 @@ const createTrajectoryCzml = (startTime, endTime, cartesian) => {
   return trajectoryCzml
 }
 
-export const trajectory2czml = ({ trajectory, predictionEpochTime }) => {
-  let splitLines = trajectory.split('\n')
+export const trajectory2czml = ({
+  trajectory,
+  predictionEpochTime,
+}: {
+  trajectory: any
+  predictionEpochTime: string
+}) => {
+  const splitLines = trajectory.split('\n')
   let startTime: Date | string = new Date(predictionEpochTime)
-  let endTime
-  let endInterval
-  const cartesian = []
+  let endTime: Date | string
+  let endInterval: number
+  let cartesian = []
+  // splitLines.reduce<string[]>((cartesian, line) => {
+  //   const words = line.split(/[\t\s,]+/)
+  //   if (Number(words[0]) === NaN || words.length !== 4) {
+  //     return cartesian
+  //   }
+  //   words.reduce((acc, word, idx) => {
+  //     return acc
+  //   })
+  // }, [])
+
   for (let line of splitLines) {
     let words = line.split(/[\t\s,]+/)
 

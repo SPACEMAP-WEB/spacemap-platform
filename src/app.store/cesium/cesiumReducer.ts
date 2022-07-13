@@ -2,7 +2,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import moment from 'moment'
 import { site2czml, trajectory2czml, updateTlesAndRsos } from './cesiumModules'
-import { TargDrawConjuctions, TargDrawRsos, TdrawRsos } from './type'
+import {
+  TargDrawConjuctions,
+  TargDrawLcaConjuctions,
+  TargDrawRsos,
+  TdrawConjuctions,
+  TdrawRsos,
+} from './type'
 
 export const drawRsos = createAsyncThunk<TdrawRsos, TargDrawRsos>(
   'DRAW_RSOS',
@@ -21,7 +27,7 @@ export const drawRsos = createAsyncThunk<TdrawRsos, TargDrawRsos>(
   }
 )
 
-export const drawConjuctions = createAsyncThunk<any, TargDrawConjuctions>(
+export const drawConjuctions = createAsyncThunk<TdrawConjuctions, TargDrawConjuctions>(
   'DRAW_CONJUCTIONS',
   async ({ pid, sid, from, tca, to }) => {
     const { tles, rsoParams } = await updateTlesAndRsos(moment(tca))
@@ -38,9 +44,9 @@ export const drawConjuctions = createAsyncThunk<any, TargDrawConjuctions>(
   }
 )
 
-export const drawLcaConjuctions = createAsyncThunk<any, any>(
+export const drawLcaConjuctions = createAsyncThunk<any, TargDrawLcaConjuctions>(
   'DRAW_LCA_CONJUCTIONS',
-  async ({ predictionEpochTime, trajectory, launchEpochTime, trajcetoryLength = 3600, lpdb }) => {
+  async ({ predictionEpochTime, trajectory, launchEpochTime, trajectoryLength = 3600, lpdb }) => {
     const initialTime = moment(predictionEpochTime).utc()
     const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
     const { trajectoryCzml, endInterval } = trajectory2czml({ trajectory, predictionEpochTime })
@@ -51,7 +57,7 @@ export const drawLcaConjuctions = createAsyncThunk<any, any>(
       trajectory,
       launchEpochTime,
       intervalUnitTime: 600,
-      duration: trajcetoryLength,
+      duration: trajectoryLength,
       lpdb,
       tles,
       rsoParams,
