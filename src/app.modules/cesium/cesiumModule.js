@@ -163,12 +163,14 @@ class CesiumModule {
       worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
       worker.onmessage = (e) => {
         viewer.dataSources.removeAll()
+        console.log(e.data)
         czmlDataSource.load(e.data).then(function (ds) {
           viewer.dataSources.add(ds)
           const clockViewModel = viewer.clockViewModel
           clockViewModel.startTime = initialTime.toISOString()
           clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
           // console.log('!!!!')
+          console.log(trajcetoryCzml)
           czmlDataSource.process(trajcetoryCzml).then(function (ds) {
             viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
             viewer.timeline.updateFromClock()
