@@ -13,8 +13,8 @@ import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
 import { useAppDispatch } from 'src/app.store/config/configureStore'
 import { useQueryGetPPDB } from '../query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
-import { drawConjuctions } from 'src/app.store/cesium/cesiumReducer'
 import timeCounter from '@app.modules/util/timeCounter'
+import { drawConjunctions } from 'src/app.store/cesium/cesiumReducer'
 
 type TableProps = {
   queryParams: PPDBSearchParamsType
