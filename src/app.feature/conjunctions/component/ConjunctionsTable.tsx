@@ -40,13 +40,13 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
     isConjunctionsClicked,
   })
 
-  const viewConjucntions = (rowObj) => {
-    dispatch(drawConjuctions({ ...rowObj }))
+  const viewConjunctions = (rowObj) => {
+    dispatch(drawConjunctions({ ...rowObj }))
   }
 
   const columns = useMemo(
-    () => COLUMNS({ queryParams, customPageSize, viewConjucntions }),
-    [queryParams, timeFormat, timeCounter]
+    () => COLUMNS({ queryParams, customPageSize, viewConjunctions }),
+    [queryParams]
   )
 
   const data = useMemo(() => tableData, [tableData])
