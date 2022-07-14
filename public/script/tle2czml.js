@@ -81,14 +81,15 @@ async function satrec2czml(
   let res = [] //result for position
   let initTime = new Date(startTime)
   let twoPi = Math.PI * 2
-  let periodSeconds = (twoPi / satrec.no) * 60
-  let interval = periodSeconds / 12
+  let periodSeconds = parseInt((twoPi / satrec.no) * 60)
+  let halfPeriodsSeconds = parseInt(periodSeconds / 2)
+  let interval = parseInt(periodSeconds / 24)
 
-  initTime.setSeconds(initTime.getSeconds() - periodSeconds / 2)
+  initTime.setSeconds(initTime.getSeconds() - halfPeriodsSeconds)
   let satID = Number(satrec.satnum.split(' ').join(''))
   // // console.log(satID)
   // // console.log((duration + periodSeconds) / interval)
-  for (let i = -periodSeconds / 2; i <= duration + periodSeconds / 2; i += interval) {
+  for (let i = -halfPeriodsSeconds; i <= duration + halfPeriodsSeconds; i += interval) {
     //iterates every second (86400sec in 1day)
 
     let positionAndVelocity = satellite.propagate(satrec, initTime) // 0.0166667min = 1sec
