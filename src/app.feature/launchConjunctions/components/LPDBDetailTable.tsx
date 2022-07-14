@@ -1,7 +1,7 @@
 import { Table } from '@app.components/Table'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
-import { drawLcaConjuctions } from 'src/app.store/cesium/cesiumReducer'
+import { drawLcaConjunctions } from 'src/app.store/cesium/cesiumReducer'
 import { useAppDispatch } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
@@ -29,7 +29,7 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId }: LPDBDetailProps) => {
     if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.lpdb)
       dispatch(
-        drawLcaConjuctions({
+        drawLcaConjunctions({
           trajectory: downloadData.data,
           predictionEpochTime: LPDBDetailData.predictionEpochTime,
           launchEpochTime: LPDBDetailData.launchEpochTime,

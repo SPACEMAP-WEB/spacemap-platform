@@ -12,7 +12,7 @@ import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
-import { drawConjuctions } from 'src/app.store/cesium/cesiumReducer'
+import { drawConjunctions } from 'src/app.store/cesium/cesiumReducer'
 import { useAppDispatch } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import Pagination from '../../../app.components/Pagination'
@@ -58,7 +58,7 @@ const FavoritesTable = ({
   const { data: queryFavorite, isSuccess } = useQueryFavorite('')
 
   const viewConjucntions = (rowObj) => {
-    dispatch(drawConjuctions({ ...rowObj }))
+    dispatch(drawConjunctions({ ...rowObj }))
   }
 
   const columns = useMemo(
