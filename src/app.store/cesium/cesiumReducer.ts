@@ -2,7 +2,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import moment from 'moment'
 import { site2czml, trajectory2czml, updateTlesAndRsos } from './cesiumModules'
-import { TargDrawConjuctions, TargDrawRsos, TdrawRsos } from './type'
+import {
+  TargDrawConjuctions,
+  TargDrawLcaConjuctions,
+  TargDrawRsos,
+  TargDrawWc,
+  TdrawConjuctions,
+  TdrawLcaConjuctions,
+  TdrawRsos,
+  TDrawWc,
+} from './type'
 
 export const drawRsos = createAsyncThunk<TdrawRsos, TargDrawRsos>(
   'DRAW_RSOS',
@@ -21,10 +30,11 @@ export const drawRsos = createAsyncThunk<TdrawRsos, TargDrawRsos>(
   }
 )
 
-export const drawConjuctions = createAsyncThunk<any, TargDrawConjuctions>(
+export const drawConjunctions = createAsyncThunk<TdrawConjuctions, TargDrawConjuctions>(
   'DRAW_CONJUCTIONS',
-  async ({ pid, sid, from, tca, to }) => {
-    const { tles, rsoParams } = await updateTlesAndRsos(moment(tca))
+  async ({ pid, sid, from, tca, to, intervalUnitTime = 600 }) => {
+    const initialTime = moment(tca)
+    const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
 
     return {
       pid,
@@ -34,15 +44,24 @@ export const drawConjuctions = createAsyncThunk<any, TargDrawConjuctions>(
       to,
       tles,
       rsoParams,
+      initialTime,
+      intervalUnitTime,
     }
   }
 )
 
-export const drawLcaConjuctions = createAsyncThunk<any, any>(
+export const drawLcaConjunctions = createAsyncThunk<TdrawLcaConjuctions, TargDrawLcaConjuctions>(
   'DRAW_LCA_CONJUCTIONS',
-  async ({ predictionEpochTime, trajectory, launchEpochTime, trajcetoryLength = 3600, lpdb }) => {
-    const initialTime = moment(predictionEpochTime).utc()
-    const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
+  async ({
+    predictionEpochTime,
+    trajectory,
+    launchEpochTime,
+    trajectoryLength = 3600,
+    lpdb,
+    intervalUnitTime = 600,
+  }) => {
+    const initialTime = moment(launchEpochTime).utc()
+    const { tles, rsoParams } = await updateTlesAndRsos(moment(predictionEpochTime).utc())
     const { trajectoryCzml, endInterval } = trajectory2czml({ trajectory, predictionEpochTime })
 
     return {
@@ -50,8 +69,8 @@ export const drawLcaConjuctions = createAsyncThunk<any, any>(
       predictionEpochTime,
       trajectory,
       launchEpochTime,
-      intervalUnitTime: 600,
-      duration: trajcetoryLength,
+      intervalUnitTime,
+      duration: trajectoryLength,
       lpdb,
       tles,
       rsoParams,
@@ -61,11 +80,11 @@ export const drawLcaConjuctions = createAsyncThunk<any, any>(
   }
 )
 
-export const drawWatchaCapture = createAsyncThunk<any, any>(
+export const drawWatchaCapture = createAsyncThunk<TDrawWc, TargDrawWc>(
   'DRAW_WATCHA_CAPTURE',
-  async ({ latitude, longitude, predictionEpochTime, epochTime, wcdb }) => {
-    const initialTime = moment(predictionEpochTime).utc()
-    const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
+  async ({ latitude, longitude, predictionEpochTime, epochTime, wcdb, intervalUnitTime = 600 }) => {
+    const initialTime = moment(epochTime).utc()
+    const { tles, rsoParams } = await updateTlesAndRsos(moment(predictionEpochTime).utc())
     const { siteCzml, siteConeCzml } = site2czml({ latitude, longitude, epochTime })
 
     return {
@@ -76,6 +95,7 @@ export const drawWatchaCapture = createAsyncThunk<any, any>(
       siteConeCzml,
       wcdb,
       epochTime,
+      intervalUnitTime,
     }
   }
 )

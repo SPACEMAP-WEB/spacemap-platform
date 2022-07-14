@@ -24,8 +24,8 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId }: WCDBDetailProps) => {
       const newData = wcdbDataRefactor(WCDBDetailData.wcdb)
       dispatch(
         drawWatchaCapture({
-          latitude: WCDBDetailData.latitude,
-          longitude: WCDBDetailData.longitude,
+          latitude: Number(WCDBDetailData.latitude),
+          longitude: Number(WCDBDetailData.longitude),
           predictionEpochTime: WCDBDetailData.predictionEpochTime,
           epochTime: WCDBDetailData.epochTime,
           wcdb: newData,
