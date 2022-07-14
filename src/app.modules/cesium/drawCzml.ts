@@ -37,6 +37,7 @@ export const drawCzmlOfConjuctions = async (ds, rest) => {
 export const drawCzmlOfLaunchConjuctions = async (ds, rest) => {
   const { viewer, czmlDataSource, initialTime, trajectoryCzml, launchEpochTime, lpdb } = rest
   viewer.dataSources.add(ds)
+  console.log(ds)
   const clockViewModel = viewer.clockViewModel
   clockViewModel.startTime = initialTime.toISOString()
   clockViewModel.endTime = initialTime.add(7, 'd').toISOString()

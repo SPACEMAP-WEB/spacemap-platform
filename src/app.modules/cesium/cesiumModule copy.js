@@ -124,37 +124,39 @@ class CesiumModule {
       duration = 3600
       intervalUnitTime = 600
     }
-    // const worker = new Worker('/script/tle2czml.js')
-    // function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
-    //   worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
-    //   worker.onmessage = (e) => {
-    //     czmlDataSource.load(e.data).then(function (ds) {
-    //       const clockViewModel = viewer.clockViewModel
-    //       clockViewModel.startTime = initialTime.toISOString()
-    //       clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-    //       // console.log('!!!!')
-    //       czmlDataSource.process(trajcetoryCzml).then(function (ds) {
-    //         viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
-    //         viewer.timeline.updateFromClock()
-    //         // console.log('!!!')
-    //         for (const currRow of lpdb) {
-    //           const pairCzml = makePair(
-    //             currRow.primary,
-    //             currRow.secondary,
-    //             currRow.start,
-    //             currRow.tca,
-    //             currRow.end
-    //           )
-    //           czmlDataSource.process(pairCzml).then(function (ds) {
-    //             // console.log('!!')
-    //           })
-    //         }
-    //       })
-    //     })
-    //   }
-    // }
-    // updateCZML(predictionEpochTime, endInterval, 600, tles, rsoParams)
+    const worker = new Worker('/script/tle2czml.js')
+    function updateCZML(initialTimeISOString, duration, intervalUnitTime, tles, rsoParams) {
+      worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
+      worker.onmessage = (e) => {
+        czmlDataSource.load(e.data).then(function (ds) {
+          const clockViewModel = viewer.clockViewModel
+          clockViewModel.startTime = initialTime.toISOString()
+          clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
+          // console.log('!!!!')
+          czmlDataSource.process(trajcetoryCzml).then(function (ds) {
+            viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
+            viewer.timeline.updateFromClock()
+            // console.log('!!!')
+            for (const currRow of lpdb) {
+              const pairCzml = makePair(
+                currRow.primary,
+                currRow.secondary,
+                currRow.start,
+                currRow.tca,
+                currRow.end
+              )
+              czmlDataSource.process(pairCzml).then(function (ds) {
+                // console.log('!!')
+              })
+            }
+          })
+        })
+      }
+    }
+    updateCZML(predictionEpochTime, endInterval, 600, tles, rsoParams)
+
     czmlDataSource.process(trajcetoryCzml).then(function (ds) {
+      console.log(ds)
       viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
       viewer.timeline.updateFromClock()
       // console.log('!!!')
@@ -168,6 +170,7 @@ class CesiumModule {
         )
         czmlDataSource.process(pairCzml).then(function (ds) {
           // console.log('!!')
+          console.log(ds)
         })
       }
     })
