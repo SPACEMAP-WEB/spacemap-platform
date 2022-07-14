@@ -46,7 +46,7 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
 
   const columns = useMemo(
     () => COLUMNS({ queryParams, customPageSize, viewConjucntions }),
-    [queryParams, timeFormat]
+    [queryParams, timeFormat, timeCounter]
   )
 
   const data = useMemo(() => tableData, [tableData])
@@ -81,7 +81,7 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
           Header: 'TCA/DCA',
           Cell: ({ row }: CellProps<PPDBDataType>) => {
             const formattedValue =
-              row.original['tca/dca'].length > 7 && row.original['tca/dca'].includes('left')
+              row.original['tca/dca'].length > 7 && row.original['tca/dca'].includes('GMT')
                 ? timeCounter(row.original['tca/dca'])
                 : row.original['tca/dca']
             return <>{formattedValue}</>

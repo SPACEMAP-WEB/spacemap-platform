@@ -1,5 +1,4 @@
 import { ConjunctionsDataType, PPDBDataType } from '@app.feature/conjunctions/types/conjunctions'
-import remainingTimeChecker from '@app.modules/util/remainingTimeChecker'
 import { TimeFormatType } from '@app.modules/types/time'
 import moment from 'moment'
 
@@ -18,7 +17,7 @@ export const ppdbDataRefactor = (
         case 'LOCAL':
           return moment.utc(tcaTime).local().format('MMM DD, YYYY HH:mm:ss ZZ')
         case 'REMAINING':
-          return remainingTimeChecker(moment.utc(tcaTime))
+          return moment.utc(tcaTime)
         default:
           return moment.utc(tcaTime).format('MMM DD, YYYY HH:mm:ss ZZ')
       }
