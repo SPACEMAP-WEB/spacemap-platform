@@ -1,8 +1,8 @@
 import { createSlice, current } from '@reduxjs/toolkit'
 import * as Cesium from 'cesium'
 import { clean, updateCZML } from './cesiumModules'
-import { drawConjuctions, drawLcaConjuctions, drawRsos, drawWatchaCapture } from './cesiumReducer'
-import { TStoreCesium } from './type'
+import { drawConjunctions, drawLcaConjunctions, drawRsos, drawWatchaCapture } from './cesiumReducer'
+import { TdrawConjuctions, TdrawLcaConjuctions, TdrawRsos, TDrawWc, TStoreCesium } from './type'
 import {
   drawCzmlOfConjuctions,
   drawCzmlOfLaunchConjuctions,
@@ -19,7 +19,6 @@ const initialState: TStoreCesium = {
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZDQ4OGYzYi0zNjBmLTQ1ZTAtODUwNS0xNDgyYjA4NDRjYTMiLCJpZCI6NzQ5ODIsImlhdCI6MTYzODI1OTc1Mn0.pz3a2LRR9kAkSV5m8X3WdnE0RsimkJRJWld0PvHGThk',
   tles: null,
   rsoParams: null,
-  satrecs: [],
   primarySatColor: Cesium.Color.GOLD,
   secondarySatColor: Cesium.Color.DARKORCHID,
   apartColor: Cesium.Color.GREEN,
@@ -79,23 +78,22 @@ export const viewerSlice = createSlice({
         }),
       })
 
-      state.viewer = viewer
-      state.camera = viewer.camera
-      state.scene = state.viewer.scene
-      state.scene.globe.enableLighting = true
-      state.czmlDataSource = new Cesium.CzmlDataSource()
+      const camera = viewer.camera
+      const scene = viewer.scene
+      scene.globe.enableLighting = true
+      const czmlDataSource = new Cesium.CzmlDataSource()
+      return { ...state, viewer, camera, scene, czmlDataSource }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(drawRsos.fulfilled, (state, { payload }) => {
-        const currentState = current(state)
         const worker = new Worker('/script/tle2czml.js')
         const { tles, rsoParams } = payload
-        updateCZML({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
-        return { ...currentState, tles, rsoParams }
+        updateCZML<TdrawRsos>({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
+        return { ...state, tles, rsoParams }
       })
-      .addCase(drawConjuctions.fulfilled, (state, { payload }) => {
+      .addCase(drawConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
         const worker = new Worker('/script/tle2czml.js')
         const { tles, rsoParams } = payload
@@ -104,7 +102,7 @@ export const viewerSlice = createSlice({
           prevSid: payload.sid,
           czmlDataSource: currentState.czmlDataSource,
         })
-        updateCZML({
+        updateCZML<TdrawConjuctions>({
           initialTimeISOString: payload.tca,
           duration: 0,
           intervalUnitTime: 600,
@@ -115,17 +113,19 @@ export const viewerSlice = createSlice({
         })
         return { ...currentState, tles, rsoParams }
       })
-      .addCase(drawLcaConjuctions.fulfilled, (state, { payload }) => {
+      .addCase(drawLcaConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
         const worker = new Worker('/script/tle2czml.js')
-        const { tles, rsoParams } = payload
+        const { tles, rsoParams, endInterval } = payload
+
         clean({ czmlDataSource: currentState.czmlDataSource })
-        updateCZML({
+        updateCZML<TdrawLcaConjuctions>({
           callback: drawCzmlOfLaunchConjuctions,
           ...currentState,
           ...payload,
-          initialTimeISOString: payload.predictionEpochTime,
+          initialTimeISOString: payload.launchEpochTime,
           worker,
+          duration: endInterval,
         })
         return { ...currentState, tles, rsoParams }
       })
@@ -134,12 +134,13 @@ export const viewerSlice = createSlice({
         const worker = new Worker('/script/tle2czml.js')
         const { tles, rsoParams } = payload
         clean({ czmlDataSource: currentState.czmlDataSource })
-        updateCZML({
+        updateCZML<TDrawWc>({
           callback: drawCzmlOfWatchaCapture,
           ...currentState,
           ...payload,
           initialTimeISOString: payload.epochTime,
           worker,
+          duration: 3600,
         })
         return { ...currentState, tles, rsoParams }
       })

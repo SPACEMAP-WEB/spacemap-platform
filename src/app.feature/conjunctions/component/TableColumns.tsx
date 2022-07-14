@@ -4,13 +4,13 @@ import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/ty
 type ColumnProps = {
   queryParams: PPDBSearchParamsType
   customPageSize: number
-  viewConjucntions
+  viewConjunctions: (any) => void
 }
 
 export const COLUMNS = ({
   queryParams,
   customPageSize,
-  viewConjucntions,
+  viewConjunctions,
 }: ColumnProps): Column<PPDBDataType>[] => [
   {
     Header: 'Index',
@@ -54,7 +54,7 @@ export const COLUMNS = ({
             cursor: 'pointer',
           }}
           onClick={() => {
-            viewConjucntions(rowObj)
+            viewConjunctions(rowObj)
           }}
           src={'/svg/open-eye.svg'}
           alt="View"
