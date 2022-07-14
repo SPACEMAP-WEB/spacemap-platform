@@ -126,7 +126,7 @@ const SearchModal = ({
       {isWatcherModalVisible && (
         <WarningModal
           handleRequestModalCancel={handleClose}
-          message={"It isn't open from 12:00 to 18:00."}
+          message={"It isn't open from 15:00 to 21:00."}
         />
       )}
     </>

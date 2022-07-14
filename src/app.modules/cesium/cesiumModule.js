@@ -161,6 +161,7 @@ class CesiumModule {
       worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
       worker.onmessage = (e) => {
         viewer.dataSources.removeAll()
+        console.log(e.data)
         czmlDataSource.load(e.data).then(function (ds) {
           viewer.dataSources.add(ds)
           const clockViewModel = viewer.clockViewModel
