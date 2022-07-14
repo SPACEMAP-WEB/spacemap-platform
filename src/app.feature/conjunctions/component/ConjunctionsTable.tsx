@@ -4,7 +4,7 @@ import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/ty
 import { useDebounce } from '@app.modules/hooks/useDebounce'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
-import { usePagination, useTable } from 'react-table'
+import { CellProps, Column, usePagination, useTable } from 'react-table'
 import styled from 'styled-components'
 import { tableWidthStyle } from '../style/tableStyle'
 import Pagination from '../../../app.components/Pagination'
@@ -14,6 +14,7 @@ import { useAppDispatch } from 'src/app.store/config/configureStore'
 import { useQueryGetPPDB } from '../query/useQueryPPDB'
 import { useModal } from '@app.modules/hooks/useModal'
 import { drawConjuctions } from 'src/app.store/cesium/cesiumReducer'
+import timeCounter from '@app.modules/util/timeCounter'
 
 type TableProps = {
   queryParams: PPDBSearchParamsType
@@ -45,7 +46,7 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
 
   const columns = useMemo(
     () => COLUMNS({ queryParams, customPageSize, viewConjucntions }),
-    [queryParams]
+    [queryParams, timeFormat, timeCounter]
   )
 
   const data = useMemo(() => tableData, [tableData])
@@ -73,7 +74,21 @@ const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) =>
       manualPagination: true,
       pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
-    usePagination
+    usePagination,
+    (hooks) =>
+      hooks.visibleColumns.push((columns: Column<PPDBDataType>[]) => {
+        columns[3] = {
+          Header: 'TCA/DCA',
+          Cell: ({ row }: CellProps<PPDBDataType>) => {
+            const formattedValue =
+              row.original['tca/dca'].length > 7 && row.original['tca/dca'].includes('GMT')
+                ? timeCounter(row.original['tca/dca'])
+                : row.original['tca/dca']
+            return <>{formattedValue}</>
+          },
+        }
+        return columns
+      })
   )
 
   useEffect(() => {
