@@ -33,7 +33,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app.modules/cesium/cesiumModule.js", "node_modules/@types/react-table-config.d.ts"  ],
+, "src/app.modules/cesium/cesiumModule.js", "node_modules/@types/react-table-config.d.ts", "src/app.modules/hooks/useRemainingTime.ts"  ],
   "exclude": [
     "node_modules"
   ]

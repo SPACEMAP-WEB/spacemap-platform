@@ -5,7 +5,7 @@ import { useModal } from '@app.modules/hooks/useModal'
 import React, { useRef, useState } from 'react'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import styled from 'styled-components'
-import { isCalculatableDate } from '../module/dateHandle'
+import { isCalculatableDate } from '@app.modules/util/calculatableDateHandler'
 import { useMutationPostWCDB } from '../query/useMutationWCDB'
 import { WCDBResponseType } from '../types/watcherCatcher'
 

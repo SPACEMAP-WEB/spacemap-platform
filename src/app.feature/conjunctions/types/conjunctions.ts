@@ -37,29 +37,17 @@ export type PPDBResponseDataType = {
   conjunctions: ConjunctionsDataType[]
 }
 
+export type PPDBResponseDataCamelType = {
+  totalCount: number
+  result: ConjunctionsDataType[]
+}
+
 export type PPDBResponseType = ResponseType & {
   data: PPDBResponseDataType
 }
 
-export type PPDBTableColumnType = {
-  index: number
-  primary: number
-  secondary: number
-  dca: number
-  tca: string
-  start: string
-  end: string
-}
-
 export type PPDBQueryKeyType = 'sort' | 'dec' | 'satellite'
 export type SortType = 'tcaTime' | 'dca' | 'probability'
-
-// use it when it is necessary
-export type QueryValueType = {
-  sort?: SortType
-  dec: '-'
-  satellite: number | string
-}
 
 export type PPDBSearchParamsType = {
   limit: number

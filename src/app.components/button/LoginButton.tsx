@@ -21,8 +21,8 @@ const Button = () => {
 
   return (
     <ButtonWrapper>
-      {login && <div className="login-user">{`${user.nickname}님`}</div>}
-      <PrimaryButton className="login-button" onClick={handleSnsLogin}>
+      {login && <div className="login-user">{`${user.nickname}`}</div>}
+      <PrimaryButton borderWeight={1} className="login-button" onClick={handleSnsLogin}>
         {login ? 'Sign Out' : 'Sign In'}
       </PrimaryButton>
     </ButtonWrapper>
@@ -41,5 +41,10 @@ const ButtonWrapper = styled.div`
     font-size: 1rem;
     color: white;
     margin-right: 10px;
+  }
+  .login-button {
+    @media screen and (min-width: 1920px) {
+      width: 150px;
+    }
   }
 `

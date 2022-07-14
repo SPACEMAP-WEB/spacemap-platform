@@ -3,6 +3,7 @@ import moment from 'moment'
 import api from '@app.modules/api'
 import { API_TLES, API_RSOS } from '@app.modules/keyFactory'
 import { twoline2satrec } from 'satellite.js'
+
 class CesiumModule {
   constructor() {
     // console.log('construct')
@@ -70,9 +71,6 @@ class CesiumModule {
         viewer.dataSources.removeAll()
         czmlDataSource.load(e.data).then(function (ds) {
           viewer.dataSources.add(ds)
-          // const clockViewModel = viewer.clockViewModel
-          // clockViewModel.startTime = initialTime.toISOString()
-          // clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
           makePair(pid, sid, from, tca, to).then((pairCzml) => {
             czmlDataSource.process(pairCzml).then(function (ds) {
               const primarySat = ds.entities.getById(pid)
@@ -169,12 +167,9 @@ class CesiumModule {
           const clockViewModel = viewer.clockViewModel
           clockViewModel.startTime = initialTime.toISOString()
           clockViewModel.endTime = initialTime.add(7, 'd').toISOString()
-          // console.log('!!!!')
-          console.log(trajcetoryCzml)
           czmlDataSource.process(trajcetoryCzml).then(function (ds) {
             viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
             viewer.timeline.updateFromClock()
-            // console.log('!!!')
             for (const currRow of lpdb) {
               const pairCzml = makePair(
                 currRow.primary,
@@ -241,7 +236,9 @@ class CesiumModule {
                 currRow.tca,
                 currRow.end
               )
-              czmlDataSource.process(pairCzml).then(function (ds) {})
+              czmlDataSource.process(pairCzml).then(function (ds) {
+                console.log(ds)
+              })
             }
           })
           worker.terminate()
@@ -479,7 +476,7 @@ class CesiumModule {
     return pairCzml
   }
 
-  async initiailze(initialTime, duration, intervalUnitTime) {
+  async initialize(initialTime, duration, intervalUnitTime) {
     Cesium.Ion.defaultAccessToken =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZDQ4OGYzYi0zNjBmLTQ1ZTAtODUwNS0xNDgyYjA4NDRjYTMiLCJpZCI6NzQ5ODIsImlhdCI6MTYzODI1OTc1Mn0.pz3a2LRR9kAkSV5m8X3WdnE0RsimkJRJWld0PvHGThk'
 

@@ -1,10 +1,4 @@
-import moment from 'moment'
-
-const CesiumComponent = ({ cesiumModule }) => {
-  // const today = moment().add(-1, 'days')
-  // console.log('CREATED')
-  const today = moment()
-  cesiumModule.initiailze(today, 3600, 600)
+const CesiumComponent = () => {
   return <></>
 }
 

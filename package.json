@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "SPACEMAP_NODE_ENV=production next build",
-    "build:dev": "SPACEMAP_NODE_ENV=dev next build",
+    "build:dev": "SPACEMAP_NODE_ENV=development next build",
     "start": "SPACEMAP_NODE_ENV=production next start -p 8080",
     "start:dev": "SPACEMAP_NODE_ENV=development next start -p 8080",
     "start:local": "SPACEMAP_NODE_ENV=local next dev -p 8080",

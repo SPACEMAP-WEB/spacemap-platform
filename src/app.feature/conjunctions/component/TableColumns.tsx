@@ -4,13 +4,13 @@ import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/ty
 type ColumnProps = {
   queryParams: PPDBSearchParamsType
   customPageSize: number
-  cesiumModule
+  viewConjucntions
 }
 
 export const COLUMNS = ({
   queryParams,
   customPageSize,
-  cesiumModule,
+  viewConjucntions,
 }: ColumnProps): Column<PPDBDataType>[] => [
   {
     Header: 'Index',
@@ -40,6 +40,13 @@ export const COLUMNS = ({
   {
     Header: 'View',
     accessor: (row) => {
+      const rowObj = {
+        pid: row.primary,
+        sid: row.secondary,
+        from: row.start,
+        tca: row.tca,
+        to: row.end,
+      }
       return (
         <img
           style={{
@@ -47,7 +54,7 @@ export const COLUMNS = ({
             cursor: 'pointer',
           }}
           onClick={() => {
-            cesiumModule.drawConjunctions(row.primary, row.secondary, row.start, row.tca, row.end)
+            viewConjucntions(rowObj)
           }}
           src={'/svg/open-eye.svg'}
           alt="View"

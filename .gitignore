@@ -34,3 +34,7 @@ yarn-error.log*
 
 # cesium
 /public/cesium
+
+# AWS
+Procfile
+build.sh

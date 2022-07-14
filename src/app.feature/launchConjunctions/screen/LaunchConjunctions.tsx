@@ -9,7 +9,7 @@ import AssessmentModal from '../components/AssessmentModal'
 import LPDBTable from '../components/LPDBTable'
 import SuccessModal from '../components/SuccessModal'
 
-const LaunchConjunctions = ({ cesiumModule }) => {
+const LaunchConjunctions = () => {
   const { isVisible, handleCloseModal } = useModal('LAUNCHCONJUNCTIONS')
   const {
     user: { email },
@@ -46,13 +46,7 @@ const LaunchConjunctions = ({ cesiumModule }) => {
       )
     } else if (LPDBData.data.length > 0 || isLPDBTableOpen) {
       refetchLPDBData()
-      return (
-        <LPDBTable
-          LPDBData={LPDBData.data}
-          handleNewLaunchClick={handleNewLaunchClick}
-          cesiumModule={cesiumModule}
-        />
-      )
+      return <LPDBTable LPDBData={LPDBData.data} handleNewLaunchClick={handleNewLaunchClick} />
     }
   }
 
@@ -70,7 +64,9 @@ const LaunchConjunctions = ({ cesiumModule }) => {
       )}
       {isLoading && <div>loading...</div>}
       {isSuccess && (
-        <LaunchConjunctionsWrapper>{isVisible && renderModal()}</LaunchConjunctionsWrapper>
+        <LaunchConjunctionsWrapper isVisible={isVisible}>
+          {isVisible && renderModal()}
+        </LaunchConjunctionsWrapper>
       )}
       {isSuccessModalOpen && <SuccessModal setIsSuccessModalOpen={setIsSuccessModalOpen} />}
     </>
@@ -79,4 +75,8 @@ const LaunchConjunctions = ({ cesiumModule }) => {
 
 export default LaunchConjunctions
 
-const LaunchConjunctionsWrapper = styled.div``
+type LaunchConjunctionsProps = {
+  isVisible: boolean
+}
+
+const LaunchConjunctionsWrapper = styled.div<LaunchConjunctionsProps>``

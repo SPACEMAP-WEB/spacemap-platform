@@ -1,6 +1,6 @@
 import { Table } from '@app.components/Table'
+import { slideIn, slideOut } from 'src/app.styled/keyFrames'
 import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
-import CesiumModule from '@app.modules/cesium/cesiumModule'
 import { useModal } from '@app.modules/hooks/useModal'
 import React, { useEffect, useRef, useState } from 'react'
 import { CellProps, Column, useTable } from 'react-table'
@@ -12,10 +12,9 @@ import LPDBDetailTable from './LPDBDetailTable'
 type LPDBProps = {
   LPDBData: LPDBResponseDataType[]
   handleNewLaunchClick: () => void
-  cesiumModule: CesiumModule
 }
 
-const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) => {
+const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
   const [isDetailClicked, setIsDetailClicked] = useState<boolean>(false)
   const [selectedLPDBId, setSelectedLPDBId] = useState<string>('')
   const { columns, data } = useLPDBTableData(LPDBData)
@@ -95,7 +94,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
 
   return (
     <>
-      <LPDBTableWrapper ref={tableContainerRef}>
+      <LPDBTableWrapper isVisible={isLaunchConjunctionsClicked} ref={tableContainerRef}>
         {!isDetailClicked ? (
           <>
             <div className="launch-conjunction-header">
@@ -131,11 +130,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
             </div>
           </>
         ) : (
-          <LPDBDetailTable
-            handleBackButton={handleBackButton}
-            LPDBId={selectedLPDBId}
-            cesiumModule={cesiumModule}
-          />
+          <LPDBDetailTable handleBackButton={handleBackButton} LPDBId={selectedLPDBId} />
         )}
       </LPDBTableWrapper>
     </>
@@ -144,7 +139,11 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick, cesiumModule }: LPDBProps) 
 
 export default LPDBTable
 
-const LPDBTableWrapper = styled.div`
+type LPDBWrapperProps = {
+  isVisible: boolean
+}
+
+const LPDBTableWrapper = styled.div<LPDBWrapperProps>`
   width: 500px;
   padding: 1.5rem;
   background-color: rgba(84, 84, 84, 0.4);
@@ -159,6 +158,7 @@ const LPDBTableWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  animation: ${(props) => (props.isVisible ? slideIn : slideOut)} 1s;
   .launch-conjunction-header {
     width: 100%;
     display: flex;

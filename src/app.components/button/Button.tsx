@@ -5,6 +5,7 @@ type PrimaryButtonProps = {
   height?: number
   fontSize?: number
   isDisabled?: boolean
+  borderWeight?: number
 }
 
 export const PrimaryButton = styled.button<PrimaryButtonProps>`
@@ -12,7 +13,8 @@ export const PrimaryButton = styled.button<PrimaryButtonProps>`
   height: ${({ height }) => (height ? `${height}px` : '40px')};
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : '1rem')};
   cursor: pointer;
-  background-color: rgba(124, 124, 124, 0.4);
+  background-color: rgba(124, 124, 124, 0.5);
+  border: ${({borderWeight}) => borderWeight ? `${borderWeight}px solid #bebebe` : `none`};
   color: ${({ isDisabled }) => (isDisabled ? '#7a7a7a' : '#e2e2e2')};
   z-index: 4;
   border-radius: 10px;
@@ -30,8 +32,8 @@ type SecondaryButtonProps = {
 }
 
 export const SecondaryButton = styled.button<SecondaryButtonProps>`
-  width: 100px;
-  height: 36px;
+  width: ${({ width }) => (width ? `${width}px` : '100px')};
+  height: ${({ height }) => (height ? `${height}px` : '36px')};
   font-size: 12px;
   background-color: rgba(255, 255, 255, 0.13);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);

@@ -30,27 +30,17 @@
     "/no-useless-escape": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "no-empty-interface": "off",
-    "comma-dangle": "off",
     "@typescript-eslint/comma-dangle": [
       "error",
       {
         "arrays": "always-multiline",
         "objects": "always-multiline",
-        "imports": "never",
+        "imports": "always-multiline",
         "exports": "never",
         "functions": "never"
       }
     ],
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto",
-        "useTabs": false,
-        "singleQuote": true,
-        "semi": false,
-        "bracketSpacing": true
-      }
-    ],
+    "prettier/prettier": "off",
     "indent": "off",
     "prefer-const": "off",
     "semi": ["error", "never"],

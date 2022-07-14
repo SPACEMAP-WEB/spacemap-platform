@@ -7,18 +7,19 @@ import styled from 'styled-components'
 import LoginButton from './button/LoginButton'
 
 import Logo from './Logo'
-import SideMenu from './SideMenu'
+import SideMenu from '../app.feature/sideMenu/screen/SideMenu'
+import Favorites from '@app.feature/favorites/screen/Favorites'
 
-const MainLayout = ({ cesiumModule }) => {
-  // console.log('MAIN')
+const MainLayout = () => {
   return (
     <MainLayoutWrapper>
       <Logo />
       <SideMenu />
       <LoginButton />
-      <Conjunctions cesiumModule={cesiumModule} />
-      <LaunchConjunctions cesiumModule={cesiumModule} />
-      <WatcherCatcher cesiumModule={cesiumModule} />
+      <Conjunctions />
+      <LaunchConjunctions />
+      <WatcherCatcher />
+      <Favorites />
       <SignInModal />
     </MainLayoutWrapper>
   )

@@ -1,60 +1,54 @@
 import { Table } from '@app.components/Table'
 import { ppdbDataRefactor } from '@app.feature/conjunctions/module/ppdbDataRefactor'
-import { useQueryGetPPDB } from '@app.feature/conjunctions/query/useQueryPPDB'
 import { PPDBDataType, PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
-import { useQueryFavorite } from '@app.feature/favorite/query/useQueryFavorite'
 import { useDebounce } from '@app.modules/hooks/useDebounce'
-import { useModal } from '@app.modules/hooks/useModal'
-import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
 import React, { useEffect, useMemo, useState } from 'react'
-import { usePagination, useTable } from 'react-table'
+import { CellProps, Column, usePagination, useTable } from 'react-table'
 import styled from 'styled-components'
-import { useInstance } from '../module/useInstance'
 import { tableWidthStyle } from '../style/tableStyle'
 import Pagination from '../../../app.components/Pagination'
 import { COLUMNS } from './TableColumns'
+import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
+import { useAppDispatch } from 'src/app.store/config/configureStore'
+import { useQueryGetPPDB } from '../query/useQueryPPDB'
+import { useModal } from '@app.modules/hooks/useModal'
+import { drawConjuctions } from 'src/app.store/cesium/cesiumReducer'
+import timeCounter from '@app.modules/util/timeCounter'
 
 type TableProps = {
-  toggle: number
-  setFavoriteData: React.Dispatch<React.SetStateAction<FilterSelectType[]>>
   queryParams: PPDBSearchParamsType
   setQueryParams: React.Dispatch<React.SetStateAction<PPDBSearchParamsType>>
-  cesiumModule
   size: number
 }
 
-const ConjunctionsTable = ({
-  toggle,
-  setFavoriteData,
-  queryParams,
-  setQueryParams,
-  cesiumModule,
-  size,
-}: TableProps) => {
+const ConjunctionsTable = ({ queryParams, setQueryParams, size }: TableProps) => {
   const [tableData, setTableData] = useState<PPDBDataType[]>([])
   const [customPageSize, setCustomPageSize] = useState(size)
-  const { isVisible } = useModal('CONJUNCTIONS')
-  const isConjunctionsClicked = isVisible
+  const dispatch = useAppDispatch()
+  const { isVisible: isConjunctionsClicked } = useModal('CONJUNCTIONS')
   const debounceFn = useDebounce(() => {
     const size = responsiveCellSizeHandler(window.innerHeight)
     setCustomPageSize(size)
     setPageSize(size)
     setQueryParams({ ...queryParams, limit: size })
   }, 800)
+  const { timeFormat, handleSetTimeFormat } = useTimeFormatHandler()
 
   const { data: fetchedPPDBData, isLoading } = useQueryGetPPDB({
     query: queryParams,
     isConjunctionsClicked,
-    toggle,
   })
 
-  const { data: queryFavorite, isSuccess } = useQueryFavorite('')
+  const viewConjucntions = (rowObj) => {
+    dispatch(drawConjuctions({ ...rowObj }))
+  }
 
   const columns = useMemo(
-    () => COLUMNS({ queryParams, customPageSize, cesiumModule }),
-    [queryParams]
+    () => COLUMNS({ queryParams, customPageSize, viewConjucntions }),
+    [queryParams, timeFormat, timeCounter]
   )
+
   const data = useMemo(() => tableData, [tableData])
 
   const {
@@ -81,36 +75,36 @@ const ConjunctionsTable = ({
       pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
     usePagination,
-    (hooks) => {
-      hooks.useInstance.push(useInstance)
-    }
+    (hooks) =>
+      hooks.visibleColumns.push((columns: Column<PPDBDataType>[]) => {
+        columns[3] = {
+          Header: 'TCA/DCA',
+          Cell: ({ row }: CellProps<PPDBDataType>) => {
+            const formattedValue =
+              row.original['tca/dca'].length > 7 && row.original['tca/dca'].includes('GMT')
+                ? timeCounter(row.original['tca/dca'])
+                : row.original['tca/dca']
+            return <>{formattedValue}</>
+          },
+        }
+        return columns
+      })
   )
-
-  const requestFavoriteData = async () => {
-    if (isSuccess)
-      setFavoriteData([
-        { label: 'All', value: 'ALL' },
-        ...queryFavorite?.interestedArray?.map((sat) => ({
-          label: String(sat.id),
-          value: String(sat.id),
-        })),
-      ])
-  }
 
   useEffect(() => {
     setQueryParams({ ...queryParams, page: pageIndex })
   }, [pageIndex])
 
   useEffect(() => {
-    toggle && requestFavoriteData()
-  }, [toggle, queryFavorite])
+    handleSetTimeFormat('UTC')
+  }, [])
 
   useEffect(() => {
     if (fetchedPPDBData) {
-      const newData = ppdbDataRefactor(fetchedPPDBData.result)
+      const newData = ppdbDataRefactor(fetchedPPDBData.result, timeFormat)
       setTableData(newData)
     }
-  }, [fetchedPPDBData])
+  }, [fetchedPPDBData, timeFormat])
 
   const handlePage = async (callback) => {
     callback()
@@ -154,16 +148,24 @@ const ConjunctionsTable = ({
           <>
             <tbody {...getTableBodyProps()}>
               {page.map((row, index) => {
-                // console.log(row)
                 prepareRow(row)
                 return (
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
                       return (
                         <td
-                          rowSpan={cell.column.id === 'Index' && index % 2 === 0 ? 2 : 1}
+                          rowSpan={
+                            (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                            index % 2 === 0
+                              ? 2
+                              : 1
+                          }
                           style={{
-                            display: cell.column.id === 'Index' && index % 2 === 1 ? 'none' : null,
+                            display:
+                              (cell.column.id === 'Index' || cell.column.id === 'View') &&
+                              index % 2 === 1
+                                ? 'none'
+                                : null,
                           }}
                           {...cell.getCellProps()}
                         >

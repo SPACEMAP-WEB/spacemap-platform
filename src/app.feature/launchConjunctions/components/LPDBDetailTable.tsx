@@ -1,22 +1,21 @@
 import { Table } from '@app.components/Table'
-import CesiumModule from '@app.modules/cesium/cesiumModule'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
+import { drawLcaConjuctions } from 'src/app.store/cesium/cesiumReducer'
+import { useAppDispatch } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import { lpdbDataRefactor } from '../module/lpdbDataRefactor'
-import { useInstance } from '../module/useInstance'
 import { useQueryGetLPDBDetail, useQueryGetTrajectory } from '../query/useQueryLPDB'
 import { LPDBDataType } from '../types/launchConjunctions'
 
 type LPDBDetailProps = {
   LPDBId: string
   handleBackButton: () => void
-  cesiumModule: CesiumModule
 }
 
-const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailProps) => {
+const LPDBDetailTable = ({ handleBackButton, LPDBId }: LPDBDetailProps) => {
+  const dispatch = useAppDispatch()
   const { data: LPDBDetailData } = useQueryGetLPDBDetail(LPDBId)
-  // const { columns, data } = useLPDBDetailTableData(lpdbDataRefactor(LPDBDetailData?.lpdb))
   const { data: downloadData } = useQueryGetTrajectory(LPDBDetailData?.trajectoryPath)
   const [tableData, setTableData] = useState<LPDBDataType[]>([] as LPDBDataType[])
 
@@ -29,12 +28,14 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
   useEffect(() => {
     if (LPDBDetailData && downloadData) {
       const newData = lpdbDataRefactor(LPDBDetailData.lpdb)
-      cesiumModule.drawLaunchConjunctions(
-        downloadData.data,
-        LPDBDetailData.predictionEpochTime,
-        LPDBDetailData.launchEpochTime,
-        LPDBDetailData.trajectoryLength,
-        newData
+      dispatch(
+        drawLcaConjuctions({
+          trajectory: downloadData.data,
+          predictionEpochTime: LPDBDetailData.predictionEpochTime,
+          launchEpochTime: LPDBDetailData.launchEpochTime,
+          trajectoryLength: LPDBDetailData.trajectoryLength,
+          lpdb: newData,
+        })
       )
     }
   }, [LPDBDetailData, downloadData])
@@ -68,15 +69,10 @@ const LPDBDetailTable = ({ handleBackButton, LPDBId, cesiumModule }: LPDBDetailP
     []
   )
 
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
-    {
-      columns,
-      data,
-    },
-    (hooks) => {
-      hooks.useInstance.push(useInstance)
-    }
-  )
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
+    columns,
+    data,
+  })
 
   return (
     <>
