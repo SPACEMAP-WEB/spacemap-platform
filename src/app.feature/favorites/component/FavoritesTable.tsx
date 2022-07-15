@@ -10,6 +10,7 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
 import { FilterSelectType } from '@app.modules/types'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
+import timeCounter from '@app.modules/util/timeCounter'
 import React, { useEffect, useMemo, useState } from 'react'
 import { usePagination, useTable } from 'react-table'
 import { drawConjunctions } from 'src/app.store/cesium/cesiumReducer'
@@ -90,7 +91,21 @@ const FavoritesTable = ({
       manualPagination: true,
       pageCount: Math.ceil(fetchedPPDBData?.totalCount / customPageSize),
     },
-    usePagination
+    usePagination,
+    (hooks) =>
+      hooks.visibleColumns.push((columns: Column<PPDBDataType>[]) => {
+        columns[3] = {
+          Header: 'TCA/DCA',
+          Cell: ({ row }: CellProps<PPDBDataType>) => {
+            const formattedValue =
+              row.original['tca/dca'].length > 7 && row.original['tca/dca'].includes('GMT')
+                ? timeCounter(row.original['tca/dca'])
+                : row.original['tca/dca']
+            return <>{formattedValue}</>
+          },
+        }
+        return columns
+      })
   )
 
   const requestFavoriteData = async () => {

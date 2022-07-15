@@ -47,11 +47,8 @@ const Favorites = () => {
     favoriteConjunctionsRef.current.style.display = close ? 'none' : 'block'
   }, [close, conjunctionsRef.current])
 
-  useEffect(() => {
-    mutate(isMailServiceSelected)
-  }, [isMailServiceSelected])
-
   const handleMailService = () => {
+    mutate(!isMailServiceSelected)
     setIsMailServiceSelected(!isMailServiceSelected)
   }
 
