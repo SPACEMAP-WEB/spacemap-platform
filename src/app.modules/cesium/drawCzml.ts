@@ -40,6 +40,7 @@ export const drawCzmlOfConjuctions = async (
   primarySat.label.pixelOffset = new Cesium.ConstantProperty(new Cesium.Cartesian2(14, 14))
   primarySat.label.show = new Cesium.ConstantProperty(true)
 
+
   const secondarySat = newDs.entities.getById(String(sid))
   secondarySat.path.material = new Cesium.PolylineOutlineMaterialProperty({
     outlineColor: secondarySatColor,
