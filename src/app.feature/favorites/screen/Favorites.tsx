@@ -225,10 +225,12 @@ const FavoritesWrapper = styled.div<FavoriteStyleProps>`
     overflow-y: scroll;
     position: relative;
     ::-webkit-scrollbar {
-      width: 6.5px;
+      width: 12px;
       background-color: transparent;
     }
     ::-webkit-scrollbar-thumb {
+      border: 3px solid rgba(0, 0, 0, 0);
+      background-clip: padding-box;
       background-color: #8d8d8d77;
       border-radius: 50px;
     }
