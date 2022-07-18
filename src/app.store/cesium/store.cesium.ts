@@ -95,7 +95,7 @@ export const viewerSlice = createSlice({
       })
       .addCase(drawConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker('/script/tle2czml.js')
+        const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams } = payload
         clean({
           prevPid: payload.pid,
@@ -115,7 +115,7 @@ export const viewerSlice = createSlice({
       })
       .addCase(drawLcaConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker('/script/tle2czml.js')
+        const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams, endInterval } = payload
 
         clean({ czmlDataSource: currentState.czmlDataSource })
@@ -131,7 +131,7 @@ export const viewerSlice = createSlice({
       })
       .addCase(drawWatchaCapture.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker('/script/tle2czml.js')
+        const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams } = payload
         clean({ czmlDataSource: currentState.czmlDataSource })
         updateCZML<TDrawWc>({
