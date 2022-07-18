@@ -224,6 +224,14 @@ const FavoritesWrapper = styled.div<FavoriteStyleProps>`
     height: ${({ size }) => tableHeightHandler(size as SizeType)};
     overflow-y: scroll;
     position: relative;
+    ::-webkit-scrollbar {
+      width: 6.5px;
+      background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #8d8d8d77;
+      border-radius: 50px;
+    }
     .bookmark-wrapper {
       width: 100%;
       display: flex;
