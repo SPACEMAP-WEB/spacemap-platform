@@ -115,42 +115,44 @@ const Favorites = () => {
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
-          <section className="favorites-ppdb-container" ref={conjunctionsRef}>
-            <MainTitle>Favorites</MainTitle>
-            <div className="header-group">
-              <Search
-                handleSearch={handleFavoriteSearch}
-                searchValue={searchValue}
-                handleValueChange={handleSearchValueChange}
-              />
-            </div>
-            <div className="favorite-filter">
-              <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
-            </div>
-
-            <ConfigBox sortList={sortList} />
-          </section>
-
-          <div className="scroll-wrapper" onScroll={scrollTrack} ref={scrollWrapperRef}>
-            <FavoritesTable
-              setFavoriteData={setFavoriteData}
-              setIsMailServiceSelected={setIsMailServiceSelected}
-              queryParams={queryParams}
-              setQueryParams={setQueryParams}
-              size={size}
-            />
-            <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
-              <SubTitle>Subscribe New Assets!</SubTitle>
-              <div className="bookmark-table-wrapper">
-                <FavoriteSubscription login={login} />
+          <div ref={conjunctionsRef}>
+            <section className="favorites-ppdb-container">
+              <MainTitle>Favorites</MainTitle>
+              <div className="header-group">
+                <Search
+                  handleSearch={handleFavoriteSearch}
+                  searchValue={searchValue}
+                  handleValueChange={handleSearchValueChange}
+                />
               </div>
-            </section>
-            <div className="scroll-detecter" ref={scrollDetecterRef} />
-          </div>
+              <div className="favorite-filter">
+                <FilterSelect filterOptions={favoriteData} onChange={handleFavoriteIdChange} />
+              </div>
 
-          <div className="mail-service-wrapper">
-            <input type="checkbox" checked={isMailServiceSelected} onChange={handleMailService} />
-            <p>Receive mail about your favorite assets?</p>
+              <ConfigBox sortList={sortList} />
+            </section>
+
+            <div className="scroll-wrapper" onScroll={scrollTrack} ref={scrollWrapperRef}>
+              <FavoritesTable
+                setFavoriteData={setFavoriteData}
+                setIsMailServiceSelected={setIsMailServiceSelected}
+                queryParams={queryParams}
+                setQueryParams={setQueryParams}
+                size={size}
+              />
+              <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
+                <SubTitle>Subscribe New Assets!</SubTitle>
+                <div className="bookmark-table-wrapper">
+                  <FavoriteSubscription login={login} />
+                </div>
+              </section>
+              <div className="scroll-detecter" ref={scrollDetecterRef} />
+            </div>
+
+            <div className="mail-service-wrapper">
+              <input type="checkbox" checked={isMailServiceSelected} onChange={handleMailService} />
+              <p>Receive mail about your favorite assets?</p>
+            </div>
           </div>
         </FavoritesWrapper>
       )}
