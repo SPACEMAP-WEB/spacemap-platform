@@ -88,14 +88,14 @@ export const viewerSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(drawRsos.fulfilled, (state, { payload }) => {
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        const worker = new Worker(new URL('./worker.js', import.meta.url))
         const { tles, rsoParams } = payload
         updateCZML<TdrawRsos>({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
         return { ...state, tles, rsoParams }
       })
       .addCase(drawConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        const worker = new Worker(new URL('./worker.js', import.meta.url))
         const { tles, rsoParams } = payload
         clean({
           prevPid: payload.pid,
@@ -115,7 +115,7 @@ export const viewerSlice = createSlice({
       })
       .addCase(drawLcaConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        const worker = new Worker(new URL('./worker.js', import.meta.url))
         const { tles, rsoParams, endInterval } = payload
 
         clean({ czmlDataSource: currentState.czmlDataSource })
@@ -131,7 +131,7 @@ export const viewerSlice = createSlice({
       })
       .addCase(drawWatchaCapture.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        const worker = new Worker(new URL('./worker.js', import.meta.url))
         const { tles, rsoParams } = payload
         clean({ czmlDataSource: currentState.czmlDataSource })
         updateCZML<TDrawWc>({
