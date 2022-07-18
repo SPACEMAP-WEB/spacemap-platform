@@ -1,7 +1,5 @@
-importScripts(
-  'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.1.3/satellite.min.js'
-)
+import moment from 'moment'
+import * as satellite from 'satellite.js'
 
 self.addEventListener('message', async function (e) {
   const initialTimeWindow = e.data[0]

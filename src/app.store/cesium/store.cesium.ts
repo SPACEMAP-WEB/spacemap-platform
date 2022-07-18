@@ -88,7 +88,7 @@ export const viewerSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(drawRsos.fulfilled, (state, { payload }) => {
-        const worker = new Worker('/script/tle2czml.js')
+        const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams } = payload
         updateCZML<TdrawRsos>({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
         return { ...state, tles, rsoParams }

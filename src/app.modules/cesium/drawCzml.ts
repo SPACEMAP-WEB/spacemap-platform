@@ -1,6 +1,6 @@
 import * as Cesium from 'cesium'
 import moment from 'moment'
-import { makePair } from 'src/app.store/cesium/cesiumModules'
+import { createProperty, makePair } from 'src/app.store/cesium/cesiumModules'
 import {
   TdrawConjuctions,
   TdrawLcaConjuctions,
@@ -32,23 +32,23 @@ export const drawCzmlOfConjuctions = async (
   const pairCzml = makePair(pid, sid, from, tca, to)
   const newDs = await czmlDataSource.process(pairCzml)
   const primarySat = newDs.entities.getById(String(pid))
+
   primarySat.path.material = new Cesium.PolylineOutlineMaterialProperty({
     outlineColor: primarySatColor,
   })
-  primarySat.path.show = new Cesium.ConstantProperty(true)
-  primarySat.label.outlineColor = new Cesium.ConstantProperty(primarySatColor)
-  primarySat.label.pixelOffset = new Cesium.ConstantProperty(new Cesium.Cartesian2(14, 14))
-  primarySat.label.show = new Cesium.ConstantProperty(true)
-
+  primarySat.path.show = createProperty(true)
+  primarySat.label.outlineColor = createProperty(primarySatColor)
+  primarySat.label.pixelOffset = createProperty(new Cesium.Cartesian2(14, 14))
+  primarySat.label.show = createProperty(true)
 
   const secondarySat = newDs.entities.getById(String(sid))
   secondarySat.path.material = new Cesium.PolylineOutlineMaterialProperty({
     outlineColor: secondarySatColor,
   })
-  secondarySat.path.show = new Cesium.ConstantProperty(true)
-  secondarySat.label.outlineColor = new Cesium.ConstantProperty(secondarySatColor)
-  secondarySat.label.pixelOffset = new Cesium.ConstantProperty(new Cesium.Cartesian2(-14, -14))
-  secondarySat.label.show = new Cesium.ConstantProperty(true)
+  secondarySat.path.show = createProperty(true)
+  secondarySat.label.outlineColor = createProperty(secondarySatColor)
+  secondarySat.label.pixelOffset = createProperty(new Cesium.Cartesian2(-14, -14))
+  secondarySat.label.show = createProperty(true)
 
   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
   viewer.flyTo(newDs.entities.getById(`${pid}/${sid}`))
@@ -65,15 +65,18 @@ export const drawCzmlOfLaunchConjuctions = async (
   clockViewModel.stopTime = Cesium.JulianDate.fromIso8601(initialTime.add(7, 'd').toISOString())
   await czmlDataSource.process(trajectoryCzml)
   viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
-  lpdb.forEach(async (currRow) => {
-    const pairCzml = makePair(
-      currRow.primary,
-      currRow.secondary,
-      currRow.start,
-      currRow.tca,
-      currRow.end
-    )
+
+  let position: Cesium.Cartesian3
+
+  lpdb.forEach(async (currRow, idx) => {
+    const { primary, secondary, start, tca, end } = currRow
+    if (idx === 0)
+      position = ds.entities.getById(String(primary)).position.getValue(clockViewModel.startTime)
+    const pairCzml = makePair(primary, secondary, start, tca, end)
     await czmlDataSource.process(pairCzml)
+  })
+  viewer.camera.flyTo({
+    destination: new Cesium.Cartesian3(position.x * 4, position.y * 4, position.z * 4),
   })
 }
 
@@ -82,6 +85,9 @@ export const drawCzmlOfWatchaCapture = async (
   rest: { initialTime: moment.Moment } & TStateCesium & TDrawWc
 ) => {
   const { viewer, initialTime, siteCzml, siteConeCzml, czmlDataSource, epochTime, wcdb } = rest
+  const {
+    position: { cartesian },
+  } = siteCzml
   viewer.dataSources.add(ds)
   const clockViewModel = viewer.clockViewModel
   clockViewModel.startTime = Cesium.JulianDate.fromIso8601(initialTime.toISOString())
@@ -97,5 +103,8 @@ export const drawCzmlOfWatchaCapture = async (
       currRow.end
     )
     await czmlDataSource.process(pairCzml)
+    viewer.camera.flyTo({
+      destination: new Cesium.Cartesian3(cartesian[0] * 4, cartesian[1] * 4, cartesian[2] * 4),
+    })
   })
 }
