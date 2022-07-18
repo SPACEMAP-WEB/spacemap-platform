@@ -175,6 +175,8 @@ const FavoritesSubscriptionTable = ({ inputValue }: { inputValue: string }) => {
 
   useEffect(() => {
     window.addEventListener('resize', sizeFunction)
+
+    return window.removeEventListener('resize', sizeFunction)
   }, [])
 
   if (isLoading) return null

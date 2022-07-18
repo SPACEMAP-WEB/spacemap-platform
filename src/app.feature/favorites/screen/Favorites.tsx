@@ -16,11 +16,14 @@ import WarningModal from '@app.components/modal/WarningModal'
 import useFavoritesEventHandler from '../hooks/useFavoritesEventHandler'
 import { usePostMutationFavoriteMailService } from '../query/useMutationFavorite'
 import ConfigBox, { ConfigBoxProps } from '@app.components/ConfigBox'
+import tableHeightHandler, { SizeType } from '../module/tableHeightHandler'
 
 const Favorites = () => {
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const favoriteConjunctionsRef = useRef<HTMLDivElement>(null)
+  const scrollWrapperRef = useRef<HTMLDivElement>(null)
+  const scrollDetecterRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
     limit: size,
     page: 0,
@@ -46,6 +49,16 @@ const Favorites = () => {
     conjunctionsRef.current.style.display = close ? 'none' : 'block'
     favoriteConjunctionsRef.current.style.display = close ? 'none' : 'block'
   }, [close, conjunctionsRef.current])
+
+  const scrollTrack = () => {
+    if (!scrollWrapperRef.current || !scrollDetecterRef.current) return
+
+    const scrollWrapper = scrollWrapperRef.current
+    const scrollDetecter = scrollDetecterRef.current
+    const { scrollTop, scrollHeight, clientHeight } = scrollWrapper
+    const isScrollOnTheBottom = scrollTop + clientHeight === scrollHeight
+    scrollDetecter.style.visibility = isScrollOnTheBottom ? 'hidden' : 'visible'
+  }
 
   const handleMailService = () => {
     mutate(!isMailServiceSelected)
@@ -98,7 +111,7 @@ const Favorites = () => {
         />
       )}
       {login && isVisible && (
-        <FavoritesWrapper isConjunctionsClicked={isVisible}>
+        <FavoritesWrapper size={size} isConjunctionsClicked={isVisible}>
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
@@ -116,6 +129,9 @@ const Favorites = () => {
             </div>
 
             <ConfigBox sortList={sortList} />
+          </section>
+
+          <div className="scroll-wrapper" onScroll={scrollTrack} ref={scrollWrapperRef}>
             <FavoritesTable
               setFavoriteData={setFavoriteData}
               setIsMailServiceSelected={setIsMailServiceSelected}
@@ -123,14 +139,14 @@ const Favorites = () => {
               setQueryParams={setQueryParams}
               size={size}
             />
-          </section>
-
-          <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
-            <SubTitle>Subscribe New Assets!</SubTitle>
-            <div className="bookmark-table-wrapper">
-              <FavoriteSubscription login={login} />
-            </div>
-          </section>
+            <section className="bookmark-wrapper" ref={favoriteConjunctionsRef}>
+              <SubTitle>Subscribe New Assets!</SubTitle>
+              <div className="bookmark-table-wrapper">
+                <FavoriteSubscription login={login} />
+              </div>
+            </section>
+            <div className="scroll-detecter" ref={scrollDetecterRef} />
+          </div>
 
           <div className="mail-service-wrapper">
             <input type="checkbox" checked={isMailServiceSelected} onChange={handleMailService} />
@@ -144,11 +160,12 @@ const Favorites = () => {
 
 export default Favorites
 
-type TConjunctions = {
+type FavoriteStyleProps = {
   isConjunctionsClicked: boolean
+  size: number
 }
 
-const FavoritesWrapper = styled.div<TConjunctions>`
+const FavoritesWrapper = styled.div<FavoriteStyleProps>`
   width: 500px;
   padding: 1.5rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
@@ -165,14 +182,10 @@ const FavoritesWrapper = styled.div<TConjunctions>`
   gap: 1rem;
   animation: ${(props) => (props.isConjunctionsClicked ? slideIn : slideOut)} 1s;
   .favorites-ppdb-container {
+    width: 100%;
     margin-bottom: 20px;
   }
-  .bookmark-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-  }
+
   .btn-close {
     position: absolute;
     right: 1rem;
@@ -189,6 +202,7 @@ const FavoritesWrapper = styled.div<TConjunctions>`
     }
   }
   .header-group {
+    width: 100%;
     display: flex;
     margin-bottom: 15px;
   }
@@ -204,6 +218,27 @@ const FavoritesWrapper = styled.div<TConjunctions>`
     display: flex;
     align-items: center;
     gap: 1.5rem;
+  }
+
+  .scroll-wrapper {
+    height: ${({ size }) => tableHeightHandler(size as SizeType)};
+    overflow-y: scroll;
+    position: relative;
+    .bookmark-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: left;
+      margin-top: 1rem;
+    }
+    .scroll-detecter {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      background: linear-gradient(to bottom, rgba(84, 84, 84, 0), rgba(73, 73, 73, 0.8));
+      width: 100%;
+      height: 32px;
+    }
   }
 
   .mail-service-wrapper {
