@@ -80,7 +80,7 @@ export const drawCzmlOfLaunchConjuctions = async (
   })
 }
 
-export const drawCzmlOfWatchaCapture = async (
+export const drawCzmlOfWatcherCatcher = async (
   ds: Cesium.CzmlDataSource,
   rest: { initialTime: moment.Moment } & TStateCesium & TDrawWc
 ) => {

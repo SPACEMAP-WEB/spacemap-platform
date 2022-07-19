@@ -1,7 +1,7 @@
 import { Table } from '@app.components/Table'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Column, useTable } from 'react-table'
-import { drawWatchaCapture } from 'src/app.store/cesium/cesiumReducer'
+import { drawWatcherCatcher } from 'src/app.store/cesium/cesiumReducer'
 import { useAppDispatch } from 'src/app.store/config/configureStore'
 import styled from 'styled-components'
 import { wcdbDataRefactor } from '../module/wcdbDataRefactor'
@@ -23,7 +23,7 @@ const WCDBDetailTable = ({ handleBackButton, WCDBId }: WCDBDetailProps) => {
       setTableData(wcdbDataRefactor(WCDBDetailData?.wcdb))
       const newData = wcdbDataRefactor(WCDBDetailData.wcdb)
       dispatch(
-        drawWatchaCapture({
+        drawWatcherCatcher({
           latitude: Number(WCDBDetailData.latitude),
           longitude: Number(WCDBDetailData.longitude),
           predictionEpochTime: WCDBDetailData.predictionEpochTime,
