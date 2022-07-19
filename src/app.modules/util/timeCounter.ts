@@ -9,7 +9,8 @@ const timeCounter = (tcaTime: string) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const diffTime = moment.utc(tcaTime).diff(moment())
+      const time = moment.utc(new Date(tcaTime))
+      const diffTime = time.diff(moment())
       setSeconds(moment.duration(diffTime).seconds())
       setMinutes(moment.duration(diffTime).minutes())
       setHours(moment.duration(diffTime).hours())
@@ -21,7 +22,9 @@ const timeCounter = (tcaTime: string) => {
     }
   })
 
-  return `${days}d ${hours}h ${minutes}m ${seconds}s left`
+  return days === 0
+    ? `${hours}h ${minutes}m ${seconds}s left`
+    : `${days}d ${hours}h ${minutes}m left`
 }
 
 export default timeCounter
