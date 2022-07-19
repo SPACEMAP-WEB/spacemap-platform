@@ -118,7 +118,7 @@ const AssessmentModal = ({
                 <p className="file-text">{fileName}</p>
               </div>
               <section className="threshold-container">
-                <p className="threshold-text">Threshold (km): </p>
+                <p className="threshold-text">Threshold(km): </p>
                 <input
                   type="number"
                   value={thresholdValue}

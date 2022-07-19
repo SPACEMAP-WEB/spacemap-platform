@@ -16,7 +16,7 @@ const AlertModal = ({ setIsSuccessModalOpen }: ModalProps) => {
     setTimeout(() => {
       setIsTimeFinished(true)
       setIsSuccessModalOpen(false)
-    }, 4000)
+    }, 6000)
   }, [])
 
   return (
