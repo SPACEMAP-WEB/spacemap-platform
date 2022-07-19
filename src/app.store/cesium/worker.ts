@@ -37,7 +37,7 @@ async function tle2czml(initialTimeWindow, duration, intervalUnitTime, tles, rso
   tles.forEach((tle) => {
     const satrec = satellite.twoline2satrec(tle.firstLine, tle.secondLine)
     const satName = tle.name
-    let satID = satrec.satnum.split(' ').join('')
+    let satID: number | string = satrec.satnum.split(' ').join('')
     satID = Number(satID.replace(/(^0+)/, ''))
     const currRsoParams = rsoParams[satID]
     try {
@@ -122,7 +122,6 @@ function satrec2czml(satrec, startTime, duration, intervalUnitTime, satName, RSO
         rgba: [rgba[0], rgba[1], rgba[2], rgba[3]],
       },
       outlineWidth: 0.3,
-      // pixelSize: pixelSize,
       scaleByDistance: { nearFarScalar: [8400000.0, 1.5, 27720000.0, 0.8] },
       translucencyByDistance: {
         nearFarScalar: [27720000.0, 1.0, 3600000000.0, 0.2],
