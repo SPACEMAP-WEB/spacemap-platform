@@ -33,7 +33,7 @@ const Favorites = () => {
   const [favoriteData, setFavoriteData] = useState<FilterSelectType[]>([])
   const [isMailServiceSelected, setIsMailServiceSelected] = useState<boolean>(false)
   const { isVisible, handleCloseModal } = useModal('FAVORITES')
-  const { mutate } = usePostMutationFavoriteMailService()
+  const usePostFavoriteMailService = usePostMutationFavoriteMailService()
   const {
     searchValue,
     handleFavoriteSearch,
@@ -44,10 +44,14 @@ const Favorites = () => {
   } = useFavoritesEventHandler({ queryParams, setQueryParams })
 
   useEffect(() => {
+    let abortController = new AbortController()
     if (!conjunctionsRef.current || !favoriteConjunctionsRef.current) return
 
     conjunctionsRef.current.style.display = close ? 'none' : 'block'
     favoriteConjunctionsRef.current.style.display = close ? 'none' : 'block'
+    return () => {
+      abortController.abort()
+    }
   }, [close, conjunctionsRef.current])
 
   const scrollTrack = () => {
@@ -61,7 +65,7 @@ const Favorites = () => {
   }
 
   const handleMailService = () => {
-    mutate(!isMailServiceSelected)
+    usePostFavoriteMailService.mutate(!isMailServiceSelected)
     setIsMailServiceSelected(!isMailServiceSelected)
   }
 

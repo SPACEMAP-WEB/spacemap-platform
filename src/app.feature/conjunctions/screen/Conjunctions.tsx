@@ -65,9 +65,13 @@ const Conjunctions = () => {
   ]
 
   useEffect(() => {
+    let abortController = new AbortController()
     if (!conjunctionsRef.current) return
 
     conjunctionsRef.current.style.display = close ? 'none' : 'block'
+    return () => {
+      abortController.abort()
+    }
   }, [close, conjunctionsRef.current])
 
   return (
