@@ -1,13 +1,18 @@
 import { createSlice, current } from '@reduxjs/toolkit'
 import * as Cesium from 'cesium'
 import { clean, updateCZML } from './cesiumModules'
-import { drawConjunctions, drawLcaConjunctions, drawRsos, drawWatchaCapture } from './cesiumReducer'
+import {
+  drawConjunctions,
+  drawLcaConjunctions,
+  drawRsos,
+  drawWatcherCatcher,
+} from './cesiumReducer'
 import { TdrawConjuctions, TdrawLcaConjuctions, TdrawRsos, TDrawWc, TStoreCesium } from './type'
 import {
   drawCzmlOfConjuctions,
   drawCzmlOfLaunchConjuctions,
   drawCzmlOfRsos,
-  drawCzmlOfWatchaCapture,
+  drawCzmlOfWatcherCatcher,
 } from '@app.modules/cesium/drawCzml'
 
 const initialState: TStoreCesium = {
@@ -129,13 +134,13 @@ export const viewerSlice = createSlice({
         })
         return { ...currentState, tles, rsoParams }
       })
-      .addCase(drawWatchaCapture.fulfilled, (state, { payload }) => {
+      .addCase(drawWatcherCatcher.fulfilled, (state, { payload }) => {
         const currentState = current(state)
         const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams } = payload
         clean({ czmlDataSource: currentState.czmlDataSource })
         updateCZML<TDrawWc>({
-          callback: drawCzmlOfWatchaCapture,
+          callback: drawCzmlOfWatcherCatcher,
           ...currentState,
           ...payload,
           initialTimeISOString: payload.epochTime,

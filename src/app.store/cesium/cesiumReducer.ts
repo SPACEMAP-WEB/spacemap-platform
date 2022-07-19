@@ -80,8 +80,8 @@ export const drawLcaConjunctions = createAsyncThunk<TdrawLcaConjuctions, TargDra
   }
 )
 
-export const drawWatchaCapture = createAsyncThunk<TDrawWc, TargDrawWc>(
-  'DRAW_WATCHA_CAPTURE',
+export const drawWatcherCatcher = createAsyncThunk<TDrawWc, TargDrawWc>(
+  'DRAW_WATCHER_CATCHER',
   async ({ latitude, longitude, predictionEpochTime, epochTime, wcdb, intervalUnitTime = 600 }) => {
     const initialTime = moment(epochTime).utc()
     const { tles, rsoParams } = await updateTlesAndRsos(moment(predictionEpochTime).utc())
