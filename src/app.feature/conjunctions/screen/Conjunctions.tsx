@@ -69,6 +69,7 @@ const Conjunctions = () => {
     if (!conjunctionsRef.current) return
 
     conjunctionsRef.current.style.display = close ? 'none' : 'block'
+    // conjunctionsRef.current.style.width= close ? 'none' : 'block'
     return () => {
       abortController.abort()
     }
@@ -77,11 +78,11 @@ const Conjunctions = () => {
   return (
     <>
       {isConjunctionsClicked && (
-        <ConjunctionsWrapper isConjunctionsClicked={isConjunctionsClicked}>
+        <ConjunctionsWrapper close={close} isConjunctionsClicked={isConjunctionsClicked}>
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
-          <section className="conjunctions-wrapper" ref={conjunctionsRef}>
+          <section ref={conjunctionsRef}>
             <h1 className="title conjunctions">Conjunctions</h1>
             <div className="header-group">
               <Search
@@ -107,10 +108,11 @@ export default Conjunctions
 
 type ConjunctionsProps = {
   isConjunctionsClicked: boolean
+  close: boolean
 }
 
 const ConjunctionsWrapper = styled.div<ConjunctionsProps>`
-  width: 500px;
+  width: ${(props) => (props.close ? '50px' : '500px')};
   padding: 1.5rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;

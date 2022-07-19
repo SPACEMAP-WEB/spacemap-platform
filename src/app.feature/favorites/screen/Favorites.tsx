@@ -115,7 +115,7 @@ const Favorites = () => {
         />
       )}
       {login && isVisible && (
-        <FavoritesWrapper size={size} isConjunctionsClicked={isVisible}>
+        <FavoritesWrapper close={close} size={size} isConjunctionsClicked={isVisible}>
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
@@ -169,10 +169,11 @@ export default Favorites
 type FavoriteStyleProps = {
   isConjunctionsClicked: boolean
   size: number
+  close: boolean
 }
 
 const FavoritesWrapper = styled.div<FavoriteStyleProps>`
-  width: 500px;
+  width: ${(props) => (props.close ? '50px' : '500px')};
   padding: 1.5rem 2rem;
   background-color: rgba(84, 84, 84, 0.4);
   border-radius: 15px;
