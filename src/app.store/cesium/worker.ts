@@ -73,7 +73,7 @@ function satrec2czml(satrec, startTime, duration, intervalUnitTime, satName, RSO
   for (let i = -periodSeconds / 2; i <= duration + periodSeconds / 2; i += interval) {
     const positionAndVelocity = satellite.propagate(satrec, initTime) // 0.0166667min = 1sec
     initTime.setSeconds(initTime.getSeconds() + interval)
-    const positionEci = positionAndVelocity.position
+    const positionEci = positionAndVelocity.position as satellite.EciVec3<number>
 
     try {
       positionEci.x = positionEci.x * 1000
