@@ -35,6 +35,20 @@ export const useQueryGetLPDBDetail = (id: string) => {
   })
 }
 
+export const useQueryGetLPDBSampleDownload = () => {
+  return useQuery(
+    [API_LPDB, 'download'],
+    () => {
+      return api.GET<null, string>(
+        'https://platformapi.spacemap42.com/public/samples/bocachica_J2000_converted.txt'
+      )
+    },
+    {
+      enabled: false,
+    }
+  )
+}
+
 export const useQueryGetLPDBDownload = (filePath: string) => {
   return useQuery(
     [API_LPDB, filePath],
