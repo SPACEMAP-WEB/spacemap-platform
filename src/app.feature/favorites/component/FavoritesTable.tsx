@@ -60,12 +60,12 @@ const FavoritesTable = ({
 
   const { data: queryFavorite, isSuccess } = useQueryFavorite('')
 
-  const viewConjucntions = (rowObj) => {
+  const viewConjunctions = (rowObj) => {
     dispatch(drawConjunctions({ ...rowObj }))
   }
 
   const columns = useMemo(
-    () => COLUMNS({ queryParams, customPageSize, viewConjucntions }),
+    () => COLUMNS({ queryParams, customPageSize, viewConjunctions }),
     [queryParams]
   )
   const data = useMemo(() => tableData, [tableData])

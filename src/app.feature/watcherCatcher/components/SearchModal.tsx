@@ -2,12 +2,14 @@ import { Input } from '@app.components/Input'
 import ModalWrapper from '@app.components/modal/ModalWrapper'
 import WarningModal from '@app.components/modal/WarningModal'
 import { useModal } from '@app.modules/hooks/useModal'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import styled from 'styled-components'
 import { isCalculatableDate } from '@app.modules/util/calculatableDateHandler'
 import { useMutationPostWCDB } from '../query/useMutationWCDB'
 import { WCDBResponseType } from '../types/watcherCatcher'
+import { InputErrorBox } from '@app.components/InputErrorBox'
+import moment from 'moment'
 
 type SearchModalProps = {
   handleSearchModalClose: () => void
@@ -26,14 +28,21 @@ const SearchModal = ({
   const { isVisible, handleCloseModal, handleSetModal } = useModal('WATCHERCATCHER')
   const [latitudeValue, setLatitudeValue] = useState<number>(0)
   const [longitudeValue, setLongitudeValue] = useState<number>(0)
-  const [epochtimeValue, setEpochtimeValue] = useState<string>(new Date().toISOString())
+  const [fieldOfViewValue, setFieldOfViewValue] = useState<number>(0)
+  const [altitudeValue, setAltitudeValue] = useState<number>(0)
+  const [epochtimeValue, setEpochtimeValue] = useState<string>(moment().toISOString())
+  const [endtimeValue, setEndtimeValue] = useState<string>(moment().toISOString())
   const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
   const modalEl = useRef<HTMLDivElement>(null)
   const { mutate } = useMutationPostWCDB()
 
+  useEffect(() => {
+    setEndtimeValue(moment(epochtimeValue).add(1, 'hours').toISOString().substring(0, 16))
+  }, [epochtimeValue])
+
   const handleInputValueChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    inputType: 'latitude' | 'longitude' | 'epochtime'
+    inputType: 'latitude' | 'longitude' | 'epochtime' | 'endtime' | 'fieldOfView' | 'altitude'
   ) => {
     switch (inputType) {
       case 'longitude':
@@ -42,8 +51,18 @@ const SearchModal = ({
       case 'latitude':
         setLatitudeValue(+e.target.value)
         break
+      case 'fieldOfView':
+        setFieldOfViewValue(+e.target.value)
+        break
+      case 'altitude':
+        setAltitudeValue(+e.target.value)
+        break
       case 'epochtime':
         setEpochtimeValue(e.target.value + ':00.000Z')
+        break
+      case 'endtime':
+        setEndtimeValue(e.target.value + ':00.000Z')
+        console.log(moment(endtimeValue).diff(epochtimeValue))
         break
     }
   }
@@ -72,10 +91,24 @@ const SearchModal = ({
     setIsWatcherModalVisible(false)
   }
 
+  const isSubmittable = () => {
+    if (
+      latitudeValue > 90 ||
+      latitudeValue < -90 ||
+      longitudeValue > 180 ||
+      longitudeValue < -180 ||
+      altitudeValue < 0
+    ) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   return (
     <>
       <ModalWrapper visible={isVisible} modalEl={modalEl} handleCloseModal={handleCloseModal}>
-        <Modal ref={modalEl}>
+        <Modal isSubmittable={isSubmittable()} ref={modalEl}>
           <div className="modal-content-container">
             <header className="modal-header">
               <h1 className="modal-title">Watcher Catcher</h1>
@@ -86,29 +119,84 @@ const SearchModal = ({
               />
             </header>
             <div className="body-container">
-              <section className="description-container">
-                <p className="description-text"></p>
-              </section>
               <section className="latitude-container">
-                <p className="latitude-text">latitude: </p>
-                <Input
-                  type="number"
-                  value={latitudeValue}
-                  onChange={(e) => handleInputValueChange(e, 'latitude')}
-                  className="threshold-input"
-                ></Input>
+                <div className="longitude-horizontal-box">
+                  <p className="latitude-text">Latitude(km): </p>
+                  <Input
+                    type="number"
+                    min={-90}
+                    max={90}
+                    value={latitudeValue}
+                    onChange={(e) => handleInputValueChange(e, 'latitude')}
+                    className="threshold-input"
+                  ></Input>
+                </div>
+                {latitudeValue > 90 || latitudeValue < -90 ? (
+                  <InputErrorBox>
+                    <img src="svg/error-icon.svg" />
+                    Latitude is limited from -90 to 90
+                  </InputErrorBox>
+                ) : null}
               </section>
               <section className="longitude-container">
-                <p className="longitude-text">longitude: </p>
-                <Input
-                  type="number"
-                  value={longitudeValue}
-                  onChange={(e) => handleInputValueChange(e, 'longitude')}
-                  className="threshold-input"
-                ></Input>
+                <div className="longitude-horizontal-box">
+                  <p className="longitude-text">Longitude(km): </p>
+                  <Input
+                    type="number"
+                    min={-180}
+                    max={180}
+                    value={longitudeValue}
+                    onChange={(e) => handleInputValueChange(e, 'longitude')}
+                    className="threshold-input"
+                  ></Input>
+                </div>
+                {longitudeValue > 180 || longitudeValue < -180 ? (
+                  <InputErrorBox>
+                    <img src="svg/error-icon.svg" />
+                    Longitude is limited from -180 to 180
+                  </InputErrorBox>
+                ) : null}
+              </section>
+              <section className="longitude-container">
+                <div className="longitude-horizontal-box">
+                  <p className="longitude-text">Altitude(km): </p>
+                  <Input
+                    type="number"
+                    min={-180}
+                    max={180}
+                    value={altitudeValue}
+                    onChange={(e) => handleInputValueChange(e, 'altitude')}
+                    className="threshold-input"
+                  ></Input>
+                </div>
+                {altitudeValue < 0 ? (
+                  <InputErrorBox>
+                    <img src="svg/error-icon.svg" />
+                    Altitude must be positive number
+                  </InputErrorBox>
+                ) : null}
+              </section>
+              <section className="longitude-container">
+                <div className="longitude-horizontal-box">
+                  <p className="longitude-text">Field of View(°): </p>
+                  <Input
+                    type="number"
+                    min={-180}
+                    max={180}
+                    value={fieldOfViewValue}
+                    onChange={(e) => handleInputValueChange(e, 'fieldOfView')}
+                    className="threshold-input"
+                  ></Input>
+                </div>
+                {fieldOfViewValue > 90 || fieldOfViewValue < 0 ? (
+                  <InputErrorBox>
+                    <img src="svg/error-icon.svg" />
+                    Field of View is limited from 0 to 90
+                  </InputErrorBox>
+                ) : null}
               </section>
               <section className="threshold-container">
-                <p className="threshold-text">Epoch Time: </p>
+                <p className="threshold-text">Epoch Time(UTC): </p>
                 <Input
                   type="datetime-local"
                   value={epochtimeValue.substring(0, 16)}
@@ -116,7 +204,16 @@ const SearchModal = ({
                   className="threshold-input"
                 ></Input>
               </section>
-              <button className="submit-button" onClick={handleSubmit}>
+              <section className="threshold-container">
+                <p className="threshold-text">End Time(UTC): </p>
+                <Input
+                  type="datetime-local"
+                  value={endtimeValue.substring(0, 16)}
+                  onChange={(e) => handleInputValueChange(e, 'epochtime')}
+                  className="threshold-input"
+                ></Input>
+              </section>
+              <button disabled={!isSubmittable()} className="submit-button" onClick={handleSubmit}>
                 Submit
               </button>
             </div>
@@ -135,10 +232,13 @@ const SearchModal = ({
 
 export default SearchModal
 
-const Modal = styled.div`
+type ModalStyleProps = {
+  isSubmittable: boolean
+}
+
+const Modal = styled.div<ModalStyleProps>`
   position: relative;
-  width: 32rem;
-  height: 32rem;
+  width: 35rem;
   padding: 2rem;
   border-radius: 0.5rem;
   background-color: rgba(255, 255, 255, 0.1);
@@ -148,7 +248,7 @@ const Modal = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     & > img {
       width: 30px;
       height: 30px;
@@ -168,107 +268,40 @@ const Modal = styled.div`
     justify-content: center;
     align-items: center;
     height: 70%;
-    .description {
-      &-container {
-        max-width: 500px;
-      }
-      &-text {
-        color: #c9c9c9;
-      }
-    }
-
-    .file-input {
-      &-container {
-        width: 200px;
-        height: 50px;
-        background-color: rgba(255, 255, 255, 0.13);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-        backdrop-filter: blur(20px);
-        gap: 0.5rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 5px;
-        :hover {
-          background-color: rgba(255, 255, 255, 0.18);
-        }
-        & > .add-file {
-          width: 1rem;
-        }
-      }
-      &-button {
-        color: #c9c9c9;
-      }
-    }
-
-    .file-text {
-      color: #c9c9c9;
-    }
-
-    .example-container {
-      .link-notice-text {
-        max-width: 500px;
-        font-size: 18px;
-        margin: 0;
-        color: #c9c9c9;
-        .link-text {
-          display: inline-block;
-          position: relative;
-          text-decoration: none;
-          color: inherit;
-          margin: 0 6px;
-          transition: margin 0.25s;
-          svg {
-            width: 200px;
-            height: 40px;
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            transform: translate(-50%, 7px) translateZ(0);
-            fill: none;
-            stroke: var(--stroke, #eae3c6);
-            stroke-linecap: round;
-            stroke-width: 2px;
-            stroke-dasharray: var(--offset, 69px) 278px;
-            stroke-dashoffset: 361px;
-            transition: stroke 0.25s ease var(--stroke-delay, 0s), stroke-dasharray 0.35s;
-          }
-          &:hover {
-            margin: 0 10px;
-            --spacing: 10px;
-            --stroke: #fccb16;
-            --stroke-delay: 0.1s;
-            --offset: 180px;
-          }
-        }
-      }
-    }
 
     .longitude-container {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      .longitude-text {
-        width: 10rem;
-        color: #c9c9c9;
+      gap: 1rem;
+      .longitude-horizontal-box {
+        display: flex;
+        align-items: center;
+        .longitude-text {
+          width: 15rem;
+          color: #c9c9c9;
+        }
       }
     }
     .latitude-container {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      .latitude-text {
-        width: 10rem;
-        color: #c9c9c9;
+      gap: 1rem;
+      .longitude-horizontal-box {
+        display: flex;
+        align-items: center;
+        .latitude-text {
+          width: 15rem;
+          color: #c9c9c9;
+        }
       }
     }
     .threshold-container {
       display: flex;
       align-items: center;
       .threshold-text {
-        width: 10rem;
+        width: 15rem;
         color: #c9c9c9;
       }
     }
@@ -280,13 +313,14 @@ const Modal = styled.div`
       font-size: 1rem;
       cursor: pointer;
       background-color: rgba(124, 124, 124, 0.4);
-      color: white;
+      color: ${({ isSubmittable }) => (isSubmittable ? 'white' : '#a6a6a6')};
       z-index: 4;
       border-radius: 8px;
       transition: all 0.3s ease-in;
       &:hover {
-        background-color: rgb(252, 203, 22);
-        color: #7a7a7a;
+        background-color: ${({ isSubmittable }) =>
+          isSubmittable ? 'rgb(252, 203, 22)' : 'rgba(124, 124, 124, 0.4)d'};
+        color: ${({ isSubmittable }) => (isSubmittable ? '#7a7a7a' : '#a6a6a6')};
       }
     }
   }
