@@ -11,12 +11,16 @@ export type TStoreCesium = {
   camera: Cesium.Camera
   czmlDataSource: Cesium.CzmlDataSource
   accessToken: string
-  tles: Ttle
+  tles: Ttle[]
   rsoParams: TRsoParams
   primarySatColor: Cesium.Color
   secondarySatColor: Cesium.Color
   apartColor: Cesium.Color
   closeColor: Cesium.Color
+  initialTimeWindow: string
+  intervalUnitTime: null
+  duration: null
+  points: any
 
   isPairMode: boolean
   prevPid: string | null
@@ -29,7 +33,7 @@ export type TStateCesium = {
   camera: Draft<Cesium.Camera>
   czmlDataSource: Draft<Cesium.CzmlDataSource>
   accessToken: string
-  tles: Ttle
+  tles: Ttle[]
   rsoParams: TRsoParams
   primarySatColor: Cesium.Color
   secondarySatColor: Cesium.Color
@@ -39,13 +43,13 @@ export type TStateCesium = {
   isPairMode: boolean
   prevPid: string | null
   prevSid: string | null
-  worker: Worker
+  worker?: Worker
 }
 
 export type Ttle = {
   name: string
   firstLine: string
-  secondeLine: string
+  secondLine: string
 }
 
 export type TRsoParams = { [key: string]: string }[]
@@ -55,7 +59,7 @@ export type TdrawRsos = {
   initialTimeISOString: string
   duration: number
   intervalUnitTime: number
-  tles: Ttle
+  tles: Ttle[]
   rsoParams: TRsoParams
 }
 
@@ -75,7 +79,7 @@ export type TargDrawConjuctions = {
 }
 
 export type TdrawConjuctions = TargDrawConjuctions & {
-  tles: Ttle
+  tles: Ttle[]
   rsoParams: TRsoParams
   initialTime: moment.Moment
 }
@@ -90,7 +94,7 @@ export type TargDrawLcaConjuctions = {
 }
 
 export type TdrawLcaConjuctions = TargDrawLcaConjuctions & {
-  tles: Ttle
+  tles: Ttle[]
   rsoParams: TRsoParams
   trajectoryCzml: czml
   endInterval: number
@@ -110,7 +114,7 @@ export type TargDrawWc = {
 
 export type TDrawWc = {
   initialTime: moment.Moment
-  tles: Ttle
+  tles: Ttle[]
   rsoParams: TRsoParams
   siteCzml: czml
   siteConeCzml: czml

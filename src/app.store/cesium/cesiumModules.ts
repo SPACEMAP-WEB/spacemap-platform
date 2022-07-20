@@ -1,4 +1,5 @@
 import * as Cesium from 'cesium'
+import * as satellite from 'satellite.js'
 import api from '@app.modules/api'
 import { API_RSOS, API_TLES } from '@app.modules/keyFactory'
 import { TRsoParams, Ttle, TUpdateCzml } from './type'
@@ -329,4 +330,61 @@ export const updateCZML = <T>({
     czmlDataSource.load(e.data).then((ds) => callback(ds, { initialTime, ...rest }))
     worker.terminate()
   }
+}
+
+export const fRsos = ({ tles, rsoParams, scene, points, viewer }) => {
+  const satrecs = []
+  for (let i = 0; i < tles.length; i++) {
+    const satrec = satellite.twoline2satrec(tles[i].firstLine, tles[i].secondLine)
+    satrecs.push(satrec)
+  }
+  scene.preRender.addEventListener(() => {
+    points.length && points.removeAll()
+
+    for (let i = 0; i < satrecs.length; i++) {
+      let rgba = []
+      let satID: number | string = satrecs[i].satnum.split(' ').join('')
+      satID = Number((satID as string).replace(/(^0+)/, ''))
+      const currRsoParams = rsoParams[satID]
+      const RSOType = currRsoParams.objtype
+
+      satID = Number(satrecs[i].satnum.split(' ').join(''))
+      const time = viewer.clock.currentTime
+
+      const point = new Cesium.PointPrimitive()
+      const positionAndVelocity = satellite.propagate(satrecs[i], Cesium.JulianDate.toDate(time))
+      const positionEci = positionAndVelocity.position as satellite.EciVec3<number>
+
+      if (RSOType == 'PAYLOAD') {
+        rgba = [0, 255, 0, 255]
+      } else if (RSOType == 'ROCKET BODY') {
+        rgba = [226, 66, 5, 255]
+      } else if (RSOType == 'DEBRIS') {
+        rgba = [200, 16, 46, 255]
+      } else if (RSOType == 'TBA') {
+        rgba = [120, 120, 120, 255]
+      } else {
+        rgba = [120, 120, 120, 255]
+      }
+      if (positionEci) {
+        point.id = satID
+        point.position = new Cesium.Cartesian3(
+          positionEci.x * 1000,
+          positionEci.y * 1000,
+          positionEci.z * 1000
+        )
+        point.outlineColor = new Cesium.Color(
+          rgba[0] / 255,
+          rgba[1] / 255,
+          rgba[2] / 255,
+          rgba[3] / 255
+        )
+        point.outlineWidth = 3
+        point.color = new Cesium.Color(1, 1, 1, 1)
+        point.scaleByDistance = new Cesium.NearFarScalar(8400000.0, 0.5, 27720000.0, 0.27)
+        point.translucencyByDistance = new Cesium.NearFarScalar(27720000, 1, 360000000, 0.2)
+      }
+      points.add(point)
+    }
+  })
 }

@@ -9,6 +9,53 @@ import {
   TStateCesium,
 } from 'src/app.store/cesium/type'
 
+export const drawPath = async ({
+  pid,
+  sid,
+  from,
+  tca,
+  to,
+  primarySatColor,
+  secondarySatColor,
+  viewer,
+}) => {
+  const czmlDataSource = new Cesium.CzmlDataSource()
+  const pairCzml = makePair(pid, sid, from, tca, to)
+  await czmlDataSource.load({
+    id: 'document',
+    // name: 'CZML Point - Time Dynamic',
+    version: '1.0',
+    clock: {
+      currentTime: `${tca}`,
+      multiplier: 1,
+      range: 'UNBOUNDED',
+      step: 'SYSTEM_CLOCK_MULTIPLIER',
+    },
+  })
+  const newDs = await czmlDataSource.process(pairCzml)
+  console.log(newDs)
+  // const primarySat = newDs.entities.getById(String(pid))
+
+  // primarySat.path.material = new Cesium.PolylineOutlineMaterialProperty({
+  //   outlineColor: primarySatColor,
+  // })
+  // primarySat.path.show = createProperty(true)
+  // primarySat.label.outlineColor = createProperty(primarySatColor)
+  // primarySat.label.pixelOffset = createProperty(new Cesium.Cartesian2(14, 14))
+  // primarySat.label.show = createProperty(true)
+
+  // const secondarySat = newDs.entities.getById(String(sid))
+  // secondarySat.path.material = new Cesium.PolylineOutlineMaterialProperty({
+  //   outlineColor: secondarySatColor,
+  // })
+  // secondarySat.path.show = createProperty(true)
+  // secondarySat.label.outlineColor = createProperty(secondarySatColor)
+  // secondarySat.label.pixelOffset = createProperty(new Cesium.Cartesian2(-14, -14))
+  // secondarySat.label.show = createProperty(true)
+
+  viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(from)
+}
+
 export const drawCzmlOfRsos = (
   ds: Cesium.CzmlDataSource,
   rest: { initialTime: moment.Moment } & TStateCesium & TdrawRsos

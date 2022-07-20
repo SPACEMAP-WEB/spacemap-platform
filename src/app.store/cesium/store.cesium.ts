@@ -1,13 +1,13 @@
 import { createSlice, current } from '@reduxjs/toolkit'
 import * as Cesium from 'cesium'
-import { clean, updateCZML } from './cesiumModules'
+import { clean, fRsos, makePair, updateCZML } from './cesiumModules'
 import { drawConjunctions, drawLcaConjunctions, drawRsos, drawWatchaCapture } from './cesiumReducer'
-import { TdrawConjuctions, TdrawLcaConjuctions, TdrawRsos, TDrawWc, TStoreCesium } from './type'
+import { TdrawConjuctions, TdrawLcaConjuctions, TDrawWc, TStoreCesium } from './type'
 import {
   drawCzmlOfConjuctions,
   drawCzmlOfLaunchConjuctions,
-  drawCzmlOfRsos,
   drawCzmlOfWatchaCapture,
+  drawPath,
 } from '@app.modules/cesium/drawCzml'
 
 const initialState: TStoreCesium = {
@@ -19,6 +19,9 @@ const initialState: TStoreCesium = {
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZDQ4OGYzYi0zNjBmLTQ1ZTAtODUwNS0xNDgyYjA4NDRjYTMiLCJpZCI6NzQ5ODIsImlhdCI6MTYzODI1OTc1Mn0.pz3a2LRR9kAkSV5m8X3WdnE0RsimkJRJWld0PvHGThk',
   tles: null,
   rsoParams: null,
+  initialTimeWindow: null,
+  intervalUnitTime: null,
+  duration: null,
   primarySatColor: Cesium.Color.GOLD,
   secondarySatColor: Cesium.Color.DARKORCHID,
   apartColor: Cesium.Color.GREEN,
@@ -26,6 +29,7 @@ const initialState: TStoreCesium = {
   isPairMode: true,
   prevPid: null,
   prevSid: null,
+  points: null,
 }
 
 export const viewerSlice = createSlice({
@@ -63,7 +67,7 @@ export const viewerSlice = createSlice({
         },
 
         maximumRenderTimeChange: 0.05,
-        targetFrameRate: 30,
+        targetFrameRate: 60,
 
         automaticallyTrackDataSourceClocks: true,
         skyBox: new Cesium.SkyBox({
@@ -81,67 +85,84 @@ export const viewerSlice = createSlice({
       const camera = viewer.camera
       const scene = viewer.scene
       scene.globe.enableLighting = true
+      scene.debugShowFramesPerSecond = true
+      scene.requestRenderMode = true
       const czmlDataSource = new Cesium.CzmlDataSource()
-      return { ...state, viewer, camera, scene, czmlDataSource }
+      const points = scene.primitives.add(new Cesium.PointPrimitiveCollection())
+      return { ...state, viewer, camera, scene, czmlDataSource, points }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(drawRsos.fulfilled, (state, { payload }) => {
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams } = payload
-        updateCZML<TdrawRsos>({ callback: drawCzmlOfRsos, ...state, ...payload, worker })
+        const currentState = current(state)
+        const { scene, points, viewer } = currentState
+        // fRsos({ tles, rsoParams, scene, points, viewer })
+        viewer.camera.flyHome()
+
         return { ...state, tles, rsoParams }
       })
       .addCase(drawConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
-        const { tles, rsoParams } = payload
-        clean({
-          prevPid: payload.pid,
-          prevSid: payload.sid,
-          czmlDataSource: currentState.czmlDataSource,
-        })
-        updateCZML<TdrawConjuctions>({
-          initialTimeISOString: payload.tca,
-          duration: 0,
-          intervalUnitTime: 600,
-          callback: drawCzmlOfConjuctions,
-          ...currentState,
-          ...payload,
-          worker,
-        })
+        // const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        const { tles, rsoParams, pid, sid, from, tca, to } = payload
+        const { scene, points, viewer, primarySatColor, secondarySatColor } = currentState
+
+        // clean({
+        //   prevPid: payload.pid,
+        //   prevSid: payload.sid,
+        //   czmlDataSource: currentState.czmlDataSource,
+        // })
+
+        fRsos({ tles, rsoParams, scene, points, viewer })
+
+        // drawPath({ pid, sid, from, tca, to, primarySatColor, secondarySatColor, viewer })
+
+        // updateCZML<TdrawConjuctions>({
+        //   initialTimeISOString: payload.tca,
+        //   duration: 0,
+        //   intervalUnitTime: 600,
+        //   callback: drawCzmlOfConjuctions,
+        //   ...currentState,
+        //   ...payload,
+        //   worker,
+        // })
         return { ...currentState, tles, rsoParams }
       })
       .addCase(drawLcaConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        // const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams, endInterval } = payload
+        const { viewer, scene, points } = currentState
+        fRsos({ tles, rsoParams, viewer, scene, points })
 
-        clean({ czmlDataSource: currentState.czmlDataSource })
-        updateCZML<TdrawLcaConjuctions>({
-          callback: drawCzmlOfLaunchConjuctions,
-          ...currentState,
-          ...payload,
-          initialTimeISOString: payload.launchEpochTime,
-          worker,
-          duration: endInterval,
-        })
+        // clean({ czmlDataSource: currentState.czmlDataSource })
+        // updateCZML<TdrawLcaConjuctions>({
+        //   callback: drawCzmlOfLaunchConjuctions,
+        //   ...currentState,
+        //   ...payload,
+        //   initialTimeISOString: payload.launchEpochTime,
+        //   worker,
+        //   duration: endInterval,
+        // })
         return { ...currentState, tles, rsoParams }
       })
       .addCase(drawWatchaCapture.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        // const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams } = payload
-        clean({ czmlDataSource: currentState.czmlDataSource })
-        updateCZML<TDrawWc>({
-          callback: drawCzmlOfWatchaCapture,
-          ...currentState,
-          ...payload,
-          initialTimeISOString: payload.epochTime,
-          worker,
-          duration: 3600,
-        })
+        const { viewer, scene, points } = currentState
+        fRsos({ tles, rsoParams, viewer, scene, points })
+        // clean({ czmlDataSource: currentState.czmlDataSource })
+        // updateCZML<TDrawWc>({
+        //   callback: drawCzmlOfWatchaCapture,
+        //   ...currentState,
+        //   ...payload,
+        //   initialTimeISOString: payload.epochTime,
+        //   worker,
+        //   duration: 3600,
+        // })
         return { ...currentState, tles, rsoParams }
       })
   },

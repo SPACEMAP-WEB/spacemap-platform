@@ -24,6 +24,9 @@ const AppIndex = () => {
 }
 
 const StyledWrapper = styled.div`
+  .cesium-widget-credits {
+    display: none !important;
+  }
   height: 100vh;
 `
 
