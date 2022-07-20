@@ -9,6 +9,7 @@ import { useMutationPostLPDB } from '../query/useMutationLPDB'
 import { isCalculatableDate } from '@app.modules/util/calculatableDateHandler'
 import WarningModal from '@app.components/modal/WarningModal'
 import { PrimaryButton } from '@app.components/button/Button'
+import { useQueryGetLPDBSampleDownload } from '../query/useQueryLPDB'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -35,6 +36,7 @@ const AssessmentModal = ({
   const [fileName, setFileName] = useState<string>('')
   const { mutate } = useMutationPostLPDB()
   const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
+  const { refetch } = useQueryGetLPDBSampleDownload()
 
   const fileInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
@@ -73,6 +75,18 @@ const AssessmentModal = ({
 
   const handleClose = () => {
     setIsLcaModalVisible(false)
+  }
+
+  const handleDownload = async () => {
+    const response = await refetch()
+    const element = document.createElement('a')
+    const textFile = new Blob([response.data.data], {
+      type: 'text/plain',
+    })
+    element.href = URL.createObjectURL(textFile)
+    element.download = 'bocachica_J2000_converted.txt'
+    document.body.appendChild(element)
+    element.click()
   }
 
   return (
@@ -129,11 +143,7 @@ const AssessmentModal = ({
               <section className="example-container">
                 <p className="link-notice-text">
                   Click
-                  <a
-                    href="https://platformapi.spacemap42.com/public/samples/bocachica_J2000_converted.txt"
-                    className="link-text"
-                    download="sample_trajectory"
-                  >
+                  <a onClick={() => handleDownload()} className="link-text">
                     this link
                     <svg viewBox="0 0 70 36">
                       <path d="M6.9739 30.8153H63.0244C65.5269 30.8152 75.5358 -3.68471 35.4998 2.81531C-16.1598 11.2025 0.894099 33.9766 26.9922 34.3153C104.062 35.3153 54.5169 -6.68469 23.489 9.31527" />
