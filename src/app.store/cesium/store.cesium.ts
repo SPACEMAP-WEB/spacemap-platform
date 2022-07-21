@@ -1,6 +1,15 @@
 import { createSlice, current } from '@reduxjs/toolkit'
 import * as Cesium from 'cesium'
-import { clean, fRsos, makePair, updateCZML } from './cesiumModules'
+import moment from 'moment'
+import {
+  clean,
+  fRsos,
+  updateCZMLforCounjunctions,
+  makePair,
+  updateCZML,
+  dateParser,
+  getTleById,
+} from './cesiumModules'
 import { drawConjunctions, drawLcaConjunctions, drawRsos, drawWatchaCapture } from './cesiumReducer'
 import { TdrawConjuctions, TdrawLcaConjuctions, TDrawWc, TStoreCesium } from './type'
 import {
@@ -18,6 +27,7 @@ const initialState: TStoreCesium = {
   accessToken:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZDQ4OGYzYi0zNjBmLTQ1ZTAtODUwNS0xNDgyYjA4NDRjYTMiLCJpZCI6NzQ5ODIsImlhdCI6MTYzODI1OTc1Mn0.pz3a2LRR9kAkSV5m8X3WdnE0RsimkJRJWld0PvHGThk',
   tles: null,
+  tlesForConjunctions: null,
   rsoParams: null,
   initialTimeWindow: null,
   intervalUnitTime: null,
@@ -70,16 +80,16 @@ export const viewerSlice = createSlice({
         targetFrameRate: 60,
 
         automaticallyTrackDataSourceClocks: true,
-        skyBox: new Cesium.SkyBox({
-          sources: {
-            positiveX: '/image/cesiumBackground/px.png',
-            negativeX: '/image/cesiumBackground/nx.png',
-            positiveY: '/image/cesiumBackground/py.png',
-            negativeY: '/image/cesiumBackground/ny.png',
-            positiveZ: '/image/cesiumBackground/pz.png',
-            negativeZ: '/image/cesiumBackground/nz.png',
-          },
-        }),
+        // skyBox: new Cesium.SkyBox({
+        //   sources: {
+        //     positiveX: '/image/cesiumBackground/px.png',
+        //     negativeX: '/image/cesiumBackground/nx.png',
+        //     positiveY: '/image/cesiumBackground/py.png',
+        //     negativeY: '/image/cesiumBackground/ny.png',
+        //     positiveZ: '/image/cesiumBackground/pz.png',
+        //     negativeZ: '/image/cesiumBackground/nz.png',
+        //   },
+        // }),
       })
 
       const camera = viewer.camera
@@ -98,36 +108,33 @@ export const viewerSlice = createSlice({
         const { tles, rsoParams } = payload
         const currentState = current(state)
         const { scene, points, viewer } = currentState
-        // fRsos({ tles, rsoParams, scene, points, viewer })
+        fRsos({ tles, rsoParams, scene, points, viewer })
         viewer.camera.flyHome()
 
         return { ...state, tles, rsoParams }
       })
       .addCase(drawConjunctions.fulfilled, (state, { payload }) => {
         const currentState = current(state)
-        // const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        const worker = new Worker(new URL('./worker.ts', import.meta.url))
         const { tles, rsoParams, pid, sid, from, tca, to } = payload
         const { scene, points, viewer, primarySatColor, secondarySatColor } = currentState
-
-        // clean({
-        //   prevPid: payload.pid,
-        //   prevSid: payload.sid,
-        //   czmlDataSource: currentState.czmlDataSource,
-        // })
-
         fRsos({ tles, rsoParams, scene, points, viewer })
+        clean({
+          prevPid: payload.pid,
+          prevSid: payload.sid,
+          czmlDataSource: currentState.czmlDataSource,
+        })
 
-        // drawPath({ pid, sid, from, tca, to, primarySatColor, secondarySatColor, viewer })
-
-        // updateCZML<TdrawConjuctions>({
-        //   initialTimeISOString: payload.tca,
-        //   duration: 0,
-        //   intervalUnitTime: 600,
-        //   callback: drawCzmlOfConjuctions,
-        //   ...currentState,
-        //   ...payload,
-        //   worker,
-        // })
+        updateCZMLforCounjunctions<TdrawConjuctions>({
+          initialTimeISOString: payload.tca,
+          duration: 0,
+          intervalUnitTime: 600,
+          callback: drawCzmlOfConjuctions,
+          ...currentState,
+          ...payload,
+          worker,
+        })
+        drawPath({ pid, sid, from, tca, to, primarySatColor, secondarySatColor, viewer })
         return { ...currentState, tles, rsoParams }
       })
       .addCase(drawLcaConjunctions.fulfilled, (state, { payload }) => {

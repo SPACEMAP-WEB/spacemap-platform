@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import moment from 'moment'
-import { site2czml, trajectory2czml, updateTlesAndRsos } from './cesiumModules'
+import { site2czml, trajectory2czml, updateTlesAndRsos, getTleById } from './cesiumModules'
 import {
   TargDrawConjuctions,
   TargDrawLcaConjuctions,
@@ -35,7 +35,9 @@ export const drawConjunctions = createAsyncThunk<TdrawConjuctions, TargDrawConju
   async ({ pid, sid, from, tca, to, intervalUnitTime = 600 }) => {
     const initialTime = moment(tca)
     const { tles, rsoParams } = await updateTlesAndRsos(initialTime)
-
+    const pTle = await getTleById(initialTime, Number(pid))
+    const sTle = await getTleById(initialTime, Number(sid))
+    const tlesForConjunctions = [pTle[0], sTle[0]]
     return {
       pid,
       sid,
@@ -43,6 +45,7 @@ export const drawConjunctions = createAsyncThunk<TdrawConjuctions, TargDrawConju
       tca,
       to,
       tles,
+      tlesForConjunctions,
       rsoParams,
       initialTime,
       intervalUnitTime,

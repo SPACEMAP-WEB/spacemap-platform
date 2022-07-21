@@ -36,6 +36,13 @@ export const dateParser = (initialTime: moment.Moment) => {
   return { year, month, date, hour }
 }
 
+export const getTleById = async (targetTime: moment.Moment, noradId: number) => {
+  const { year, month, date, hour } = dateParser(targetTime)
+  const DATE_AND_ID_URI = '/' + year + '/' + month + '/' + date + '/' + hour + '/' + noradId
+  const { data } = await api.GET<null, { data: { tles: Ttle } }>(API_TLES + DATE_AND_ID_URI)
+  return data.data.tles
+}
+
 export const updateTlesAndRsos = async (initialTime) => {
   const { year, month, date, hour } = dateParser(initialTime)
   const tles = await getTles(year, month, date, hour)
@@ -71,8 +78,10 @@ export const clean = ({
   czmlDataSource: Draft<Cesium.CzmlDataSource>
 }) => {
   if (prevPid) {
-    turnOffPathNLabel({ prevPid, prevSid, czmlDataSource })
+    // turnOffPathNLabel({ prevPid, prevSid, czmlDataSource })
     czmlDataSource.entities.removeById(`${prevPid}/${prevSid}`)
+    czmlDataSource.entities.removeById(`${prevPid}`)
+    czmlDataSource.entities.removeById(`${prevSid}`)
   }
 }
 
@@ -332,13 +341,36 @@ export const updateCZML = <T>({
   }
 }
 
+export const updateCZMLforCounjunctions = <T>({
+  initialTime,
+  initialTimeISOString,
+  duration,
+  intervalUnitTime,
+  callback,
+  ...rest
+}: TUpdateCzml<T>) => {
+  const { tlesForConjunctions, rsoParams, czmlDataSource, worker } = rest
+  worker.postMessage([
+    initialTimeISOString,
+    duration,
+    intervalUnitTime,
+    tlesForConjunctions,
+    rsoParams,
+  ])
+  worker.onmessage = (e) => {
+    rest.viewer.dataSources.removeAll()
+    czmlDataSource.load(e.data).then((ds) => callback(ds, { initialTime, ...rest }))
+    worker.terminate()
+  }
+}
+
 export const fRsos = ({ tles, rsoParams, scene, points, viewer }) => {
   const satrecs = []
   for (let i = 0; i < tles.length; i++) {
     const satrec = satellite.twoline2satrec(tles[i].firstLine, tles[i].secondLine)
     satrecs.push(satrec)
   }
-  scene.preRender.addEventListener(() => {
+  scene.preRender.addEventListener((e, t) => {
     points.length && points.removeAll()
 
     for (let i = 0; i < satrecs.length; i++) {
@@ -355,6 +387,16 @@ export const fRsos = ({ tles, rsoParams, scene, points, viewer }) => {
       const positionAndVelocity = satellite.propagate(satrecs[i], Cesium.JulianDate.toDate(time))
       const positionEci = positionAndVelocity.position as satellite.EciVec3<number>
 
+      const date = Cesium.JulianDate.toDate(t)
+      const gmst = satellite.gstime(date);
+      // const position = satellite.eciToGeodetic(positionAndVelocity.position, gmst);
+      const position = satellite.eciToEcf(positionAndVelocity.position, gmst);
+
+        // point.position = Cesium.Cartesian3.fromRadians(
+        //   position.longitude, position.latitude, position.height * 1000
+        // ),
+      
+
       if (RSOType == 'PAYLOAD') {
         rgba = [0, 255, 0, 255]
       } else if (RSOType == 'ROCKET BODY') {
@@ -368,11 +410,8 @@ export const fRsos = ({ tles, rsoParams, scene, points, viewer }) => {
       }
       if (positionEci) {
         point.id = satID
-        point.position = new Cesium.Cartesian3(
-          positionEci.x * 1000,
-          positionEci.y * 1000,
-          positionEci.z * 1000
-        )
+
+        point.position = new Cesium.Cartesian3(position.x * 1000,position.y * 1000,position.z * 1000)
         point.outlineColor = new Cesium.Color(
           rgba[0] / 255,
           rgba[1] / 255,
@@ -385,6 +424,13 @@ export const fRsos = ({ tles, rsoParams, scene, points, viewer }) => {
         point.translucencyByDistance = new Cesium.NearFarScalar(27720000, 1, 360000000, 0.2)
       }
       points.add(point)
+      if (satID === 25544) {
+        // console.log(Cesium.Cartesian3.fromRadians(
+        //   position.longitude, position.latitude, position.height * 1000
+        // ))
+        // console.log(positionEci)
+        // console.log(satellite.eciToEcf(positionEci,gmst))
+      }
     }
   })
 }

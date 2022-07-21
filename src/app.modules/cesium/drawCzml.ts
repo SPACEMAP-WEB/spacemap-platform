@@ -21,19 +21,7 @@ export const drawPath = async ({
 }) => {
   const czmlDataSource = new Cesium.CzmlDataSource()
   const pairCzml = makePair(pid, sid, from, tca, to)
-  await czmlDataSource.load({
-    id: 'document',
-    // name: 'CZML Point - Time Dynamic',
-    version: '1.0',
-    clock: {
-      currentTime: `${tca}`,
-      multiplier: 1,
-      range: 'UNBOUNDED',
-      step: 'SYSTEM_CLOCK_MULTIPLIER',
-    },
-  })
   const newDs = await czmlDataSource.process(pairCzml)
-  console.log(newDs)
   // const primarySat = newDs.entities.getById(String(pid))
 
   // primarySat.path.material = new Cesium.PolylineOutlineMaterialProperty({

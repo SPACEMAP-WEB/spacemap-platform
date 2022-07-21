@@ -12,6 +12,7 @@ export type TStoreCesium = {
   czmlDataSource: Cesium.CzmlDataSource
   accessToken: string
   tles: Ttle[]
+  tlesForConjunctions: Ttle[]
   rsoParams: TRsoParams
   primarySatColor: Cesium.Color
   secondarySatColor: Cesium.Color
@@ -34,12 +35,12 @@ export type TStateCesium = {
   czmlDataSource: Draft<Cesium.CzmlDataSource>
   accessToken: string
   tles: Ttle[]
+  tlesForConjunctions: Ttle[]
   rsoParams: TRsoParams
   primarySatColor: Cesium.Color
   secondarySatColor: Cesium.Color
   apartColor: Cesium.Color
   closeColor: Cesium.Color
-
   isPairMode: boolean
   prevPid: string | null
   prevSid: string | null
@@ -80,6 +81,7 @@ export type TargDrawConjuctions = {
 
 export type TdrawConjuctions = TargDrawConjuctions & {
   tles: Ttle[]
+  tlesForConjunctions: Ttle[]
   rsoParams: TRsoParams
   initialTime: moment.Moment
 }

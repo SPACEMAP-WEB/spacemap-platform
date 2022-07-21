@@ -66,7 +66,7 @@ function satrec2czml(satrec, startTime, duration, intervalUnitTime, satName, RSO
   const initTime = new Date(startTime)
   const twoPi = Math.PI * 2
   const periodSeconds = (twoPi / satrec.no) * 60
-  const interval = periodSeconds / 12
+  const interval = periodSeconds / 24
 
   initTime.setSeconds(initTime.getSeconds() - periodSeconds / 2)
   const satID = Number(satrec.satnum.split(' ').join(''))
@@ -84,7 +84,6 @@ function satrec2czml(satrec, startTime, duration, intervalUnitTime, satName, RSO
     }
     res.push(i, positionEci.x, positionEci.y, positionEci.z)
   }
-  // if ('46048' === satID) // console.log(res)
   const startAvailTime = moment(startTime, 'YYYY-MM-DDTHH:mm:ss.SSSSZ')
     .clone()
     .add(-duration - periodSeconds / 2, 's')
@@ -152,7 +151,7 @@ function satrec2czml(satrec, startTime, duration, intervalUnitTime, satName, RSO
       forwardExtrapolationDuration: 0,
       backwardExtrapolationType: 'NONE',
       backwardExtrapolationDuration: 0,
-      interpolationDegree: 2,
+      interpolationDegree: 4,
       referenceFrame: 'INERTIAL',
       epoch: `${startTime}`,
       cartesian: res,
