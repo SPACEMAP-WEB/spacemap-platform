@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'src/app.store/config/configureStore'
-import MainLayout from '@app.components/MainLayout'
+import MainLayout from '@app.layout/main/MainLayout'
 
 import { requestCheckLogin } from 'src/app.store/loginStore/loginUser'
 
