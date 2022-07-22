@@ -6,7 +6,6 @@ import { useModal } from '@app.modules/hooks/useModal'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import { LPDBResponseType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMutationPostLPDB } from '../query/useMutationLPDB'
-import { isCalculatableDate } from '@app.modules/util/calculatableDateHandler'
 import WarningModal from '@app.components/modal/WarningModal'
 import { PrimaryButton } from '@app.components/button/Button'
 
@@ -57,12 +56,16 @@ const AssessmentModal = ({
 
   const handleSubmit = () => {
     try {
-      if (!isCalculatableDate()) {
-        setIsLcaModalVisible(true)
-        return
-      }
+      mutate(
+        { threshold: String(thresholdValue), trajectory: inputFile },
+        {
+          onSuccess: async (data) => {
+            console.log(data)
+          },
+        }
+      )
+      console.log('hi')
       setIsSuccessModalOpen(true)
-      mutate({ threshold: String(thresholdValue), trajectory: inputFile })
       setIsLPDBTableOpen(true)
       handleAssessmentModalClose()
       handleSetModal()
