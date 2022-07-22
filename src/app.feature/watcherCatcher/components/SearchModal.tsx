@@ -121,7 +121,7 @@ const SearchModal = ({
             <div className="body-container">
               <section className="latitude-container">
                 <div className="longitude-horizontal-box">
-                  <p className="latitude-text">Latitude(km): </p>
+                  <p className="latitude-text">Latitude(deg): </p>
                   <Input
                     type="number"
                     min={-90}
@@ -140,7 +140,7 @@ const SearchModal = ({
               </section>
               <section className="longitude-container">
                 <div className="longitude-horizontal-box">
-                  <p className="longitude-text">Longitude(km): </p>
+                  <p className="longitude-text">Longitude(deg): </p>
                   <Input
                     type="number"
                     min={-180}
