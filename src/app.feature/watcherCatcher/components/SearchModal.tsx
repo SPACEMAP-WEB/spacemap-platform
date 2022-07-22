@@ -75,6 +75,8 @@ const SearchModal = ({
       }
       setIsSuccessModalOpen(true)
       mutate({
+        altitude: altitudeValue,
+        fieldOfView: fieldOfViewValue,
         longitude: longitudeValue,
         latitude: latitudeValue,
         epochTime: new Date(epochtimeValue).toUTCString(),
@@ -121,7 +123,7 @@ const SearchModal = ({
             <div className="body-container">
               <section className="latitude-container">
                 <div className="longitude-horizontal-box">
-                  <p className="latitude-text">Latitude(deg): </p>
+                  <p className="latitude-text">Latitude(°): </p>
                   <Input
                     type="number"
                     min={-90}
@@ -140,7 +142,7 @@ const SearchModal = ({
               </section>
               <section className="longitude-container">
                 <div className="longitude-horizontal-box">
-                  <p className="longitude-text">Longitude(deg): </p>
+                  <p className="longitude-text">Longitude(°): </p>
                   <Input
                     type="number"
                     min={-180}

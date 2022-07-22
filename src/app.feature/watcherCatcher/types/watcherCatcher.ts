@@ -59,6 +59,8 @@ export type WCDBResponseType = {
 }
 
 export type WCDBRequestType = {
+  altitude: number
+  fieldOfView: number
   latitude: number
   longitude: number
   epochTime: string
