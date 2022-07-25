@@ -26,10 +26,10 @@ const SearchModal = ({
   setIsWCDBTableOpen,
 }: SearchModalProps) => {
   const { isVisible, handleCloseModal, handleSetModal } = useModal('WATCHERCATCHER')
-  const [latitudeValue, setLatitudeValue] = useState<number>(0)
-  const [longitudeValue, setLongitudeValue] = useState<number>(0)
-  const [fieldOfViewValue, setFieldOfViewValue] = useState<number>(0)
-  const [altitudeValue, setAltitudeValue] = useState<number>(0)
+  const [latitudeValue, setLatitudeValue] = useState<number | null>(null)
+  const [longitudeValue, setLongitudeValue] = useState<number | null>(null)
+  const [fieldOfViewValue, setFieldOfViewValue] = useState<number | null>(null)
+  const [altitudeValue, setAltitudeValue] = useState<number | null>(null)
   const [epochtimeValue, setEpochtimeValue] = useState<string>(moment().toISOString())
   const [endtimeValue, setEndtimeValue] = useState<string>(moment().toISOString())
   const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
@@ -126,7 +126,7 @@ const SearchModal = ({
                     type="number"
                     min={-90}
                     max={90}
-                    value={latitudeValue}
+                    value={latitudeValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'latitude')}
                     className="threshold-input"
                   ></Input>
@@ -145,7 +145,7 @@ const SearchModal = ({
                     type="number"
                     min={-180}
                     max={180}
-                    value={longitudeValue}
+                    value={longitudeValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'longitude')}
                     className="threshold-input"
                   ></Input>
@@ -164,7 +164,7 @@ const SearchModal = ({
                     type="number"
                     min={-180}
                     max={180}
-                    value={altitudeValue}
+                    value={altitudeValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'altitude')}
                     className="threshold-input"
                   ></Input>
@@ -183,7 +183,7 @@ const SearchModal = ({
                     type="number"
                     min={-180}
                     max={180}
-                    value={fieldOfViewValue}
+                    value={fieldOfViewValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'fieldOfView')}
                     className="threshold-input"
                   ></Input>
