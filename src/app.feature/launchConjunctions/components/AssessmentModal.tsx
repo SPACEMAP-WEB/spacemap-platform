@@ -30,7 +30,7 @@ const AssessmentModal = ({
 }: AssessmentModalProps) => {
   const { isVisible, handleCloseModal, handleSetModal } = useModal('LAUNCHCONJUNCTIONS')
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true)
-  const [thresholdValue, setThresholdValue] = useState<number>(0)
+  const [thresholdValue, setThresholdValue] = useState<number | null>(null)
   const [inputFile, setInputFile] = useState<File>()
   const [fileName, setFileName] = useState<string>('')
   const { mutate } = useMutationPostLPDB()
@@ -138,7 +138,7 @@ const AssessmentModal = ({
                 <p className="threshold-text">Threshold(km): </p>
                 <input
                   type="number"
-                  value={thresholdValue}
+                  value={thresholdValue || ''}
                   onChange={handleThresholdInputChange}
                   className="threshold-input"
                 ></input>
