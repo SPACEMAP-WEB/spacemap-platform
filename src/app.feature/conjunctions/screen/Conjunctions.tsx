@@ -2,7 +2,7 @@ import Search from '@app.components/Search'
 import { PPDBSearchParamsType } from '@app.feature/conjunctions/types/conjunctions'
 import { useModal } from '@app.modules/hooks/useModal'
 import { responsiveCellSizeHandler } from '@app.modules/util/responsiveCellSizeHandler'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import useConjunctionsEventHandler from '../hooks/useConjunctionsEventHandler'
 import { slideIn, slideOut } from '../../../app.styled/keyFrames'
@@ -10,6 +10,7 @@ import ConfigBox, { ConfigBoxProps } from '@app.components/ConfigBox'
 import ConjunctionsTable from '../component/ConjunctionsTable'
 
 const Conjunctions = () => {
+  console.log('conjucntions')
   const size = responsiveCellSizeHandler(window.innerHeight)
   const conjunctionsRef = useRef<HTMLDivElement>(null)
   const [queryParams, setQueryParams] = useState<PPDBSearchParamsType>({
@@ -64,16 +65,15 @@ const Conjunctions = () => {
     },
   ]
 
-  useEffect(() => {
-    let abortController = new AbortController()
-    if (!conjunctionsRef.current) return
+  // useEffect(() => {
+  //   let abortController = new AbortController()
+  //   if (!conjunctionsRef.current) return
 
-    conjunctionsRef.current.style.display = close ? 'none' : 'block'
-    // conjunctionsRef.current.style.width= close ? 'none' : 'block'
-    return () => {
-      abortController.abort()
-    }
-  }, [close, conjunctionsRef.current])
+  //   conjunctionsRef.current.style.display = close ? 'none' : 'block'
+  //   return () => {
+  //     abortController.abort()
+  //   }
+  // }, [close, conjunctionsRef.current])
 
   return (
     <>
@@ -82,7 +82,7 @@ const Conjunctions = () => {
           <button className="btn-close" onClick={() => setClose(!close)}>
             {!close ? <div className="close" /> : <div style={{ color: 'white' }}>+</div>}
           </button>
-          <section ref={conjunctionsRef}>
+          <section className="section" ref={conjunctionsRef}>
             <h1 className="title conjunctions">Conjunctions</h1>
             <div className="header-group">
               <Search
@@ -120,13 +120,16 @@ const ConjunctionsWrapper = styled.div<ConjunctionsProps>`
   z-index: 4;
   right: 1.25rem;
   top: 5.5rem;
-  transition: all 0.5s ease-out;
+  /* transition: all 0.5s ease-out; */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   animation: ${(props) => (props.isConjunctionsClicked ? slideIn : slideOut)} 1s;
+  .section {
+    display: ${(props) => (props.close ? 'none' : 'block')};
+  }
   .title {
     color: white;
     font-size: 20px;
