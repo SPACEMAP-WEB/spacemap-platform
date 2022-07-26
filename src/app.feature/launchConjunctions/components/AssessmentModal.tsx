@@ -16,7 +16,11 @@ type AssessmentModalProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   refetchLPDBData: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
+<<<<<<< Updated upstream
   ) => Promise<QueryObserverResult<LPDBResponseType, unknown>>
+=======
+  ) => Promise<QueryObserverResult<ResponseDataType<LPDBResponseDataType[]>, unknown>>
+>>>>>>> Stashed changes
 }
 
 type ModalStyleProps = {

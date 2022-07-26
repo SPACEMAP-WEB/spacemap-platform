@@ -7,7 +7,11 @@ import { API_LPDB } from '@app.modules/keyFactory'
 import { useQuery } from 'react-query'
 
 export const requestAPiGetLPDB = async () => {
+<<<<<<< Updated upstream
   const response = await api.GET<null, LPDBResponseType>(
+=======
+  const response = await api.GET<null, ResponseDataType<LPDBResponseDataType[]>>(
+>>>>>>> Stashed changes
     process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB
   )
   return response.data
