@@ -2,10 +2,9 @@ import { Input } from '@app.components/Input'
 import ModalWrapper from '@app.components/modal/ModalWrapper'
 import WarningModal from '@app.components/modal/WarningModal'
 import { useModal } from '@app.modules/hooks/useModal'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import styled from 'styled-components'
-import { isCalculatableDate } from '@app.modules/util/calculatableDateHandler'
 import { useMutationPostWCDB } from '../query/useMutationWCDB'
 import { WCDBResponseType } from '../types/watcherCatcher'
 import { InputErrorBox } from '@app.components/InputErrorBox'
@@ -36,10 +35,6 @@ const SearchModal = ({
   const modalEl = useRef<HTMLDivElement>(null)
   const { mutate } = useMutationPostWCDB()
 
-  useEffect(() => {
-    setEndtimeValue(moment(epochtimeValue).add(1, 'hours').toISOString().substring(0, 16))
-  }, [epochtimeValue])
-
   const handleInputValueChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     inputType: 'latitude' | 'longitude' | 'epochtime' | 'endtime' | 'fieldOfView' | 'altitude'
@@ -62,22 +57,20 @@ const SearchModal = ({
         break
       case 'endtime':
         setEndtimeValue(e.target.value + ':00.000Z')
-        console.log(moment(endtimeValue).diff(epochtimeValue))
         break
     }
   }
 
   const handleSubmit = () => {
     try {
-      if (!isCalculatableDate()) {
-        setIsWatcherModalVisible(true)
-        return
-      }
       setIsSuccessModalOpen(true)
       mutate({
         longitude: longitudeValue,
         latitude: latitudeValue,
+        altitude: altitudeValue,
+        fieldOfView: fieldOfViewValue,
         epochTime: new Date(epochtimeValue).toUTCString(),
+        endTime: new Date(endtimeValue).toUTCString(),
       })
       setIsWCDBTableOpen(true)
       handleSearchModalClose()
@@ -209,7 +202,7 @@ const SearchModal = ({
                 <Input
                   type="datetime-local"
                   value={endtimeValue.substring(0, 16)}
-                  onChange={(e) => handleInputValueChange(e, 'epochtime')}
+                  onChange={(e) => handleInputValueChange(e, 'endtime')}
                   className="threshold-input"
                 ></Input>
               </section>
