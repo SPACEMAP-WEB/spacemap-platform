@@ -2,7 +2,7 @@ import { Input } from '@app.components/Input'
 import ModalWrapper from '@app.components/modal/ModalWrapper'
 import WarningModal from '@app.components/modal/WarningModal'
 import { useModal } from '@app.modules/hooks/useModal'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import styled from 'styled-components'
 import { useMutationPostWCDB } from '../query/useMutationWCDB'
@@ -24,15 +24,17 @@ const SearchModal = ({
   setIsSuccessModalOpen,
   setIsWCDBTableOpen,
 }: SearchModalProps) => {
+  const [isInputError, setIsInputError] = useState(false)
   const { isVisible, handleCloseModal, handleSetModal } = useModal('WATCHERCATCHER')
   const [latitudeValue, setLatitudeValue] = useState<number | null>(null)
   const [longitudeValue, setLongitudeValue] = useState<number | null>(null)
   const [fieldOfViewValue, setFieldOfViewValue] = useState<number | null>(null)
   const [altitudeValue, setAltitudeValue] = useState<number | null>(null)
   const [epochtimeValue, setEpochtimeValue] = useState<string>(moment().toISOString())
-  const [endtimeValue, setEndtimeValue] = useState<string>(moment().toISOString())
+  const [endtimeValue, setEndtimeValue] = useState<string>(moment().add(1, 'hours').toISOString())
   const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
   const modalEl = useRef<HTMLDivElement>(null)
+  const errorMessageRefs = useRef<(HTMLDivElement | null)[]>([])
   const { mutate } = useMutationPostWCDB()
 
   const handleInputValueChange = (
@@ -85,18 +87,21 @@ const SearchModal = ({
   }
 
   const isSubmittable = () => {
-    if (
-      latitudeValue > 90 ||
-      latitudeValue < -90 ||
-      longitudeValue > 180 ||
-      longitudeValue < -180 ||
-      altitudeValue < 0
-    ) {
+    if (isInputError || !latitudeValue || !longitudeValue || !altitudeValue || !fieldOfViewValue) {
       return false
     } else {
       return true
     }
   }
+
+  useEffect(() => {
+    if (!errorMessageRefs.current.length) return
+    if (errorMessageRefs.current.some((el) => el !== null)) {
+      setIsInputError(true)
+    } else {
+      setIsInputError(false)
+    }
+  })
 
   return (
     <>
@@ -112,99 +117,103 @@ const SearchModal = ({
               />
             </header>
             <div className="body-container">
-              <section className="latitude-container">
-                <div className="longitude-horizontal-box">
-                  <p className="latitude-text">Latitude(°): </p>
+              <section className="input-container">
+                <div className="input-horizontal-box">
+                  <p className="input-text">Latitude(°): </p>
                   <Input
                     type="number"
                     min={-90}
                     max={90}
                     value={latitudeValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'latitude')}
-                    className="threshold-input"
                   ></Input>
                 </div>
                 {latitudeValue > 90 || latitudeValue < -90 ? (
-                  <InputErrorBox>
+                  <InputErrorBox ref={(el) => (errorMessageRefs.current[0] = el)}>
                     <img src="svg/error-icon.svg" />
                     Latitude is limited from -90 to 90
                   </InputErrorBox>
                 ) : null}
               </section>
-              <section className="longitude-container">
-                <div className="longitude-horizontal-box">
-                  <p className="longitude-text">Longitude(°): </p>
+              <section className="input-container">
+                <div className="input-horizontal-box">
+                  <p className="input-text">Longitude(°): </p>
                   <Input
                     type="number"
                     min={-180}
                     max={180}
                     value={longitudeValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'longitude')}
-                    className="threshold-input"
                   ></Input>
                 </div>
                 {longitudeValue > 180 || longitudeValue < -180 ? (
-                  <InputErrorBox>
+                  <InputErrorBox ref={(el) => (errorMessageRefs.current[1] = el)}>
                     <img src="svg/error-icon.svg" />
                     Longitude is limited from -180 to 180
                   </InputErrorBox>
                 ) : null}
               </section>
-              <section className="longitude-container">
-                <div className="longitude-horizontal-box">
-                  <p className="longitude-text">Altitude(km): </p>
+              <section className="input-container">
+                <div className="input-horizontal-box">
+                  <p className="input-text">Altitude(km): </p>
                   <Input
                     type="number"
                     min={-180}
                     max={180}
                     value={altitudeValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'altitude')}
-                    className="threshold-input"
                   ></Input>
                 </div>
                 {altitudeValue < 0 ? (
-                  <InputErrorBox>
+                  <InputErrorBox ref={(el) => (errorMessageRefs.current[2] = el)}>
                     <img src="svg/error-icon.svg" />
                     Altitude must be positive number
                   </InputErrorBox>
                 ) : null}
               </section>
-              <section className="longitude-container">
-                <div className="longitude-horizontal-box">
-                  <p className="longitude-text">Field of View(°): </p>
+              <section className="input-container">
+                <div className="input-horizontal-box">
+                  <p className="input-text">Field of View(°): </p>
                   <Input
                     type="number"
                     min={-180}
                     max={180}
                     value={fieldOfViewValue || ''}
                     onChange={(e) => handleInputValueChange(e, 'fieldOfView')}
-                    className="threshold-input"
                   ></Input>
                 </div>
                 {fieldOfViewValue > 90 || fieldOfViewValue < 0 ? (
-                  <InputErrorBox>
+                  <InputErrorBox ref={(el) => (errorMessageRefs.current[3] = el)}>
                     <img src="svg/error-icon.svg" />
                     Field of View is limited from 0 to 90
                   </InputErrorBox>
                 ) : null}
               </section>
-              <section className="threshold-container">
-                <p className="threshold-text">Epoch Time(UTC): </p>
-                <Input
-                  type="datetime-local"
-                  value={epochtimeValue.substring(0, 16)}
-                  onChange={(e) => handleInputValueChange(e, 'epochtime')}
-                  className="threshold-input"
-                ></Input>
+              <section className="input-container">
+                <div className="input-horizontal-box">
+                  <p className="input-text">Epoch Time(UTC): </p>
+                  <Input
+                    type="datetime-local"
+                    value={epochtimeValue.substring(0, 16)}
+                    onChange={(e) => handleInputValueChange(e, 'epochtime')}
+                  ></Input>
+                </div>
               </section>
-              <section className="threshold-container">
-                <p className="threshold-text">End Time(UTC): </p>
-                <Input
-                  type="datetime-local"
-                  value={endtimeValue.substring(0, 16)}
-                  onChange={(e) => handleInputValueChange(e, 'endtime')}
-                  className="threshold-input"
-                ></Input>
+              <section className="input-container">
+                <div className="input-horizontal-box">
+                  <p className="input-text">End Time(UTC): </p>
+                  <Input
+                    type="datetime-local"
+                    value={endtimeValue.substring(0, 16)}
+                    onChange={(e) => handleInputValueChange(e, 'endtime')}
+                  ></Input>
+                </div>
+                {moment(endtimeValue).diff(epochtimeValue) < 0 ? (
+                  <InputErrorBox ref={(el) => (errorMessageRefs.current[4] = el)}>
+                    <img src="svg/error-icon.svg" />
+                    End Time should be ahead of Epoch Time
+                  </InputErrorBox>
+                ) : null}
               </section>
               <button disabled={!isSubmittable()} className="submit-button" onClick={handleSubmit}>
                 Submit
@@ -262,40 +271,18 @@ const Modal = styled.div<ModalStyleProps>`
     align-items: center;
     height: 70%;
 
-    .longitude-container {
+    .input-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
-      .longitude-horizontal-box {
+      .input-horizontal-box {
         display: flex;
         align-items: center;
-        .longitude-text {
+        .input-text {
           width: 15rem;
           color: #c9c9c9;
         }
-      }
-    }
-    .latitude-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      .longitude-horizontal-box {
-        display: flex;
-        align-items: center;
-        .latitude-text {
-          width: 15rem;
-          color: #c9c9c9;
-        }
-      }
-    }
-    .threshold-container {
-      display: flex;
-      align-items: center;
-      .threshold-text {
-        width: 15rem;
-        color: #c9c9c9;
       }
     }
 
