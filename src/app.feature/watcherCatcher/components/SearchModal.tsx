@@ -35,7 +35,7 @@ const SearchModal = ({
   const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
   const modalEl = useRef<HTMLDivElement>(null)
   const errorMessageRefs = useRef<(HTMLDivElement | null)[]>([])
-  const { mutate } = useMutationPostWCDB()
+  const { mutateAsync } = useMutationPostWCDB()
 
   const handleInputValueChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -63,23 +63,24 @@ const SearchModal = ({
     }
   }
 
-  const handleSubmit = () => {
-    try {
-      setIsSuccessModalOpen(true)
-      mutate({
-        longitude: longitudeValue,
-        latitude: latitudeValue,
-        altitude: altitudeValue,
-        fieldOfView: fieldOfViewValue,
-        epochTime: new Date(epochtimeValue).toUTCString(),
-        endTime: new Date(endtimeValue).toUTCString(),
+  const handleSubmit = async () => {
+    await mutateAsync({
+      longitude: longitudeValue,
+      latitude: latitudeValue,
+      altitude: altitudeValue,
+      fieldOfView: fieldOfViewValue,
+      epochTime: new Date(epochtimeValue).toUTCString(),
+      endTime: new Date(endtimeValue).toUTCString(),
+    })
+      .then(() => {
+        setIsSuccessModalOpen(true)
+        setIsWCDBTableOpen(true) // FIXME: Is it necessary?
+        handleSearchModalClose()
+        handleSetModal()
       })
-      setIsWCDBTableOpen(true)
-      handleSearchModalClose()
-      handleSetModal()
-    } catch (error) {
-      console.error(error)
-    }
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   const handleClose = () => {
