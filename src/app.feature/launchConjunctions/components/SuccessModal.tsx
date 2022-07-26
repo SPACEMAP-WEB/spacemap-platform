@@ -8,7 +8,10 @@ type Props = {
 const SuccessModal = ({ setIsSuccessModalOpen }: Props) => {
   return (
     <>
-      <AlertModal setIsSuccessModalOpen={setIsSuccessModalOpen} />
+      <AlertModal
+        message="Your trajectory is being calculated in the server!"
+        setIsSuccessModalOpen={setIsSuccessModalOpen}
+      />
     </>
   )
 }
