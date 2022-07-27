@@ -44,18 +44,6 @@ const AssessmentModal = ({
   const fileInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
 
-  const handleDownload = async () => {
-    const response = await refetch()
-    const element = document.createElement('a')
-    const textFile = new Blob([response.data.data], {
-      type: 'text/plain',
-    })
-    element.href = URL.createObjectURL(textFile)
-    element.download = 'bocachica_J2000_converted.txt'
-    document.body.appendChild(element)
-    element.click()
-  }
-
   const onCickFileUpload = () => {
     fileInput?.current.click()
   }
