@@ -46,19 +46,11 @@ export type LPDBDetailResponseDataType = {
   lpdb: LPDBTempDataType[]
 }
 
-export type LPDBDetailResponseType = {
-  message: string
-  success: boolean
-  data: LPDBDetailResponseDataType
-}
-
-export type LPDBResponseType = {
-  message: string
-  success: boolean
-  data: LPDBResponseDataType[]
-}
-
 export type LPDBRequestType = {
   threshold: string
   trajectory: File
+}
+
+export type LPDBPostResponseDataType = {
+  taskId: string
 }

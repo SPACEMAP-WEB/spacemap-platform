@@ -3,13 +3,10 @@ import styled from 'styled-components'
 
 type ModalProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  message: string
 }
 
-type ModalStyleProps = {
-  isTimeFinished: boolean
-}
-
-const AlertModal = ({ setIsSuccessModalOpen }: ModalProps) => {
+const AlertModal = ({ setIsSuccessModalOpen, message }: ModalProps) => {
   const [isTimeFinished, setIsTimeFinished] = useState<boolean>(false)
 
   useEffect(() => {
@@ -22,7 +19,7 @@ const AlertModal = ({ setIsSuccessModalOpen }: ModalProps) => {
   return (
     <ModalWrapper isTimeFinished={isTimeFinished}>
       <div className="modal-container">
-        <p className="alert-text">Your trajectory is being calculated in the server!</p>
+        <p className="alert-text">{message}</p>
         <p className="alert-text">Check the status in your table :)</p>
       </div>
     </ModalWrapper>
@@ -30,6 +27,10 @@ const AlertModal = ({ setIsSuccessModalOpen }: ModalProps) => {
 }
 
 export default AlertModal
+
+type ModalStyleProps = {
+  isTimeFinished: boolean
+}
 
 const ModalWrapper = styled.div<ModalStyleProps>`
   position: fixed;

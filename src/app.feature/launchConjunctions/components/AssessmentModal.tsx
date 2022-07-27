@@ -4,11 +4,12 @@ import ModalWrapper from '@app.components/modal/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
 
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
-import { LPDBResponseType } from '@app.feature/launchConjunctions/types/launchConjunctions'
+import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMutationPostLPDB } from '../query/useMutationLPDB'
 import WarningModal from '@app.components/modal/WarningModal'
 import { PrimaryButton } from '@app.components/button/Button'
 import { useQueryGetLPDBSampleDownload } from '../query/useQueryLPDB'
+import { DataResponseType } from '@app.modules/types'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -16,7 +17,7 @@ type AssessmentModalProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   refetchLPDBData: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
-  ) => Promise<QueryObserverResult<LPDBResponseType, unknown>>
+  ) => Promise<QueryObserverResult<DataResponseType<LPDBResponseDataType[]>, unknown>>
 }
 
 type ModalStyleProps = {
@@ -34,23 +35,12 @@ const AssessmentModal = ({
   const [inputFile, setInputFile] = useState<File>()
   const [fileName, setFileName] = useState<string>('')
   const { mutateAsync } = useMutationPostLPDB()
-  const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const { refetch } = useQueryGetLPDBSampleDownload()
 
   const fileInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
-
-  const handleDownload = async () => {
-    const response = await refetch()
-    const element = document.createElement('a')
-    const textFile = new Blob([response.data.data], {
-      type: 'text/plain',
-    })
-    element.href = URL.createObjectURL(textFile)
-    element.download = 'bocachica_J2000_converted.txt'
-    document.body.appendChild(element)
-    element.click()
-  }
 
   const onCickFileUpload = () => {
     fileInput?.current.click()
@@ -69,19 +59,36 @@ const AssessmentModal = ({
   }
 
   const handleSubmit = async () => {
-    try {
-      await mutateAsync({ threshold: String(thresholdValue), trajectory: inputFile })
-      setIsSuccessModalOpen(true)
-      setIsLPDBTableOpen(true)
-      handleAssessmentModalClose()
-      handleSetModal()
-    } catch (error) {
-      console.log(error.response)
-    }
+    await mutateAsync({
+      threshold: String(thresholdValue),
+      trajectory: inputFile,
+    })
+      .then(() => {
+        setIsSuccessModalOpen(true)
+        setIsLPDBTableOpen(true) // FIXME: Is it necessary?
+        handleAssessmentModalClose()
+        handleSetModal()
+      })
+      .catch((error) => {
+        setIsErrorModalVisible(true)
+        setErrorMessage(error.response?.data?.message)
+      })
   }
 
   const handleClose = () => {
-    setIsLcaModalVisible(false)
+    setIsErrorModalVisible(false)
+  }
+
+  const handleDownload = async () => {
+    const response = await refetch()
+    const element = document.createElement('a')
+    const textFile = new Blob([response.data.data], {
+      type: 'text/plain',
+    })
+    element.href = URL.createObjectURL(textFile)
+    element.download = 'bocachica_J2000_converted.txt'
+    document.body.appendChild(element)
+    element.click()
   }
 
   return (
@@ -149,18 +156,18 @@ const AssessmentModal = ({
                   and from a corresponding ephemeris is straightforward.)
                 </p>
               </section>
-              <PrimaryButton onClick={handleSubmit} isDisabled={isSubmitDisabled}>
+              <PrimaryButton
+                onClick={handleSubmit}
+                isDisabled={isSubmitDisabled || !thresholdValue}
+              >
                 Submit
               </PrimaryButton>
             </div>
           </div>
         </Modal>
       </ModalWrapper>
-      {isLcaModalVisible && (
-        <WarningModal
-          handleRequestModalCancel={handleClose}
-          message={"It isn't open from 12:00 to 18:00."}
-        />
+      {isErrorModalVisible && (
+        <WarningModal handleRequestModalCancel={handleClose} message={errorMessage} />
       )}
     </>
   )

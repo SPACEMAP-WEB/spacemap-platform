@@ -161,6 +161,7 @@ class CesiumModule {
       worker.postMessage([initialTimeISOString, duration, intervalUnitTime, tles, rsoParams])
       worker.onmessage = (e) => {
         viewer.dataSources.removeAll()
+        console.log(e.data)
         czmlDataSource.load(e.data).then(function (ds) {
           viewer.dataSources.add(ds)
           const clockViewModel = viewer.clockViewModel
@@ -280,11 +281,7 @@ class CesiumModule {
       id: '0',
       name: 'Launch Vehicle',
       availability: '',
-      description: 'Launch Vehicle',
-      billboard: {
-        show: true,
-        image: `data:image/png;base64,${this.rocketBase64}`,
-      },
+      description: 'Own Asset',
       label: {
         fillColor: {
           rgba: [255, 255, 255, 255],
@@ -300,12 +297,25 @@ class CesiumModule {
         },
         show: true,
         style: 'FILL_AND_OUTLINE',
-        text: 'Launch Vehicle',
+        text: 'Own Asset',
         verticalOrigin: 'CENTER',
       },
-      model: {
-        show: true,
-        minimumPixelSize: 99,
+      ellipsoid: {
+        radii: {
+          cartesian: [30000.0, 30000.0, 30000.0],
+        },
+        fill: true,
+        material: {
+          solidColor: {
+            color: {
+              rgba: [0, 0, 255, 100],
+            },
+          },
+        },
+        outline: true,
+        outlineColor: {
+          rgbaf: [0, 0, 0, 1],
+        },
       },
       path: {
         material: {

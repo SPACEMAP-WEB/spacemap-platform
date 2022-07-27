@@ -6,9 +6,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import styled from 'styled-components'
 import { useMutationPostWCDB } from '../query/useMutationWCDB'
-import { WCDBResponseType } from '../types/watcherCatcher'
+import { WCDBResponseDataType } from '../types/watcherCatcher'
 import { InputErrorBox } from '@app.components/InputErrorBox'
 import moment from 'moment'
+import { DataResponseType } from '@app.modules/types'
 
 type SearchModalProps = {
   handleSearchModalClose: () => void
@@ -16,7 +17,7 @@ type SearchModalProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   refetchWCDBData: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
-  ) => Promise<QueryObserverResult<WCDBResponseType, unknown>>
+  ) => Promise<QueryObserverResult<DataResponseType<WCDBResponseDataType[]>, unknown>>
 }
 
 const SearchModal = ({
@@ -35,7 +36,7 @@ const SearchModal = ({
   const [isWatcherModalVisible, setIsWatcherModalVisible] = useState(false)
   const modalEl = useRef<HTMLDivElement>(null)
   const errorMessageRefs = useRef<(HTMLDivElement | null)[]>([])
-  const { mutate } = useMutationPostWCDB()
+  const { mutateAsync } = useMutationPostWCDB()
 
   const handleInputValueChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -63,23 +64,24 @@ const SearchModal = ({
     }
   }
 
-  const handleSubmit = () => {
-    try {
-      setIsSuccessModalOpen(true)
-      mutate({
-        longitude: longitudeValue,
-        latitude: latitudeValue,
-        altitude: altitudeValue,
-        fieldOfView: fieldOfViewValue,
-        epochTime: new Date(epochtimeValue).toUTCString(),
-        endTime: new Date(endtimeValue).toUTCString(),
+  const handleSubmit = async () => {
+    await mutateAsync({
+      longitude: longitudeValue,
+      latitude: latitudeValue,
+      altitude: altitudeValue,
+      fieldOfView: fieldOfViewValue,
+      epochTime: new Date(epochtimeValue).toUTCString(),
+      endTime: new Date(endtimeValue).toUTCString(),
+    })
+      .then(() => {
+        setIsSuccessModalOpen(true)
+        setIsWCDBTableOpen(true) // FIXME: Is it necessary?
+        handleSearchModalClose()
+        handleSetModal()
       })
-      setIsWCDBTableOpen(true)
-      handleSearchModalClose()
-      handleSetModal()
-    } catch (error) {
-      console.error(error)
-    }
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   const handleClose = () => {
@@ -225,7 +227,7 @@ const SearchModal = ({
       {isWatcherModalVisible && (
         <WarningModal
           handleRequestModalCancel={handleClose}
-          message={"It isn't open from 12:00 to 18:00."}
+          message={"It isn't open from 15:00 to 21:00."}
         />
       )}
     </>

@@ -2,13 +2,16 @@ import api from '@app.modules/api'
 import { API_FAVORITE_CONJUNCTIONS, API_PPDB } from '@app.modules/keyFactory'
 import { objectToURL } from '@app.modules/util'
 import {
-  PPDBResponseType,
+  PPDBResponseDataType,
   PPDBSearchParamsType,
 } from '@app.feature/conjunctions/types/conjunctions'
 import { useQuery } from 'react-query'
+import { DataResponseType } from '@app.modules/types'
 
 export const requestAPiGetPPDB = async (query: PPDBSearchParamsType) => {
-  const response = await api.GET<null, PPDBResponseType>(API_PPDB + objectToURL(query))
+  const response = await api.GET<null, DataResponseType<PPDBResponseDataType>>(
+    API_PPDB + objectToURL(query)
+  )
   const result = response.data.data
   return {
     result: result.conjunctions,
@@ -17,7 +20,7 @@ export const requestAPiGetPPDB = async (query: PPDBSearchParamsType) => {
 }
 
 export const requestApiGetFavorite = async (query) => {
-  const response = await api.GET<null, PPDBResponseType>(
+  const response = await api.GET<null, DataResponseType<PPDBResponseDataType>>(
     API_FAVORITE_CONJUNCTIONS + objectToURL(query)
   )
   const result = response.data.data

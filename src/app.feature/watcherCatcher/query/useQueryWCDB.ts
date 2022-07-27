@@ -1,16 +1,17 @@
 import api from '@app.modules/api'
 import { API_WCDB } from '@app.modules/keyFactory'
+import { DataResponseType } from '@app.modules/types'
 import { useQuery } from 'react-query'
-import { WCDBDetailResponseType, WCDBResponseType } from '../types/watcherCatcher'
+import { WCDBDetailDataType, WCDBResponseDataType } from '../types/watcherCatcher'
 
 export const requestAPiGetWCDB = async () => {
-  const response = await api.GET<null, WCDBResponseType>(
+  const response = await api.GET<null, DataResponseType<WCDBResponseDataType[]>>(
     process.env.SPACEMAP_PLATFORM_API_URI + API_WCDB
   )
   return response.data
 }
 
-export const useQueryGetWCDB = (email) => {
+export const useQueryGetWCDB = (email: string) => {
   return useQuery([API_WCDB], () => requestAPiGetWCDB(), {
     keepPreviousData: true,
     enabled: !!email,
@@ -21,7 +22,7 @@ export const useQueryGetWCDB = (email) => {
 
 export const useQueryGetWCDBDetail = (id: string) => {
   return useQuery([API_WCDB, id], async () => {
-    const response = await api.GET<null, WCDBDetailResponseType>(
+    const response = await api.GET<null, DataResponseType<WCDBDetailDataType>>(
       process.env.SPACEMAP_PLATFORM_API_URI + API_WCDB + `/${id}`
     )
     return response.data.data
