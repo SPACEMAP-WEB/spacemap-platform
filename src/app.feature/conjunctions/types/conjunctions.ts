@@ -1,8 +1,3 @@
-export type ResponseType = {
-  message: string
-  success: boolean
-}
-
 export type PPDBDataType = {
   index: number
   id: string
@@ -35,15 +30,6 @@ export type ConjunctionsDataType = {
 export type PPDBResponseDataType = {
   totalcount: number
   conjunctions: ConjunctionsDataType[]
-}
-
-export type PPDBResponseDataCamelType = {
-  totalCount: number
-  result: ConjunctionsDataType[]
-}
-
-export type PPDBResponseType = ResponseType & {
-  data: PPDBResponseDataType
 }
 
 export type PPDBQueryKeyType = 'sort' | 'dec' | 'satellite'

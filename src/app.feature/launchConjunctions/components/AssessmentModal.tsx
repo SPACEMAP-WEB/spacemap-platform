@@ -4,14 +4,12 @@ import ModalWrapper from '@app.components/modal/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
 
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
-import {
-  LPDBResponseDataType,
-  ResponseDataType,
-} from '@app.feature/launchConjunctions/types/launchConjunctions'
+import { LPDBResponseDataType } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMutationPostLPDB } from '../query/useMutationLPDB'
 import WarningModal from '@app.components/modal/WarningModal'
 import { PrimaryButton } from '@app.components/button/Button'
 import { useQueryGetLPDBSampleDownload } from '../query/useQueryLPDB'
+import { DataResponseType } from '@app.modules/types'
 
 type AssessmentModalProps = {
   handleAssessmentModalClose: () => void
@@ -19,7 +17,7 @@ type AssessmentModalProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   refetchLPDBData: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
-  ) => Promise<QueryObserverResult<ResponseDataType<LPDBResponseDataType[]>, unknown>>
+  ) => Promise<QueryObserverResult<DataResponseType<LPDBResponseDataType[]>, unknown>>
 }
 
 type ModalStyleProps = {

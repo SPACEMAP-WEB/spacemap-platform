@@ -4,9 +4,9 @@ import { useMutation } from 'react-query'
 import {
   LPDBPostResponseDataType,
   LPDBRequestType,
-  ResponseDataType,
 } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useQueryClient } from 'react-query'
+import { DataResponseType } from '@app.modules/types'
 
 export const useMutationPostLPDB = () => {
   const queryClient = useQueryClient()
@@ -16,7 +16,7 @@ export const useMutationPostLPDB = () => {
       const { threshold, trajectory } = requestForm
       formData.append('threshold', threshold)
       formData.append('trajectory', trajectory)
-      return api.POST<FormData, ResponseDataType<LPDBPostResponseDataType>>({
+      return api.POST<FormData, DataResponseType<LPDBPostResponseDataType>>({
         url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB,
         data: formData,
       })

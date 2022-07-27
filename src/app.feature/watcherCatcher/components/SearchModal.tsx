@@ -6,9 +6,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
 import styled from 'styled-components'
 import { useMutationPostWCDB } from '../query/useMutationWCDB'
-import { WCDBResponseType } from '../types/watcherCatcher'
+import { WCDBResponseDataType } from '../types/watcherCatcher'
 import { InputErrorBox } from '@app.components/InputErrorBox'
 import moment from 'moment'
+import { DataResponseType } from '@app.modules/types'
 
 type SearchModalProps = {
   handleSearchModalClose: () => void
@@ -16,7 +17,7 @@ type SearchModalProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   refetchWCDBData: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
-  ) => Promise<QueryObserverResult<WCDBResponseType, unknown>>
+  ) => Promise<QueryObserverResult<DataResponseType<WCDBResponseDataType[]>, unknown>>
 }
 
 const SearchModal = ({

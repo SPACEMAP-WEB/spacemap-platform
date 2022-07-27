@@ -38,24 +38,12 @@ export type WCDBTempDataType = {
   placeId: string
 }
 
-export type WCDBDetailResponseDataType = {
+export type WCDBDetailDataType = {
   latitude: string
   longitude: string
   epochTime: string
   predictionEpochTime: string
   wcdb: WCDBTempDataType[]
-}
-
-export type WCDBDetailResponseType = {
-  message: string
-  success: boolean
-  data: WCDBDetailResponseDataType
-}
-
-export type WCDBResponseType = {
-  message: string
-  success: boolean
-  data: WCDBResponseDataType[]
 }
 
 export type WCDBRequestType = {
