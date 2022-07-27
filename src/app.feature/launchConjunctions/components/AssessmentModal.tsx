@@ -4,7 +4,10 @@ import ModalWrapper from '@app.components/modal/ModalWrapper'
 import { useModal } from '@app.modules/hooks/useModal'
 
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query'
-import { LPDBResponseType } from '@app.feature/launchConjunctions/types/launchConjunctions'
+import {
+  LPDBResponseDataType,
+  ResponseDataType,
+} from '@app.feature/launchConjunctions/types/launchConjunctions'
 import { useMutationPostLPDB } from '../query/useMutationLPDB'
 import WarningModal from '@app.components/modal/WarningModal'
 import { PrimaryButton } from '@app.components/button/Button'
@@ -16,7 +19,7 @@ type AssessmentModalProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   refetchLPDBData: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
-  ) => Promise<QueryObserverResult<LPDBResponseType, unknown>>
+  ) => Promise<QueryObserverResult<ResponseDataType<LPDBResponseDataType[]>, unknown>>
 }
 
 type ModalStyleProps = {
@@ -33,12 +36,25 @@ const AssessmentModal = ({
   const [thresholdValue, setThresholdValue] = useState<number | null>(null)
   const [inputFile, setInputFile] = useState<File>()
   const [fileName, setFileName] = useState<string>('')
-  const { mutate } = useMutationPostLPDB()
-  const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
+  const { mutateAsync } = useMutationPostLPDB()
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const { refetch } = useQueryGetLPDBSampleDownload()
 
   const fileInput = useRef<HTMLInputElement>(null)
   const modalEl = useRef<HTMLDivElement>(null)
+
+  const handleDownload = async () => {
+    const response = await refetch()
+    const element = document.createElement('a')
+    const textFile = new Blob([response.data.data], {
+      type: 'text/plain',
+    })
+    element.href = URL.createObjectURL(textFile)
+    element.download = 'bocachica_J2000_converted.txt'
+    document.body.appendChild(element)
+    element.click()
+  }
 
   const onCickFileUpload = () => {
     fileInput?.current.click()
@@ -56,28 +72,25 @@ const AssessmentModal = ({
     }
   }
 
-  const handleSubmit = () => {
-    try {
-      mutate(
-        { threshold: String(thresholdValue), trajectory: inputFile },
-        {
-          onSuccess: async (data) => {
-            console.log(data)
-          },
-        }
-      )
-      console.log('hi')
-      setIsSuccessModalOpen(true)
-      setIsLPDBTableOpen(true)
-      handleAssessmentModalClose()
-      handleSetModal()
-    } catch (error) {
-      console.error(error)
-    }
+  const handleSubmit = async () => {
+    await mutateAsync({
+      threshold: String(thresholdValue),
+      trajectory: inputFile,
+    })
+      .then(() => {
+        setIsSuccessModalOpen(true)
+        setIsLPDBTableOpen(true) // FIXME: Is it necessary?
+        handleAssessmentModalClose()
+        handleSetModal()
+      })
+      .catch((error) => {
+        setIsErrorModalVisible(true)
+        setErrorMessage(error.response?.data?.message)
+      })
   }
 
   const handleClose = () => {
-    setIsLcaModalVisible(false)
+    setIsErrorModalVisible(false)
   }
 
   const handleDownload = async () => {
@@ -157,18 +170,18 @@ const AssessmentModal = ({
                   and from a corresponding ephemeris is straightforward.)
                 </p>
               </section>
-              <PrimaryButton onClick={handleSubmit} isDisabled={isSubmitDisabled}>
+              <PrimaryButton
+                onClick={handleSubmit}
+                isDisabled={isSubmitDisabled || !thresholdValue}
+              >
                 Submit
               </PrimaryButton>
             </div>
           </div>
         </Modal>
       </ModalWrapper>
-      {isLcaModalVisible && (
-        <WarningModal
-          handleRequestModalCancel={handleClose}
-          message={"It isn't open from 15:00 to 21:00."}
-        />
+      {isErrorModalVisible && (
+        <WarningModal handleRequestModalCancel={handleClose} message={errorMessage} />
       )}
     </>
   )

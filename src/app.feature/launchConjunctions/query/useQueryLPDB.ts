@@ -1,13 +1,14 @@
 import {
   LPDBDetailResponseType,
-  LPDBResponseType,
+  LPDBResponseDataType,
+  ResponseDataType,
 } from '@app.feature/launchConjunctions/types/launchConjunctions'
 import api from '@app.modules/api'
 import { API_LPDB } from '@app.modules/keyFactory'
 import { useQuery } from 'react-query'
 
 export const requestAPiGetLPDB = async () => {
-  const response = await api.GET<null, LPDBResponseType>(
+  const response = await api.GET<null, ResponseDataType<LPDBResponseDataType[]>>(
     process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB
   )
   return response.data

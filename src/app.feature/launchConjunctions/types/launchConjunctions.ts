@@ -1,3 +1,9 @@
+export type ResponseDataType<T> = {
+  message: string
+  success: boolean
+  data: T
+}
+
 export type LPDBResponseDataType = {
   _id: string
   email: string
@@ -52,13 +58,16 @@ export type LPDBDetailResponseType = {
   data: LPDBDetailResponseDataType
 }
 
-export type LPDBResponseType = {
-  message: string
-  success: boolean
-  data: LPDBResponseDataType[]
-}
-
 export type LPDBRequestType = {
   threshold: string
   trajectory: File
+}
+
+export type LPDBPostResponseDataType = {
+  taskId: string
+}
+
+export type LPDBPostResponseErrorType = {
+  success: boolean
+  message: string
 }
