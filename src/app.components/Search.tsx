@@ -1,21 +1,22 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { SecondaryButton } from './button/Button'
 
 type SearchProps = {
+  inputRef: React.MutableRefObject<HTMLInputElement>
   handleSearch: () => void
-  searchValue: string
-  handleValueChange: (e: ChangeEvent<HTMLInputElement>) => void
+  handleKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-const Search = ({ handleSearch, searchValue, handleValueChange }: SearchProps) => {
+const Search = ({ inputRef, handleSearch, handleKeyPress }: SearchProps) => {
   return (
     <SearchWrapper>
       <input
         type="text"
         className="search-input"
-        value={searchValue}
-        onChange={(e) => handleValueChange(e)}
+        ref={inputRef}
+        value={undefined}
+        onKeyDown={handleKeyPress}
         placeholder="Search ID or Name"
       />
       <SecondaryButton width={80} height={30} className="search-button" onClick={handleSearch}>

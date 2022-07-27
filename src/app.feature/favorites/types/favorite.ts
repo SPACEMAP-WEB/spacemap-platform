@@ -17,11 +17,3 @@ export type FavoriteFindDataType = {
   name: string
   isInterested: boolean
 }
-
-export type FavoriteResponseType = ResponseType & {
-  data: FavoriteDataType
-}
-
-export type FavoriteFindResponseType = ResponseType & {
-  data: FavoriteFindDataType[]
-}

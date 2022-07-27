@@ -60,6 +60,7 @@ export const drawCzmlOfLaunchConjuctions = async (
 ) => {
   const { viewer, czmlDataSource, initialTime, trajectoryCzml, launchEpochTime, lpdb } = rest
   viewer.dataSources.add(ds)
+  console.log(ds)
   const clockViewModel = viewer.clockViewModel
   clockViewModel.startTime = Cesium.JulianDate.fromIso8601(initialTime.toISOString())
   clockViewModel.stopTime = Cesium.JulianDate.fromIso8601(initialTime.add(7, 'd').toISOString())
