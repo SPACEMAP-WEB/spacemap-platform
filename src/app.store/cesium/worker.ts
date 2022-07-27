@@ -65,8 +65,8 @@ function satrec2czml(satrec, startTime, duration, intervalUnitTime, satName, RSO
   const res = [] //result for position
   const initTime = new Date(startTime)
   const twoPi = Math.PI * 2
-  const periodSeconds = (twoPi / satrec.no) * 60
-  const interval = periodSeconds / 12
+  const periodSeconds = parseInt(String((twoPi / satrec.no) * 60))
+  const interval = parseInt(String(periodSeconds / 12))
 
   initTime.setSeconds(initTime.getSeconds() - periodSeconds / 2)
   const satID = Number(satrec.satnum.split(' ').join(''))
