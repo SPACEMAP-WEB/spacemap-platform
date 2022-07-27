@@ -12,7 +12,7 @@ const AppIndex = () => {
   useEffect(() => {
     dispatch(setViewer())
     const today = moment()
-    dispatch(drawRsos({ initialTime: today }))
+    // dispatch(drawRsos({ initialTime: today }))
   }, [])
 
   return (

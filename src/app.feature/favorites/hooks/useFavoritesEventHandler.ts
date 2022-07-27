@@ -1,7 +1,7 @@
 import { PPDBSearchParamsType, SortType } from '@app.feature/conjunctions/types/conjunctions'
 import { useTimeFormatHandler } from '@app.modules/hooks/useTimeFormatHandler'
 import { TimeFormatType } from '@app.modules/types/time'
-import { useState, ChangeEvent } from 'react'
+import { useRef } from 'react'
 
 type FavoriteEventHandlerProps = {
   queryParams: PPDBSearchParamsType
@@ -9,19 +9,21 @@ type FavoriteEventHandlerProps = {
 }
 
 const useFavoritesEventHandler = ({ queryParams, setQueryParams }: FavoriteEventHandlerProps) => {
-  const [searchValue, setSearchValue] = useState<string>('')
+  const inputRef = useRef<HTMLInputElement>(null)
   const { handleSetTimeFormat } = useTimeFormatHandler()
-
-  const handleSearchValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value)
-  }
 
   const handleFavoriteSearch = async () => {
     setQueryParams({
       ...queryParams,
       page: 0,
-      satellite: searchValue,
+      satellite: inputRef.current.value,
     })
+  }
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleFavoriteSearch()
+    }
   }
 
   const handleSortFilterChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +46,8 @@ const useFavoritesEventHandler = ({ queryParams, setQueryParams }: FavoriteEvent
   }
 
   return {
-    searchValue,
-    handleSearchValueChange,
+    inputRef,
+    handleKeyPress,
     handleFavoriteSearch,
     handleSortFilterChange,
     handleFavoriteIdChange,

@@ -11,6 +11,7 @@ const Logo = () => {
     const today = moment()
     dispatch(drawRsos({ initialTime: today }))
   }
+
   return (
     <LogoWrapper onClick={viewRsos} id="Logo">
       <Image src="/logo-white.svg" alt="logo" width={250} height={40} />
