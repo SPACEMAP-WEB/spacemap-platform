@@ -33,7 +33,7 @@ const AssessmentModal = ({
   const [thresholdValue, setThresholdValue] = useState<number | null>(null)
   const [inputFile, setInputFile] = useState<File>()
   const [fileName, setFileName] = useState<string>('')
-  const { mutate } = useMutationPostLPDB()
+  const { mutateAsync } = useMutationPostLPDB()
   const [isLcaModalVisible, setIsLcaModalVisible] = useState(false)
   const { refetch } = useQueryGetLPDBSampleDownload()
 
@@ -68,23 +68,15 @@ const AssessmentModal = ({
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      mutate(
-        { threshold: String(thresholdValue), trajectory: inputFile },
-        {
-          onSuccess: async (data) => {
-            console.log(data)
-          },
-        }
-      )
-      console.log('hi')
+      await mutateAsync({ threshold: String(thresholdValue), trajectory: inputFile })
       setIsSuccessModalOpen(true)
       setIsLPDBTableOpen(true)
       handleAssessmentModalClose()
       handleSetModal()
     } catch (error) {
-      console.error(error)
+      console.log(error.response)
     }
   }
 

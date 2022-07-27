@@ -12,10 +12,14 @@ export const useMutationPostLPDB = () => {
       const { threshold, trajectory } = requestForm
       formData.append('threshold', threshold)
       formData.append('trajectory', trajectory)
-      return api.POST({
-        url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB,
-        data: formData,
-      })
+      return api
+        .POST({
+          url: process.env.SPACEMAP_PLATFORM_API_URI + API_LPDB,
+          data: formData,
+        })
+        .catch((error) => {
+          throw error
+        })
     },
     {
       onSuccess: () => {
