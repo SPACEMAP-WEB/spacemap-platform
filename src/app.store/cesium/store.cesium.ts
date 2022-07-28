@@ -2,6 +2,7 @@ import { createSlice, current } from '@reduxjs/toolkit'
 import * as Cesium from 'cesium'
 import { clean, updateCZML } from './cesiumModules'
 import {
+  drawCola,
   drawConjunctions,
   drawLcaConjunctions,
   drawRsos,
@@ -148,6 +149,12 @@ export const viewerSlice = createSlice({
           duration: 3600,
         })
         return { ...currentState, tles, rsoParams }
+      })
+      .addCase(drawCola.fulfilled, (state, { payload }) => {
+        const currentState = current(state)
+        const worker = new Worker(new URL('./worker.ts', import.meta.url))
+        const { trajectoryData } = payload
+        clean({ czmlDataSource: currentState.czmlDataSource })
       })
   },
 })

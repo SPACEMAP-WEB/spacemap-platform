@@ -3,10 +3,12 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import moment from 'moment'
 import { site2czml, trajectory2czml, updateTlesAndRsos } from './cesiumModules'
 import {
+  TargDrawCola,
   TargDrawConjuctions,
   TargDrawLcaConjuctions,
   TargDrawRsos,
   TargDrawWc,
+  TDrawCola,
   TdrawConjuctions,
   TdrawLcaConjuctions,
   TdrawRsos,
@@ -96,6 +98,36 @@ export const drawWatcherCatcher = createAsyncThunk<TDrawWc, TargDrawWc>(
       wcdb,
       epochTime,
       intervalUnitTime,
+    }
+  }
+)
+
+export const drawCola = createAsyncThunk<TDrawCola, TargDrawCola>(
+  'DRAW_COLA',
+  async ({
+    predictionEpochTime,
+    candidatedPaths,
+    launchEpochTime,
+    trajectoryLength = 3600,
+    lpdb,
+    intervalUnitTime = 600,
+  }) => {
+    const initialTime = moment(launchEpochTime).utc()
+    const { tles, rsoParams } = await updateTlesAndRsos(moment(predictionEpochTime).utc())
+    const trajectoryData = []
+    candidatedPaths.forEach((trajectory) => {
+      trajectoryData.push(trajectory2czml({ trajectory, predictionEpochTime }))
+    })
+    return {
+      initialTime,
+      predictionEpochTime,
+      launchEpochTime,
+      intervalUnitTime,
+      duration: trajectoryLength,
+      lpdb,
+      tles,
+      rsoParams,
+      trajectoryData,
     }
   }
 )
