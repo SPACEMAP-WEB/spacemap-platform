@@ -9,6 +9,7 @@ import LoginButton from '../../app.components/button/LoginButton'
 import Logo from '../../app.components/Logo'
 import SideMenu from '../../app.feature/sideMenu/screen/SideMenu'
 import Favorites from '@app.feature/favorites/screen/Favorites'
+import CollisionAvoidance from '@app.feature/collisionAvoidance/screen/CollisionAvoidance'
 
 const MainLayout = () => {
   return (
@@ -20,6 +21,7 @@ const MainLayout = () => {
       <LaunchConjunctions />
       <WatcherCatcher />
       <Favorites />
+      <CollisionAvoidance />
       <SignInModal />
     </MainLayoutWrapper>
   )

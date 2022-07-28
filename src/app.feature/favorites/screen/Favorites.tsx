@@ -168,6 +168,7 @@ const FavoritesWrapper = styled.div<FavoriteStyleProps>`
     position: fixed;
     z-index: 4;
     right: 1.25rem;
+    top: 5.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
