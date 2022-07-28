@@ -39,6 +39,14 @@ const SideMenu = () => {
         menuDescription={'Favorites'}
         onClick={() => handleLoginMenuClick('FAVORITES')}
       />
+      <MenuIcon
+        path={launchConjunctionPath}
+        alt={'collision-avoidance'}
+        width={35}
+        height={35}
+        menuDescription={'Collision Avoidance'}
+        onClick={() => handleLoginMenuClick('COLLISIONAVOIDANCE')}
+      />
     </SideMenuWrapper>
   )
 }

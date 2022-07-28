@@ -1,1 +1,6 @@
-export type MenuType = 'Conjunctions' | 'Launch Conjunctions' | 'Watcher Catcher' | 'Favorites'
+export type MenuType =
+  | 'Conjunctions'
+  | 'Launch Conjunctions'
+  | 'Watcher Catcher'
+  | 'Favorites'
+  | 'Collision Avoidance'

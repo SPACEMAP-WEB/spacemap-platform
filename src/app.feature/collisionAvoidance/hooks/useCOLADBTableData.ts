@@ -1,11 +1,11 @@
+import { COLADBResponseDataType } from '@app.feature/collisionAvoidance/types/collisionAvoidance'
 import moment from 'moment'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
-import { WCDBResponseDataType } from '../types/watcherCatcher'
 
-const useWCDBTableData = (WCDBData: WCDBResponseDataType[]) => {
-  const data = useMemo(() => WCDBData, [WCDBData])
-  const columns: Column<WCDBResponseDataType>[] = useMemo(
+const useCOLADBTableData = (COLADBData: COLADBResponseDataType[]) => {
+  const data = useMemo(() => COLADBData, [COLADBData])
+  const columns: Column<COLADBResponseDataType>[] = useMemo(
     () => [
       {
         Header: 'ID',
@@ -13,7 +13,7 @@ const useWCDBTableData = (WCDBData: WCDBResponseDataType[]) => {
       },
       {
         Header: 'Type',
-        accessor: () => 'WC',
+        accessor: (row) => 'COLA',
       },
       {
         Header: 'Upload Date',
@@ -33,4 +33,4 @@ const useWCDBTableData = (WCDBData: WCDBResponseDataType[]) => {
   return { data, columns }
 }
 
-export default useWCDBTableData
+export default useCOLADBTableData
