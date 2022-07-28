@@ -119,6 +119,27 @@ export type TDrawWc = {
   intervalUnitTime: number
 }
 
+export type TargDrawCola = {
+  candidatedPaths: string[]
+  predictionEpochTime: string
+  launchEpochTime: string
+  trajectoryLength?: number
+  lpdb: LPDBDataType[]
+  intervalUnitTime?: number
+}
+
+export type TDrawCola = {
+  tles: Ttle
+  rsoParams: TRsoParams
+  duration: number
+  trajectoryData: { trajectory: string; predictionEpochTime: string }[]
+  predictionEpochTime: string
+  launchEpochTime: string
+  lpdb: LPDBDataType[]
+  intervalUnitTime?: number
+  initialTime: moment.Moment
+}
+
 export type TUpdateCzml<T> = TStateCesium & {
   initialTime: moment.Moment
   initialTimeISOString: string

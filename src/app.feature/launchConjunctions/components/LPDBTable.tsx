@@ -23,7 +23,7 @@ const LPDBTable = ({ LPDBData, handleNewLaunchClick }: LPDBProps) => {
   const { isVisible: isLaunchConjunctionsClicked } = useModal('LAUNCHCONJUNCTIONS')
   const { mutate } = useMutationDeleteLPDB()
 
-  const handleDetailClick = async (id: string) => {
+  const handleDetailClick = (id: string) => {
     setSelectedLPDBId(id)
     setIsDetailClicked(true)
   }
