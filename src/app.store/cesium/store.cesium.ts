@@ -8,7 +8,14 @@ import {
   drawRsos,
   drawWatcherCatcher,
 } from './cesiumReducer'
-import { TdrawConjuctions, TdrawLcaConjuctions, TdrawRsos, TDrawWc, TStoreCesium } from './type'
+import {
+  TDrawCola,
+  TdrawConjuctions,
+  TdrawLcaConjuctions,
+  TdrawRsos,
+  TDrawWc,
+  TStoreCesium,
+} from './type'
 import {
   drawCzmlOfConjuctions,
   drawCzmlOfLaunchConjuctions,
@@ -153,8 +160,12 @@ export const viewerSlice = createSlice({
       .addCase(drawCola.fulfilled, (state, { payload }) => {
         const currentState = current(state)
         const worker = new Worker(new URL('./worker.ts', import.meta.url))
-        const { trajectoryData } = payload
+        const { tles, rsoParams } = payload
+
         clean({ czmlDataSource: currentState.czmlDataSource })
+        // updateCZML<TDrawCola>
+
+        return { ...currentState, tles, rsoParams }
       })
   },
 })

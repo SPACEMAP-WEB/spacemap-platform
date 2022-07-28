@@ -60,7 +60,6 @@ export const drawCzmlOfLaunchConjuctions = async (
 ) => {
   const { viewer, czmlDataSource, initialTime, trajectoryCzml, launchEpochTime, lpdb } = rest
   viewer.dataSources.add(ds)
-  console.log(ds)
   const clockViewModel = viewer.clockViewModel
   clockViewModel.startTime = Cesium.JulianDate.fromIso8601(initialTime.toISOString())
   clockViewModel.stopTime = Cesium.JulianDate.fromIso8601(initialTime.add(7, 'd').toISOString())
@@ -107,5 +106,37 @@ export const drawCzmlOfWatcherCatcher = async (
     viewer.camera.flyTo({
       destination: new Cesium.Cartesian3(cartesian[0] * 4, cartesian[1] * 4, cartesian[2] * 4),
     })
+  })
+}
+
+export const drawCzmlOfCola = async (
+  ds: Cesium.CzmlDataSource,
+  rest: { initialTime: moment.Moment } & TStateCesium & TdrawLcaConjuctions
+) => {
+  const { viewer, czmlDataSource, initialTime, trajectoryData, launchEpochTime, lpdb } = rest
+  viewer.dataSources.add(ds)
+  const clockViewModel = viewer.clockViewModel
+  clockViewModel.startTime = Cesium.JulianDate.fromIso8601(initialTime.toISOString())
+  clockViewModel.stopTime = Cesium.JulianDate.fromIso8601(initialTime.add(7, 'd').toISOString())
+
+  // 비교
+
+  await Promise.all(
+    trajectoryData.map(async (trajectoryCzml) => await czmlDataSource.process(trajectoryCzml))
+  )
+
+  viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(launchEpochTime)
+
+  let position: Cesium.Cartesian3
+
+  lpdb.forEach(async (currRow, idx) => {
+    const { primary, secondary, start, tca, end } = currRow
+    if (idx === 0)
+      position = ds.entities.getById(String(primary)).position.getValue(clockViewModel.startTime)
+    const pairCzml = makePair(primary, secondary, start, tca, end)
+    await czmlDataSource.process(pairCzml)
+  })
+  viewer.camera.flyTo({
+    destination: new Cesium.Cartesian3(position.x * 4, position.y * 4, position.z * 4),
   })
 }
