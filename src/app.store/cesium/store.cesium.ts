@@ -85,6 +85,7 @@ export const viewerSlice = createSlice({
 
       const camera = viewer.camera
       const scene = viewer.scene
+      viewer.resolutionScale = 3.0
       scene.globe.enableLighting = true
       const czmlDataSource = new Cesium.CzmlDataSource()
       return { ...state, viewer, camera, scene, czmlDataSource }
